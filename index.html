@@ -50,9 +50,9 @@
             </div>
             <div id="registerForm" class="hidden">
                 <h2 class="text-3xl font-bold text-green-500 mb-8 text-center">انضم للفريق</h2>
-                <input type="text" id="regUser" placeholder="اسم مستخدم جديد" class="w-full p-4 mb-4 rounded-2xl bg-slate-900/50 border border-slate-800 outline-none text-white">
-                <input type="password" id="regPass" placeholder="كلمة سر قوية" class="w-full p-4 mb-8 rounded-2xl bg-slate-900/50 border border-slate-800 outline-none text-white">
-                <button onclick="handleRegister()" class="w-full bg-green-600 p-4 rounded-2xl font-bold hover:bg-green-700 transition">إنشاء الحساب</button>
+                <input type="text" id="regUser" placeholder="اسم مستخدم جديد" class="w-full p-4 mb-4 rounded-2xl bg-slate-900/50 border border-slate-800 outline-none text-white transition-all">
+                <input type="password" id="regPass" placeholder="كلمة سر قوية" class="w-full p-4 mb-8 rounded-2xl bg-slate-900/50 border border-slate-800 outline-none text-white transition-all">
+                <button onclick="handleRegister()" class="w-full bg-green-600 p-4 rounded-2xl font-bold hover:bg-green-700 transition shadow-lg shadow-green-900/20">إنشاء الحساب</button>
                 <p class="mt-6 text-center text-slate-400 text-sm"><a href="#" onclick="toggleAuth()" class="text-blue-500 font-bold">العودة لتسجيل الدخول</a></p>
             </div>
         </div>
@@ -138,7 +138,7 @@
         <div class="glass p-10 rounded-[2.5rem] w-full max-w-sm border border-green-500/20">
             <h3 class="text-2xl font-bold mb-6 text-center">عضو جديد</h3>
             <input type="text" id="manualUser" placeholder="الاسم" class="w-full p-4 mb-4 rounded-2xl bg-slate-900 border border-slate-800 outline-none">
-            <input type="text" id="manualPass" placeholder="كلمة السر" class="w-full p-4 mb-8 rounded-2xl bg-slate-900 border border-slate-800 outline-none">
+            <input type="password" id="manualPass" placeholder="كلمة السر" class="w-full p-4 mb-8 rounded-2xl bg-slate-900 border border-slate-800 outline-none">
             <div class="flex gap-3">
                 <button onclick="addManualUser()" class="flex-1 bg-green-600 p-4 rounded-2xl font-bold transition">إضافة</button>
                 <button onclick="closeAddUserModal()" class="flex-1 bg-slate-800 p-4 rounded-2xl font-bold transition">إلغاء</button>
@@ -155,7 +155,6 @@
 
         window.onload = function() { if(currentUser) renderApp(); };
 
-        // نظام الـ Confirm الجديد (وداعاً للتسعينات)
         let confirmAction = null;
         function askConfirm(msg, action) {
             document.getElementById('confirmMessage').innerText = msg;
@@ -188,6 +187,19 @@
             } else { alert("❌ بيانات غير صحيحة!"); }
         }
 
+        // الوظيفة المفقودة اللي كانت موقفة الدنيا أهي يا بطل
+        function handleRegister() {
+            const u = document.getElementById('regUser').value.trim().toLowerCase();
+            const p = document.getElementById('regPass').value;
+            if(!u || !p) { alert("❌ املأ كل الخانات!"); return; }
+            if(users.find(x => x.name === u) || u === ADMIN_NAME) { alert("❌ الاسم موجود!"); return; }
+            
+            users.push({ name: u, pass: p });
+            localStorage.setItem('kh_users', JSON.stringify(users));
+            alert("✅ مبروك! الحساب اتعمل، سجل دخول دلوقتي.");
+            toggleAuth();
+        }
+
         function logout() { localStorage.removeItem('kh_session'); location.reload(); }
 
         function renderApp() {
@@ -214,7 +226,7 @@
         }
 
         function deletePDF(id) {
-            askConfirm("هل تريد حذف هذا الملف نهائياً من المكتبة؟", () => {
+            askConfirm("هل تريد حذف هذا الملف نهائياً؟", () => {
                 pdfs = pdfs.filter(p => p.id !== id);
                 localStorage.setItem('kh_pdfs', JSON.stringify(pdfs));
                 updateUI();
@@ -242,7 +254,7 @@
         }
 
         function deleteUser(index) {
-            askConfirm("سيتم طرد هذا العضو من الفريق، هل أنت متأكد؟", () => {
+            askConfirm("سيتم طرد هذا العضو، هل أنت متأكد؟", () => {
                 users.splice(index, 1);
                 localStorage.setItem('kh_users', JSON.stringify(users));
                 updateUI();
