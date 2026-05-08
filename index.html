@@ -23,53 +23,49 @@
 
     <div id="authScreen" class="fixed inset-0 flex items-center justify-center bg-[#020617] z-[100] p-4">
         <div class="glass p-10 rounded-[2rem] shadow-2xl w-full max-w-md border border-white/5">
-            
             <div id="loginForm">
                 <div class="text-center mb-8">
-                    <div class="w-20 h-20 bg-blue-600/20 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-blue-500/30 shadow-lg shadow-blue-500/10">
+                    <div class="w-20 h-20 bg-blue-600/20 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-blue-500/30">
                         <i class="fas fa-user-shield text-3xl text-blue-500"></i>
                     </div>
                     <h2 class="text-3xl font-bold">الخوارزمية</h2>
-                    <p class="text-slate-500 text-sm mt-2 font-bold uppercase tracking-widest">Login System</p>
+                    <p class="text-slate-500 text-sm mt-2 font-bold uppercase">Login System</p>
                 </div>
-                <input type="text" id="logUser" placeholder="اسم المستخدم" class="w-full p-4 mb-4 rounded-2xl bg-slate-900 border border-slate-800 outline-none text-white focus:border-blue-500 transition-all">
+                <input type="text" id="logUser" placeholder="اسم المستخدم" class="w-full p-4 mb-4 rounded-2xl bg-slate-900 border border-slate-800 outline-none text-white focus:border-blue-500">
                 <div class="input-group mb-8">
-                    <input type="password" id="logPass" placeholder="كلمة السر" class="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 outline-none text-white focus:border-blue-500 transition-all">
+                    <input type="password" id="logPass" placeholder="كلمة السر" class="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 outline-none text-white focus:border-blue-500">
                     <i class="fas fa-eye eye-icon" onclick="togglePass('logPass', this)"></i>
                 </div>
-                <button onclick="handleLogin()" class="w-full btn-blue p-4 rounded-2xl font-bold shadow-lg hover:scale-[1.02] active:scale-95 transition-all">دخول النظام</button>
+                <button onclick="handleLogin()" class="w-full btn-blue p-4 rounded-2xl font-bold shadow-lg hover:scale-[1.02] transition">دخول النظام</button>
                 <p class="mt-6 text-center text-slate-400 text-sm">عضو جديد؟ <button onclick="toggleAuth()" class="text-blue-500 font-bold hover:underline">انضم للفريق</button></p>
             </div>
 
             <div id="registerForm" class="hidden">
                 <div class="text-center mb-8">
-                    <div class="w-20 h-20 bg-green-600/20 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-green-500/30 shadow-lg shadow-green-500/10">
+                    <div class="w-20 h-20 bg-green-600/20 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-green-500/30">
                         <i class="fas fa-user-plus text-3xl text-green-500"></i>
                     </div>
                     <h2 class="text-3xl font-bold">عضوية جديدة</h2>
-                    <p class="text-slate-500 text-sm mt-2">سجل بياناتك للانضمام</p>
                 </div>
-                <input type="text" id="regUser" placeholder="اسم المستخدم الجديد" class="w-full p-4 mb-4 rounded-2xl bg-slate-900 border border-slate-800 outline-none text-white focus:border-green-500 transition-all">
+                <input type="text" id="regUser" placeholder="اسم المستخدم الجديد" class="w-full p-4 mb-4 rounded-2xl bg-slate-900 border border-slate-800 outline-none text-white focus:border-green-500">
                 <div class="input-group mb-8">
-                    <input type="password" id="regPass" placeholder="كلمة السر" class="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 outline-none text-white focus:border-green-500 transition-all">
+                    <input type="password" id="regPass" placeholder="كلمة السر" class="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 outline-none text-white focus:border-green-500">
                     <i class="fas fa-eye eye-icon" onclick="togglePass('regPass', this)"></i>
                 </div>
-                <button onclick="handleRegister()" class="w-full bg-green-600 p-4 rounded-2xl font-bold shadow-lg hover:scale-[1.02] active:scale-95 transition-all">تأكيد التسجيل</button>
+                <button onclick="handleRegister()" class="w-full bg-green-600 p-4 rounded-2xl font-bold">تأكيد التسجيل</button>
                 <p class="mt-6 text-center text-slate-400 text-sm"><button onclick="toggleAuth()" class="text-blue-500 font-bold hover:underline">رجوع للدخول</button></p>
             </div>
         </div>
     </div>
 
     <div id="mainApp" class="hidden flex h-screen overflow-hidden">
-        
         <aside class="w-72 bg-slate-950 border-l border-white/5 p-8 flex flex-col">
-            <div onclick="showPage('dashboard')" class="logo-btn flex items-center gap-3 mb-12 cursor-pointer hover:opacity-80 transition-all group">
+            <div onclick="showPage('dashboard')" class="logo-btn flex items-center gap-3 mb-12 cursor-pointer hover:opacity-80 transition group">
                 <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-blue-500/50">
                     <i class="fas fa-terminal text-white text-sm"></i>
                 </div>
-                <span class="text-xl font-bold uppercase tracking-wider">Algorithm</span>
+                <span class="text-xl font-bold uppercase">Algorithm</span>
             </div>
-
             <nav class="space-y-3 flex-1">
                 <button onclick="showPage('dashboard')" class="w-full text-right p-4 rounded-2xl hover:bg-white/5 flex items-center gap-3 transition">
                     <i class="fas fa-th-large w-6 text-blue-500"></i>الرئيسية
@@ -81,16 +77,14 @@
                     <i class="fas fa-user-lock w-6"></i>إدارة المنصة
                 </button>
             </nav>
-
             <button onclick="logout()" class="text-red-500 p-4 flex items-center gap-3 hover:bg-red-500/10 rounded-xl transition font-bold">
                 <i class="fas fa-power-off"></i>خروج آمن
             </button>
         </aside>
 
-        <main class="flex-1 p-10 overflow-y-auto bg-[#020617]">
+        <main class="flex-1 p-10 overflow-y-auto">
             <header class="flex justify-between items-center mb-12 border-b border-white/5 pb-6">
                 <h1 id="pageTitle" class="text-3xl font-bold">الرئيسية</h1>
-                
                 <div class="flex items-center gap-4 bg-slate-900/50 p-2 pr-5 rounded-2xl border border-white/5 shadow-inner">
                     <span id="userNameDisplay" class="font-bold text-slate-200 text-sm"></span>
                     <div class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-cyan-400 rounded-xl flex items-center justify-center shadow-lg">
@@ -101,22 +95,22 @@
 
             <div id="page-dashboard" class="page active-page">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="glass p-10 rounded-[2.5rem] border-b-4 border-blue-600 shadow-xl shadow-blue-500/5">
-                        <h3 class="text-slate-500 font-bold mb-4 flex items-center gap-2"><i class="fas fa-file-pdf"></i> الملفات المرفوعة</h3>
-                        <p id="count-stories" class="text-6xl font-bold text-white font-mono">0</p>
+                    <div class="glass p-10 rounded-[2.5rem] border-b-4 border-blue-600 shadow-xl">
+                        <h3 class="text-slate-500 font-bold mb-4">الملفات المرفوعة</h3>
+                        <p id="count-stories" class="text-6xl font-bold text-white">0</p>
                     </div>
-                    <div class="glass p-10 rounded-[2.5rem] border-b-4 border-green-600 shadow-xl shadow-green-500/5">
-                        <h3 class="text-slate-500 font-bold mb-4 flex items-center gap-2"><i class="fas fa-users"></i> أعضاء الفريق</h3>
-                        <p id="count-users" class="text-6xl font-bold text-white font-mono">0</p>
+                    <div class="glass p-10 rounded-[2.5rem] border-b-4 border-green-600 shadow-xl">
+                        <h3 class="text-slate-500 font-bold mb-4">أعضاء الفريق</h3>
+                        <p id="count-users" class="text-6xl font-bold text-white">0</p>
                     </div>
                 </div>
             </div>
 
             <div id="page-stories" class="page">
                 <div class="flex justify-between items-center mb-10">
-                    <p class="text-slate-400">مستندات الفريق المشفرة</p>
+                    <p class="text-slate-400">المكتبة التقنية</p>
                     <div id="adminUpload" class="hidden">
-                        <label class="btn-blue px-6 py-3 rounded-2xl cursor-pointer font-bold shadow-lg hover:scale-105 transition block">
+                        <label class="btn-blue px-6 py-3 rounded-2xl cursor-pointer font-bold shadow-lg block">
                             رفع ملف <input type="file" id="pdfInput" accept=".pdf" class="hidden" onchange="uploadPDF()">
                         </label>
                     </div>
@@ -127,7 +121,7 @@
             <div id="page-users" class="page">
                 <h2 class="text-2xl font-bold mb-8 text-yellow-500 flex items-center gap-2"><i class="fas fa-shield-alt"></i> التحكم في المنصة</h2>
                 <div class="glass rounded-[2rem] overflow-hidden border border-white/5">
-                    <table class="w-full text-right">
+                    <table class="w-full text-right border-collapse">
                         <thead class="bg-white/5 text-slate-400">
                             <tr><th class="p-6">العضو</th><th class="p-6">كلمة السر</th><th class="p-6 text-center">تحكم</th></tr>
                         </thead>
@@ -141,29 +135,19 @@
     <script>
         const ADMIN_NAME = "belal";
         const ADMIN_PASS = "159078@1#";
-        
         let users = JSON.parse(localStorage.getItem('kh_users') || '[]');
         let pdfs = JSON.parse(localStorage.getItem('kh_pdfs') || '[]');
         let currentUser = JSON.parse(localStorage.getItem('kh_session') || 'null');
 
-        // عند تشغيل الصفحة
         window.onload = function() {
-            if(currentUser) {
-                renderApp();
-            } else {
-                document.getElementById('authScreen').classList.remove('hidden');
-            }
+            if(currentUser) renderApp();
+            else document.getElementById('authScreen').classList.remove('hidden');
         };
 
         function togglePass(inputId, icon) {
             const input = document.getElementById(inputId);
-            if (input.type === "password") { 
-                input.type = "text"; 
-                icon.classList.replace('fa-eye', 'fa-eye-slash'); 
-            } else { 
-                input.type = "password"; 
-                icon.classList.replace('fa-eye-slash', 'fa-eye'); 
-            }
+            input.type = input.type === "password" ? "text" : "password";
+            icon.classList.toggle('fa-eye'); icon.classList.toggle('fa-eye-slash');
         }
 
         function toggleAuth() {
@@ -174,49 +158,40 @@
         function handleLogin() {
             const u = document.getElementById('logUser').value.trim().toLowerCase();
             const p = document.getElementById('logPass').value;
-            
-            if(u === ADMIN_NAME && p === ADMIN_PASS) {
-                currentUser = { name: "Belal", role: "ADMIN" };
-            } else {
+            if(u === ADMIN_NAME && p === ADMIN_PASS) currentUser = { name: "Belal", role: "ADMIN" };
+            else {
                 let found = users.find(x => x.name === u && x.pass === p);
-                if(found) {
-                    currentUser = { name: found.name, role: "MEMBER" };
-                }
+                if(found) currentUser = { name: found.name, role: "MEMBER" };
             }
-
-            if(currentUser) {
-                localStorage.setItem('kh_session', JSON.stringify(currentUser));
-                renderApp();
-            } else {
-                alert("❌ اسم المستخدم أو كلمة السر غلط!");
-            }
+            if(currentUser) { localStorage.setItem('kh_session', JSON.stringify(currentUser)); renderApp(); }
+            else alert("❌ خطأ!");
         }
 
         function handleRegister() {
             const u = document.getElementById('regUser').value.trim().toLowerCase();
             const p = document.getElementById('regPass').value;
-            
-            if(!u || !p) { alert("املا البيانات يا بطل!"); return; }
-            if(u === ADMIN_NAME) { alert("الاسم ده محجوز للقائد!"); return; }
-            if(users.some(user => user.name === u)) { alert("الاسم ده موجود فعلاً!"); return; }
-
+            if(!u || !p || u === ADMIN_NAME) { alert("بيانات غير صالحة!"); return; }
             users.push({ name: u, pass: p });
             localStorage.setItem('kh_users', JSON.stringify(users));
-            alert("✅ تم التسجيل! سجل دخولك دلوقتي.");
-            toggleAuth();
+            alert("✅ تم!"); toggleAuth();
+        }
+
+        // --- وظيفة الحذف الجديدة (المنقذة) ---
+        function deleteUser(index) {
+            if(confirm("هل أنت متأكد من طرد هذا العضو؟")) {
+                users.splice(index, 1);
+                localStorage.setItem('kh_users', JSON.stringify(users));
+                updateUI();
+            }
         }
 
         function renderApp() {
             document.getElementById('authScreen').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
             document.getElementById('userNameDisplay').innerText = currentUser.name;
-            
             if(currentUser.role === "ADMIN") {
                 document.getElementById('adminBtn').classList.remove('hidden');
                 document.getElementById('adminUpload').classList.remove('hidden');
-            } else {
-                document.getElementById('adminBtn').classList.add('hidden');
-                document.getElementById('adminUpload').classList.add('hidden');
             }
             updateUI();
         }
@@ -224,55 +199,25 @@
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
             document.getElementById('page-' + id).classList.add('active-page');
-            const titles = {'dashboard': 'الرئيسية', 'stories': 'المكتبة التقنية', 'users': 'إدارة المنصة'};
-            document.getElementById('pageTitle').innerText = titles[id];
-        }
-
-        function uploadPDF() {
-            const file = document.getElementById('pdfInput').files[0];
-            if(!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                pdfs.push({ id: Date.now(), name: file.name, data: e.target.result });
-                localStorage.setItem('kh_pdfs', JSON.stringify(pdfs));
-                updateUI();
-            };
-            reader.readAsDataURL(file);
+            document.getElementById('pageTitle').innerText = id === 'users' ? 'إدارة المنصة' : id === 'stories' ? 'المكتبة التقنية' : 'الرئيسية';
         }
 
         function updateUI() {
             document.getElementById('count-users').innerText = users.length + 1;
             document.getElementById('count-stories').innerText = pdfs.length;
-            
-            const pdfContainer = document.getElementById('pdfContainer');
-            pdfContainer.innerHTML = pdfs.map(pdf => `
-                <div class="glass p-8 rounded-[2.5rem] flex flex-col items-center hover:border-blue-500/30 transition-all">
-                    <div class="w-12 h-12 bg-red-500/10 text-red-500 rounded-xl flex items-center justify-center mb-4 text-xl shadow-lg"><i class="fas fa-file-pdf"></i></div>
-                    <h4 class="font-bold text-[10px] mb-4 truncate w-full text-center text-slate-200">${pdf.name}</h4>
-                    <a href="${pdf.data}" download="${pdf.name}" class="btn-blue w-full text-center py-2 rounded-xl text-[10px] font-bold shadow-lg">تحميل</a>
-                </div>
-            `).join('');
-
             const tableBody = document.getElementById('usersTableBody');
-            tableBody.innerHTML = `
-                <tr class="bg-blue-600/5">
-                    <td class="p-6 font-bold text-yellow-500"><i class="fas fa-crown ml-1"></i> Belal (القائد)</td>
-                    <td class="p-6 italic text-slate-500">مشفر تماماً</td>
-                    <td class="p-6 text-center text-slate-500">-</td>
-                </tr>
-            ` + users.map(u => `
+            tableBody.innerHTML = `<tr><td class="p-6 font-bold text-yellow-500"><i class="fas fa-crown"></i> Belal</td><td class="p-6 italic text-slate-500">مشفر</td><td class="p-6 text-center">-</td></tr>` +
+            users.map((u, i) => `
                 <tr class="border-t border-white/5">
                     <td class="p-6 font-bold text-slate-200">${u.name}</td>
                     <td class="p-6 font-mono text-sm text-slate-400">${u.pass}</td>
-                    <td class="p-6 text-center"><i class="fas fa-user-minus text-red-500 cursor-pointer"></i></td>
-                </tr>
-            `).join('');
+                    <td class="p-6 text-center">
+                        <i onclick="deleteUser(${i})" class="fas fa-user-minus text-red-500 cursor-pointer hover:scale-125 transition-all"></i>
+                    </td>
+                </tr>`).join('');
         }
 
-        function logout() {
-            localStorage.removeItem('kh_session');
-            location.reload();
-        }
+        function logout() { localStorage.removeItem('kh_session'); location.reload(); }
     </script>
 </body>
 </html>
