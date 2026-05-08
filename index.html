@@ -13,149 +13,93 @@
         .active-page { display: block; animation: slideIn 0.3s ease-out; }
         @keyframes slideIn { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .glass { background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .btn-red { background: linear-gradient(45deg, #ef4444, #b91c1c); }
         .btn-blue { background: linear-gradient(45deg, #3b82f6, #1d4ed8); }
         .input-group { position: relative; width: 100%; }
         .eye-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #64748b; transition: 0.3s; }
-        .eye-icon:hover { color: #3b82f6; }
+        /* حركة الضغط على اللوجو */
+        .logo-btn:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
 
-    <div id="customConfirm" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-        <div class="glass p-8 rounded-3xl w-full max-w-sm text-center border border-white/10 shadow-2xl">
-            <div class="w-16 h-16 bg-red-500/20 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-exclamation-triangle text-2xl"></i>
-            </div>
-            <h3 id="confirmTitle" class="text-xl font-bold mb-2">تأكيد الإجراء</h3>
-            <p id="confirmMessage" class="text-slate-400 mb-8 text-sm">هل أنت متأكد؟</p>
-            <div class="flex gap-3">
-                <button id="confirmYes" class="flex-1 btn-red p-3 rounded-2xl font-bold hover:scale-105 transition">تأكيد</button>
-                <button onclick="closeConfirm()" class="flex-1 bg-slate-800 p-3 rounded-2xl font-bold hover:bg-slate-700 transition">إلغاء</button>
-            </div>
-        </div>
-    </div>
-
     <div id="authScreen" class="fixed inset-0 flex items-center justify-center bg-[#020617] z-50">
-        <div class="glass p-10 rounded-[2rem] shadow-2xl w-full max-w-md">
+        <div class="glass p-10 rounded-[2rem] shadow-2xl w-full max-w-md border border-white/5">
             <div id="loginForm">
                 <div class="text-center mb-8">
                     <div class="w-20 h-20 bg-blue-600/20 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-blue-500/30">
                         <i class="fas fa-user-shield text-3xl text-blue-500"></i>
                     </div>
-                    <h2 class="text-3xl font-bold text-white">الخوارزمية</h2>
-                    <p class="text-slate-500 text-sm mt-2">مرحباً بك في نظام الإدارة</p>
+                    <h2 class="text-3xl font-bold">الخوارزمية</h2>
                 </div>
-                <input type="text" id="logUser" placeholder="اسم المستخدم" class="w-full p-4 mb-4 rounded-2xl bg-slate-900/50 border border-slate-800 outline-none focus:border-blue-500 text-white transition-all">
+                <input type="text" id="logUser" placeholder="اسم المستخدم" class="w-full p-4 mb-4 rounded-2xl bg-slate-900 border border-slate-800 outline-none text-white">
                 <div class="input-group mb-8">
-                    <input type="password" id="logPass" placeholder="كلمة السر" class="w-full p-4 rounded-2xl bg-slate-900/50 border border-slate-800 outline-none focus:border-blue-500 text-white transition-all">
+                    <input type="password" id="logPass" placeholder="كلمة السر" class="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 outline-none text-white">
                     <i class="fas fa-eye eye-icon" onclick="togglePass('logPass', this)"></i>
                 </div>
-                <button onclick="handleLogin()" class="w-full btn-blue p-4 rounded-2xl font-bold shadow-lg shadow-blue-900/20 hover:scale-[1.02] transition">دخول النظام</button>
-                <p class="mt-6 text-center text-slate-400 text-sm">ليس لديك حساب؟ <a href="#" onclick="toggleAuth()" class="text-blue-500 font-bold">إنشاء حساب جديد</a></p>
-            </div>
-            <div id="registerForm" class="hidden">
-                <h2 class="text-3xl font-bold text-green-500 mb-8 text-center">انضم للفريق</h2>
-                <input type="text" id="regUser" placeholder="اسم مستخدم جديد" class="w-full p-4 mb-4 rounded-2xl bg-slate-900/50 border border-slate-800 outline-none text-white">
-                <div class="input-group mb-8">
-                    <input type="password" id="regPass" placeholder="كلمة سر قوية" class="w-full p-4 rounded-2xl bg-slate-900/50 border border-slate-800 outline-none text-white">
-                    <i class="fas fa-eye eye-icon" onclick="togglePass('regPass', this)"></i>
-                </div>
-                <button onclick="handleRegister()" class="w-full bg-green-600 p-4 rounded-2xl font-bold hover:bg-green-700 transition">إنشاء الحساب</button>
-                <p class="mt-6 text-center text-slate-400 text-sm"><a href="#" onclick="toggleAuth()" class="text-blue-500 font-bold">العودة لتسجيل الدخول</a></p>
+                <button onclick="handleLogin()" class="w-full btn-blue p-4 rounded-2xl font-bold transition">دخول النظام</button>
             </div>
         </div>
     </div>
 
     <div id="mainApp" class="hidden flex h-screen overflow-hidden">
         <aside class="w-72 bg-slate-950 border-l border-white/5 p-8 flex flex-col">
-            <div class="flex items-center gap-3 mb-12">
-                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20">
-                    <i class="fas fa-code text-white"></i>
+            
+            <div onclick="showPage('dashboard')" class="logo-btn flex items-center gap-3 mb-12 cursor-pointer hover:opacity-80 transition-all group">
+                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-blue-500/50 transition-all">
+                    <i class="fas fa-terminal text-white"></i>
                 </div>
-                <span class="text-xl font-bold tracking-wider uppercase">Algorithm</span>
+                <span class="text-xl font-bold tracking-wider uppercase text-slate-200">Algorithm</span>
             </div>
+
             <nav class="space-y-3 flex-1">
                 <button onclick="showPage('dashboard')" class="w-full text-right p-4 rounded-2xl hover:bg-white/5 flex items-center gap-3 transition"><i class="fas fa-th-large w-6"></i>الرئيسية</button>
-                <button onclick="showPage('stories')" class="w-full text-right p-4 rounded-2xl hover:bg-white/5 flex items-center gap-3 transition"><i class="fas fa-folder-open w-6"></i>مكتبة الـ PDF</button>
-                <button id="adminBtn" onclick="showPage('users')" class="hidden w-full text-right p-4 rounded-2xl hover:bg-yellow-500/10 text-yellow-500 flex items-center gap-3 transition"><i class="fas fa-user-lock w-6"></i>إدارة المنصة</button>
+                <button onclick="showPage('stories')" class="w-full text-right p-4 rounded-2xl hover:bg-white/5 flex items-center gap-3 transition"><i class="fas fa-folder-open w-6"></i>المكتبة</button>
+                <button id="adminBtn" onclick="showPage('users')" class="hidden w-full text-right p-4 rounded-2xl text-yellow-500 flex items-center gap-3 transition"><i class="fas fa-user-lock w-6"></i>الإدارة</button>
             </nav>
-            <div class="pt-8 border-t border-white/5">
-                <button onclick="logout()" class="w-full text-red-500 p-4 rounded-2xl hover:bg-red-500/10 flex items-center gap-3 transition"><i class="fas fa-power-off w-6"></i>خروج</button>
-            </div>
+            <button onclick="logout()" class="text-red-500 p-4 flex items-center gap-3 hover:bg-red-500/10 rounded-xl transition"><i class="fas fa-power-off"></i>خروج</button>
         </aside>
 
         <main class="flex-1 p-10 overflow-y-auto">
-            <header class="flex justify-between items-center mb-12">
+            <header class="flex justify-between items-center mb-12 border-b border-white/5 pb-6">
                 <h1 id="pageTitle" class="text-3xl font-bold">الرئيسية</h1>
-                <div class="flex items-center gap-4 bg-slate-900/50 p-2 pr-5 rounded-2xl border border-white/5">
-                    <span id="userNameDisplay" class="font-bold">Belal</span>
-                    <div class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-blue-400 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-user text-sm"></i>
-                    </div>
-                </div>
+                <div class="bg-slate-900/50 px-6 py-2 rounded-2xl border border-white/5 font-bold text-blue-400" id="userNameDisplay"></div>
             </header>
 
             <div id="page-dashboard" class="page active-page">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="glass p-10 rounded-[2.5rem] border-b-4 border-blue-600 text-center">
+                    <div class="glass p-10 rounded-[2.5rem] border-b-4 border-blue-600 shadow-xl shadow-blue-900/10">
                         <h3 class="text-slate-500 font-bold mb-4">الملفات المرفوعة</h3>
-                        <p id="count-stories" class="text-6xl font-bold">0</p>
+                        <p id="count-stories" class="text-6xl font-bold text-white">0</p>
                     </div>
-                    <div class="glass p-10 rounded-[2.5rem] border-b-4 border-green-600 text-center">
+                    <div class="glass p-10 rounded-[2.5rem] border-b-4 border-green-600 shadow-xl shadow-green-900/10">
                         <h3 class="text-slate-500 font-bold mb-4">أعضاء الفريق</h3>
-                        <p id="count-users" class="text-6xl font-bold">0</p>
+                        <p id="count-users" class="text-6xl font-bold text-white">0</p>
                     </div>
                 </div>
             </div>
 
             <div id="page-stories" class="page">
                 <div class="flex justify-between items-center mb-10">
-                    <p class="text-slate-400">مكتبة ملفات الفريق</p>
+                    <p class="text-slate-400">إدارة مستندات PDF</p>
                     <div id="adminUpload" class="hidden">
-                        <label class="btn-blue px-6 py-3 rounded-2xl cursor-pointer font-bold">
-                            <i class="fas fa-cloud-upload-alt ml-2"></i> رفع PDF
-                            <input type="file" id="pdfInput" accept=".pdf" class="hidden" onchange="uploadPDF()">
-                        </label>
+                        <label class="btn-blue px-6 py-3 rounded-2xl cursor-pointer font-bold shadow-lg shadow-blue-500/20">رفع ملف <input type="file" id="pdfInput" accept=".pdf" class="hidden" onchange="uploadPDF()"></label>
                     </div>
                 </div>
-                <div id="pdfContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+                <div id="pdfContainer" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
             </div>
 
             <div id="page-users" class="page">
-                <div class="flex justify-between items-center mb-8">
-                    <h2 class="text-2xl font-bold">الأعضاء</h2>
-                    <button onclick="openAddUserModal()" class="bg-green-600 px-6 py-3 rounded-2xl font-bold text-sm">+ إضافة</button>
-                </div>
-                <div class="glass rounded-[2rem] overflow-hidden">
+                <h2 class="text-2xl font-bold mb-8 text-yellow-500 flex items-center gap-2"><i class="fas fa-shield-alt"></i> إدارة صلاحيات الفريق</h2>
+                <div class="glass rounded-[2rem] overflow-hidden border border-white/5">
                     <table class="w-full text-right">
                         <thead class="bg-white/5">
-                            <tr>
-                                <th class="p-6 text-slate-400">العضو</th>
-                                <th class="p-6 text-slate-400">كلمة السر</th>
-                                <th class="p-6 text-slate-400">التحكم</th>
-                            </tr>
+                            <tr><th class="p-6">العضو</th><th class="p-6">كلمة السر</th><th class="p-6 text-center">تحكم</th></tr>
                         </thead>
                         <tbody id="usersTableBody"></tbody>
                     </table>
                 </div>
             </div>
         </main>
-    </div>
-
-    <div id="addUserModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-[70]">
-        <div class="glass p-10 rounded-[2.5rem] w-full max-w-sm">
-            <h3 class="text-2xl font-bold mb-6 text-center">عضو جديد</h3>
-            <input type="text" id="manualUser" placeholder="الاسم" class="w-full p-4 mb-4 rounded-2xl bg-slate-900 border border-slate-800 outline-none">
-            <div class="input-group mb-8">
-                <input type="password" id="manualPass" placeholder="كلمة السر" class="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 outline-none">
-                <i class="fas fa-eye eye-icon" onclick="togglePass('manualPass', this)"></i>
-            </div>
-            <div class="flex gap-3">
-                <button onclick="addManualUser()" class="flex-1 bg-green-600 p-4 rounded-2xl font-bold">إضافة</button>
-                <button onclick="closeAddUserModal()" class="flex-1 bg-slate-800 p-4 rounded-2xl font-bold">إلغاء</button>
-            </div>
-        </div>
     </div>
 
     <script>
@@ -167,62 +111,20 @@
 
         window.onload = function() { if(currentUser) renderApp(); };
 
-        // وظيفة إظهار/إخفاء الباسورد (العين)
         function togglePass(inputId, icon) {
             const input = document.getElementById(inputId);
-            if (input.type === "password") {
-                input.type = "text";
-                icon.classList.replace('fa-eye', 'fa-eye-slash');
-            } else {
-                input.type = "password";
-                icon.classList.replace('fa-eye-slash', 'fa-eye');
-            }
-        }
-
-        let confirmAction = null;
-        function askConfirm(msg, action) {
-            document.getElementById('confirmMessage').innerText = msg;
-            document.getElementById('customConfirm').classList.remove('hidden');
-            confirmAction = action;
-        }
-        function closeConfirm() { document.getElementById('customConfirm').classList.add('hidden'); }
-        document.getElementById('confirmYes').onclick = function() {
-            if(confirmAction) confirmAction();
-            closeConfirm();
-        };
-
-        function toggleAuth() {
-            document.getElementById('loginForm').classList.toggle('hidden');
-            document.getElementById('registerForm').classList.toggle('hidden');
+            if (input.type === "password") { input.type = "text"; icon.classList.replace('fa-eye', 'fa-eye-slash'); }
+            else { input.type = "password"; icon.classList.replace('fa-eye-slash', 'fa-eye'); }
         }
 
         function handleLogin() {
             const u = document.getElementById('logUser').value.trim().toLowerCase();
             const p = document.getElementById('logPass').value;
-            if(u === ADMIN_NAME && p === ADMIN_PASS) {
-                currentUser = { name: "Belal", role: "ADMIN" };
-            } else {
-                let found = users.find(x => x.name === u && x.pass === p);
-                if(found) currentUser = { name: found.name, role: "MEMBER" };
-            }
-            if(currentUser) {
-                localStorage.setItem('kh_session', JSON.stringify(currentUser));
-                renderApp();
-            } else { alert("❌ بيانات غير صحيحة!"); }
+            if(u === ADMIN_NAME && p === ADMIN_PASS) { currentUser = { name: "Belal", role: "ADMIN" }; }
+            else { let found = users.find(x => x.name === u && x.pass === p); if(found) currentUser = { name: found.name, role: "MEMBER" }; }
+            if(currentUser) { localStorage.setItem('kh_session', JSON.stringify(currentUser)); renderApp(); }
+            else { alert("❌ بيانات غير صحيحة!"); }
         }
-
-        function handleRegister() {
-            const u = document.getElementById('regUser').value.trim().toLowerCase();
-            const p = document.getElementById('regPass').value;
-            if(!u || !p) { alert("❌ املأ كل الخانات!"); return; }
-            if(users.find(x => x.name === u) || u === ADMIN_NAME) { alert("❌ الاسم موجود!"); return; }
-            users.push({ name: u, pass: p });
-            localStorage.setItem('kh_users', JSON.stringify(users));
-            alert("✅ تم إنشاء الحساب!");
-            toggleAuth();
-        }
-
-        function logout() { localStorage.removeItem('kh_session'); location.reload(); }
 
         function renderApp() {
             document.getElementById('authScreen').classList.add('hidden');
@@ -233,6 +135,13 @@
                 document.getElementById('adminUpload').classList.remove('hidden');
             }
             updateUI();
+        }
+
+        function showPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+            document.getElementById('page-' + id).classList.add('active-page');
+            const titles = {'dashboard': 'الرئيسية', 'stories': 'المكتبة التقنية', 'users': 'لوحة الإدارة'};
+            document.getElementById('pageTitle').innerText = titles[id];
         }
 
         function uploadPDF() {
@@ -247,71 +156,24 @@
             reader.readAsDataURL(file);
         }
 
-        function deletePDF(id) {
-            askConfirm("حذف الملف؟", () => {
-                pdfs = pdfs.filter(p => p.id !== id);
-                localStorage.setItem('kh_pdfs', JSON.stringify(pdfs));
-                updateUI();
-            });
-        }
-
-        function showPage(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-            document.getElementById('page-' + id).classList.add('active-page');
-            document.getElementById('pageTitle').innerText = id === 'dashboard' ? 'الرئيسية' : (id === 'stories' ? 'المكتبة' : 'الإدارة');
-        }
-
-        function openAddUserModal() { document.getElementById('addUserModal').classList.remove('hidden'); }
-        function closeAddUserModal() { document.getElementById('addUserModal').classList.add('hidden'); }
-
-        function addManualUser() {
-            const u = document.getElementById('manualUser').value.trim().toLowerCase();
-            const p = document.getElementById('manualPass').value;
-            if(!u || !p) return;
-            users.push({ name: u, pass: p });
-            localStorage.setItem('kh_users', JSON.stringify(users));
-            closeAddUserModal();
-            updateUI();
-        }
-
-        function deleteUser(index) {
-            askConfirm("طرد العضو؟", () => {
-                users.splice(index, 1);
-                localStorage.setItem('kh_users', JSON.stringify(users));
-                updateUI();
-            });
-        }
-
         function updateUI() {
             document.getElementById('count-users').innerText = users.length + 1;
             document.getElementById('count-stories').innerText = pdfs.length;
             const pdfContainer = document.getElementById('pdfContainer');
             pdfContainer.innerHTML = pdfs.map(pdf => `
-                <div class="glass p-8 rounded-[2.5rem] flex flex-col items-center relative group">
-                    ${currentUser.role === 'ADMIN' ? `<button onclick="deletePDF(${pdf.id})" class="absolute top-4 left-4 text-red-500 opacity-0 group-hover:opacity-100 transition-all"><i class="fas fa-trash-alt"></i></button>` : ''}
-                    <div class="w-16 h-16 bg-red-500/10 text-red-500 rounded-2xl flex items-center justify-center mb-6 text-2xl"><i class="fas fa-file-pdf"></i></div>
-                    <h4 class="font-bold mb-6 text-center text-sm truncate w-full">${pdf.name}</h4>
-                    <a href="${pdf.data}" download="${pdf.name}" class="w-full btn-blue text-center py-3 rounded-2xl text-xs font-bold">تحميل</a>
+                <div class="glass p-8 rounded-[2.5rem] flex flex-col items-center hover:border-blue-500/30 transition-all">
+                    <div class="w-12 h-12 bg-red-500/10 text-red-500 rounded-xl flex items-center justify-center mb-4 text-xl"><i class="fas fa-file-pdf"></i></div>
+                    <h4 class="font-bold text-xs mb-4 truncate w-full text-center">${pdf.name}</h4>
+                    <a href="${pdf.data}" download="${pdf.name}" class="btn-blue px-6 py-2 rounded-xl text-xs font-bold w-full text-center">تحميل</a>
                 </div>
             `).join('');
 
             const tableBody = document.getElementById('usersTableBody');
-            tableBody.innerHTML = `
-                <tr class="border-b border-white/5">
-                    <td class="p-6 font-bold text-blue-400">Belal (القائد)</td>
-                    <td class="p-6 text-slate-600 italic">محمي</td>
-                    <td class="p-6">-</td>
-                </tr>
-            ` + users.map((u, i) => `
-                <tr class="border-b border-white/5">
-                    <td class="p-6 font-bold">${u.name}</td>
-                    <td class="p-6 font-mono text-slate-500 text-sm">${u.pass}</td>
-                    <td class="p-6">
-                        <button onclick="deleteUser(${i})" class="text-red-500"><i class="fas fa-user-minus"></i></button>
-                    </td>
-                </tr>
-            `).join('');
+            tableBody.innerHTML = `<tr><td class="p-6 font-bold text-yellow-500"><i class="fas fa-crown ml-2"></i>Belal (القائد)</td><td class="p-6 italic text-slate-500">محمي</td><td class="p-6 text-center">-</td></tr>` +
+            users.map((u, i) => `<tr class="border-t border-white/5"><td class="p-6 font-bold">${u.name}</td><td class="p-6 font-mono text-sm text-slate-400">${u.pass}</td><td class="p-6 text-center"><i class="fas fa-user-minus text-red-500 cursor-pointer"></i></td></tr>`).join('');
         }
+
+        function logout() { localStorage.removeItem('kh_session'); location.reload(); }
     </script>
 </body>
 </html>
