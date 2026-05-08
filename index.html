@@ -16,7 +16,6 @@
         .btn-blue { background: linear-gradient(45deg, #3b82f6, #1d4ed8); }
         .input-group { position: relative; width: 100%; }
         .eye-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #64748b; transition: 0.3s; }
-        .eye-icon:hover { color: #3b82f6; }
         .logo-btn:active { transform: scale(0.95); }
     </style>
 </head>
@@ -31,7 +30,7 @@
                         <i class="fas fa-user-shield text-3xl text-blue-500"></i>
                     </div>
                     <h2 class="text-3xl font-bold text-white">الخوارزمية</h2>
-                    <p class="text-slate-500 text-sm mt-2">مرحباً بك في نظام الإدارة</p>
+                    <p class="text-slate-500 text-sm mt-2">نظام الإدارة المركزي</p>
                 </div>
                 <input type="text" id="logUser" placeholder="اسم المستخدم" class="w-full p-4 mb-4 rounded-2xl bg-slate-900 border border-slate-800 outline-none text-white focus:border-blue-500 transition-all">
                 <div class="input-group mb-8">
@@ -39,7 +38,7 @@
                     <i class="fas fa-eye eye-icon" onclick="togglePass('logPass', this)"></i>
                 </div>
                 <button onclick="handleLogin()" class="w-full btn-blue p-4 rounded-2xl font-bold shadow-lg shadow-blue-500/20 hover:scale-[1.02] transition">دخول النظام</button>
-                <p class="mt-6 text-center text-slate-400 text-sm">عضو جديد؟ <a href="#" onclick="toggleAuth()" class="text-blue-500 font-bold hover:underline">انضم للفريق</a></p>
+                <p class="mt-6 text-center text-slate-400 text-sm">عضو جديد؟ <button onclick="toggleAuth()" class="text-blue-500 font-bold hover:underline">انضم للفريق</button></p>
             </div>
 
             <div id="registerForm" class="hidden">
@@ -48,7 +47,7 @@
                         <i class="fas fa-user-plus text-3xl text-green-500"></i>
                     </div>
                     <h2 class="text-3xl font-bold text-white">عضوية جديدة</h2>
-                    <p class="text-slate-500 text-sm mt-2">سجل بياناتك للانضمام للخوارزمية</p>
+                    <p class="text-slate-500 text-sm mt-2">سجل بياناتك للانضمام</p>
                 </div>
                 <input type="text" id="regUser" placeholder="اختر اسم مستخدم" class="w-full p-4 mb-4 rounded-2xl bg-slate-900 border border-slate-800 outline-none text-white focus:border-green-500 transition-all">
                 <div class="input-group mb-8">
@@ -56,7 +55,7 @@
                     <i class="fas fa-eye eye-icon" onclick="togglePass('regPass', this)"></i>
                 </div>
                 <button onclick="handleRegister()" class="w-full bg-green-600 p-4 rounded-2xl font-bold shadow-lg shadow-green-500/20 hover:scale-[1.02] transition">تأكيد التسجيل</button>
-                <p class="mt-6 text-center text-slate-400 text-sm"><a href="#" onclick="toggleAuth()" class="text-blue-500 font-bold hover:underline">رجوع للدخول</a></p>
+                <p class="mt-6 text-center text-slate-400 text-sm"><button onclick="toggleAuth()" class="text-blue-500 font-bold hover:underline">رجوع للدخول</button></p>
             </div>
         </div>
     </div>
@@ -64,47 +63,4 @@
     <div id="mainApp" class="hidden flex h-screen overflow-hidden">
         <aside class="w-72 bg-slate-950 border-l border-white/5 p-8 flex flex-col">
             <div onclick="showPage('dashboard')" class="logo-btn flex items-center gap-3 mb-12 cursor-pointer hover:opacity-80 transition-all group">
-                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-blue-500/50">
-                    <i class="fas fa-terminal text-white text-sm"></i>
-                </div>
-                <span class="text-xl font-bold uppercase">Algorithm</span>
-            </div>
-
-            <nav class="space-y-3 flex-1">
-                <button onclick="showPage('dashboard')" class="w-full text-right p-4 rounded-2xl hover:bg-white/5 flex items-center gap-3 transition">
-                    <i class="fas fa-th-large w-6 text-blue-500"></i>الرئيسية
-                </button>
-                <button onclick="showPage('stories')" class="w-full text-right p-4 rounded-2xl hover:bg-white/5 flex items-center gap-3 transition">
-                    <i class="fas fa-folder-open w-6 text-blue-500"></i>المكتبة التقنية
-                </button>
-                <button id="adminBtn" onclick="showPage('users')" class="hidden w-full text-right p-4 rounded-2xl text-yellow-500 hover:bg-yellow-500/10 flex items-center gap-3 transition">
-                    <i class="fas fa-user-lock w-6"></i>إدارة المنصة
-                </button>
-            </nav>
-
-            <button onclick="logout()" class="text-red-500 p-4 flex items-center gap-3 hover:bg-red-500/10 rounded-xl transition">
-                <i class="fas fa-power-off"></i>خروج آمن
-            </button>
-        </aside>
-
-        <main class="flex-1 p-10 overflow-y-auto">
-            <header class="flex justify-between items-center mb-12 border-b border-white/5 pb-6">
-                <h1 id="pageTitle" class="text-3xl font-bold">الرئيسية</h1>
-                
-                <div class="flex items-center gap-4 bg-slate-900/50 p-2 pr-5 rounded-2xl border border-white/5 shadow-inner">
-                    <span id="userNameDisplay" class="font-bold text-slate-200 text-sm"></span>
-                    <div class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-cyan-400 rounded-xl flex items-center justify-center shadow-lg">
-                        <i class="fas fa-user-astronaut text-white text-sm"></i>
-                    </div>
-                </div>
-            </header>
-
-            <div id="page-dashboard" class="page active-page">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="glass p-10 rounded-[2.5rem] border-b-4 border-blue-600 shadow-xl">
-                        <h3 class="text-slate-500 font-bold mb-4"><i class="fas fa-file-pdf"></i> الملفات المرفوعة</h3>
-                        <p id="count-stories" class="text-6xl font-bold text-white">0</p>
-                    </div>
-                    <div class="glass p-10 rounded-[2.5rem] border-b-4 border-green-600 shadow-xl">
-                        <h3 class="text-slate-500 font-bold mb-4"><i class="fas fa-users"></i> أعضاء الفريق</h3>
-                        <p id="count-users" class="text-6xl font-bold text-
+                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg group-hover
