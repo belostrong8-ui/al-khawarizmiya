@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الخوارزمية</title>
+    <title>الخوارزمية | Al-Khawarizmiya</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -16,7 +16,7 @@
         .btn-blue { background: linear-gradient(45deg, #3b82f6, #1d4ed8); }
         .input-group { position: relative; width: 100%; }
         .eye-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #64748b; transition: 0.3s; }
-        /* حركة الضغط على اللوجو */
+        .eye-icon:hover { color: #3b82f6; }
         .logo-btn:active { transform: scale(0.95); }
     </style>
 </head>
@@ -29,50 +29,68 @@
                     <div class="w-20 h-20 bg-blue-600/20 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-blue-500/30">
                         <i class="fas fa-user-shield text-3xl text-blue-500"></i>
                     </div>
-                    <h2 class="text-3xl font-bold">الخوارزمية</h2>
+                    <h2 class="text-3xl font-bold tracking-tight">الخوارزمية</h2>
+                    <p class="text-slate-500 text-sm mt-2 font-medium">نظام الإدارة المركزي</p>
                 </div>
-                <input type="text" id="logUser" placeholder="اسم المستخدم" class="w-full p-4 mb-4 rounded-2xl bg-slate-900 border border-slate-800 outline-none text-white">
+                <input type="text" id="logUser" placeholder="اسم المستخدم" class="w-full p-4 mb-4 rounded-2xl bg-slate-900/50 border border-slate-800 outline-none focus:border-blue-500 text-white transition-all">
                 <div class="input-group mb-8">
-                    <input type="password" id="logPass" placeholder="كلمة السر" class="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 outline-none text-white">
+                    <input type="password" id="logPass" placeholder="كلمة السر" class="w-full p-4 rounded-2xl bg-slate-900/50 border border-slate-800 outline-none focus:border-blue-500 text-white transition-all">
                     <i class="fas fa-eye eye-icon" onclick="togglePass('logPass', this)"></i>
                 </div>
-                <button onclick="handleLogin()" class="w-full btn-blue p-4 rounded-2xl font-bold transition">دخول النظام</button>
+                <button onclick="handleLogin()" class="w-full btn-blue p-4 rounded-2xl font-bold shadow-lg shadow-blue-900/20 hover:scale-[1.02] transition">دخول النظام</button>
             </div>
         </div>
     </div>
 
     <div id="mainApp" class="hidden flex h-screen overflow-hidden">
+        
         <aside class="w-72 bg-slate-950 border-l border-white/5 p-8 flex flex-col">
-            
             <div onclick="showPage('dashboard')" class="logo-btn flex items-center gap-3 mb-12 cursor-pointer hover:opacity-80 transition-all group">
                 <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-blue-500/50 transition-all">
-                    <i class="fas fa-terminal text-white"></i>
+                    <i class="fas fa-terminal text-white text-sm"></i>
                 </div>
                 <span class="text-xl font-bold tracking-wider uppercase text-slate-200">Algorithm</span>
             </div>
 
             <nav class="space-y-3 flex-1">
-                <button onclick="showPage('dashboard')" class="w-full text-right p-4 rounded-2xl hover:bg-white/5 flex items-center gap-3 transition"><i class="fas fa-th-large w-6"></i>الرئيسية</button>
-                <button onclick="showPage('stories')" class="w-full text-right p-4 rounded-2xl hover:bg-white/5 flex items-center gap-3 transition"><i class="fas fa-folder-open w-6"></i>المكتبة</button>
-                <button id="adminBtn" onclick="showPage('users')" class="hidden w-full text-right p-4 rounded-2xl text-yellow-500 flex items-center gap-3 transition"><i class="fas fa-user-lock w-6"></i>الإدارة</button>
+                <button onclick="showPage('dashboard')" class="w-full text-right p-4 rounded-2xl hover:bg-white/5 flex items-center gap-3 transition">
+                    <i class="fas fa-th-large w-6 text-blue-500"></i>الرئيسية
+                </button>
+                <button onclick="showPage('stories')" class="w-full text-right p-4 rounded-2xl hover:bg-white/5 flex items-center gap-3 transition">
+                    <i class="fas fa-folder-open w-6 text-blue-500"></i>المكتبة
+                </button>
+                <button id="adminBtn" onclick="showPage('users')" class="hidden w-full text-right p-4 rounded-2xl text-yellow-500 hover:bg-yellow-500/10 flex items-center gap-3 transition">
+                    <i class="fas fa-user-lock w-6"></i>الإدارة
+                </button>
             </nav>
-            <button onclick="logout()" class="text-red-500 p-4 flex items-center gap-3 hover:bg-red-500/10 rounded-xl transition"><i class="fas fa-power-off"></i>خروج</button>
+
+            <div class="pt-8 border-t border-white/5">
+                <button onclick="logout()" class="w-full text-red-500 p-4 rounded-2xl hover:bg-red-500/10 flex items-center gap-3 transition">
+                    <i class="fas fa-power-off w-6"></i>خروج آمن
+                </button>
+            </div>
         </aside>
 
         <main class="flex-1 p-10 overflow-y-auto">
             <header class="flex justify-between items-center mb-12 border-b border-white/5 pb-6">
                 <h1 id="pageTitle" class="text-3xl font-bold">الرئيسية</h1>
-                <div class="bg-slate-900/50 px-6 py-2 rounded-2xl border border-white/5 font-bold text-blue-400" id="userNameDisplay"></div>
+                
+                <div class="flex items-center gap-4 bg-slate-900/50 p-2 pr-5 rounded-2xl border border-white/5 shadow-inner">
+                    <span id="userNameDisplay" class="font-bold text-slate-200 text-sm"></span>
+                    <div class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-cyan-400 rounded-xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-user-astronaut text-white text-sm"></i>
+                    </div>
+                </div>
             </header>
 
             <div id="page-dashboard" class="page active-page">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div class="glass p-10 rounded-[2.5rem] border-b-4 border-blue-600 shadow-xl shadow-blue-900/10">
-                        <h3 class="text-slate-500 font-bold mb-4">الملفات المرفوعة</h3>
+                        <h3 class="text-slate-500 font-bold mb-4 flex items-center gap-2"><i class="fas fa-file-pdf"></i> الملفات المرفوعة</h3>
                         <p id="count-stories" class="text-6xl font-bold text-white">0</p>
                     </div>
                     <div class="glass p-10 rounded-[2.5rem] border-b-4 border-green-600 shadow-xl shadow-green-900/10">
-                        <h3 class="text-slate-500 font-bold mb-4">أعضاء الفريق</h3>
+                        <h3 class="text-slate-500 font-bold mb-4 flex items-center gap-2"><i class="fas fa-users"></i> أعضاء الفريق</h3>
                         <p id="count-users" class="text-6xl font-bold text-white">0</p>
                     </div>
                 </div>
@@ -80,9 +98,12 @@
 
             <div id="page-stories" class="page">
                 <div class="flex justify-between items-center mb-10">
-                    <p class="text-slate-400">إدارة مستندات PDF</p>
+                    <p class="text-slate-400">إدارة مستندات الفريق التقنية</p>
                     <div id="adminUpload" class="hidden">
-                        <label class="btn-blue px-6 py-3 rounded-2xl cursor-pointer font-bold shadow-lg shadow-blue-500/20">رفع ملف <input type="file" id="pdfInput" accept=".pdf" class="hidden" onchange="uploadPDF()"></label>
+                        <label class="btn-blue px-6 py-3 rounded-2xl cursor-pointer font-bold shadow-lg shadow-blue-500/20 hover:scale-105 transition block">
+                            <i class="fas fa-plus ml-1"></i> رفع PDF
+                            <input type="file" id="pdfInput" accept=".pdf" class="hidden" onchange="uploadPDF()">
+                        </label>
                     </div>
                 </div>
                 <div id="pdfContainer" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
@@ -91,8 +112,8 @@
             <div id="page-users" class="page">
                 <h2 class="text-2xl font-bold mb-8 text-yellow-500 flex items-center gap-2"><i class="fas fa-shield-alt"></i> إدارة صلاحيات الفريق</h2>
                 <div class="glass rounded-[2rem] overflow-hidden border border-white/5">
-                    <table class="w-full text-right">
-                        <thead class="bg-white/5">
+                    <table class="w-full text-right border-collapse">
+                        <thead class="bg-white/5 text-slate-400">
                             <tr><th class="p-6">العضو</th><th class="p-6">كلمة السر</th><th class="p-6 text-center">تحكم</th></tr>
                         </thead>
                         <tbody id="usersTableBody"></tbody>
@@ -113,17 +134,31 @@
 
         function togglePass(inputId, icon) {
             const input = document.getElementById(inputId);
-            if (input.type === "password") { input.type = "text"; icon.classList.replace('fa-eye', 'fa-eye-slash'); }
-            else { input.type = "password"; icon.classList.replace('fa-eye-slash', 'fa-eye'); }
+            if (input.type === "password") { 
+                input.type = "text"; 
+                icon.classList.replace('fa-eye', 'fa-eye-slash'); 
+            } else { 
+                input.type = "password"; 
+                icon.classList.replace('fa-eye-slash', 'fa-eye'); 
+            }
         }
 
         function handleLogin() {
             const u = document.getElementById('logUser').value.trim().toLowerCase();
             const p = document.getElementById('logPass').value;
-            if(u === ADMIN_NAME && p === ADMIN_PASS) { currentUser = { name: "Belal", role: "ADMIN" }; }
-            else { let found = users.find(x => x.name === u && x.pass === p); if(found) currentUser = { name: found.name, role: "MEMBER" }; }
-            if(currentUser) { localStorage.setItem('kh_session', JSON.stringify(currentUser)); renderApp(); }
-            else { alert("❌ بيانات غير صحيحة!"); }
+            if(u === ADMIN_NAME && p === ADMIN_PASS) { 
+                currentUser = { name: "Belal", role: "ADMIN" }; 
+            } else { 
+                let found = users.find(x => x.name === u && x.pass === p); 
+                if(found) currentUser = { name: found.name, role: "MEMBER" }; 
+            }
+            
+            if(currentUser) { 
+                localStorage.setItem('kh_session', JSON.stringify(currentUser)); 
+                renderApp(); 
+            } else { 
+                alert("❌ خطأ في الاسم أو كلمة السر!"); 
+            }
         }
 
         function renderApp() {
@@ -156,21 +191,42 @@
             reader.readAsDataURL(file);
         }
 
+        function deletePDF(id) {
+            if(confirm("هل تريد حذف هذا الملف؟")) {
+                pdfs = pdfs.filter(p => p.id !== id);
+                localStorage.setItem('kh_pdfs', JSON.stringify(pdfs));
+                updateUI();
+            }
+        }
+
         function updateUI() {
             document.getElementById('count-users').innerText = users.length + 1;
             document.getElementById('count-stories').innerText = pdfs.length;
+            
             const pdfContainer = document.getElementById('pdfContainer');
             pdfContainer.innerHTML = pdfs.map(pdf => `
-                <div class="glass p-8 rounded-[2.5rem] flex flex-col items-center hover:border-blue-500/30 transition-all">
-                    <div class="w-12 h-12 bg-red-500/10 text-red-500 rounded-xl flex items-center justify-center mb-4 text-xl"><i class="fas fa-file-pdf"></i></div>
-                    <h4 class="font-bold text-xs mb-4 truncate w-full text-center">${pdf.name}</h4>
-                    <a href="${pdf.data}" download="${pdf.name}" class="btn-blue px-6 py-2 rounded-xl text-xs font-bold w-full text-center">تحميل</a>
+                <div class="glass p-8 rounded-[2.5rem] flex flex-col items-center relative group hover:border-blue-500/30 transition-all">
+                    ${currentUser.role === 'ADMIN' ? `<button onclick="deletePDF(${pdf.id})" class="absolute top-5 left-5 text-red-500 opacity-0 group-hover:opacity-100 transition-all"><i class="fas fa-trash-alt text-xs"></i></button>` : ''}
+                    <div class="w-12 h-12 bg-red-500/10 text-red-500 rounded-xl flex items-center justify-center mb-4 text-xl shadow-lg"><i class="fas fa-file-pdf"></i></div>
+                    <h4 class="font-bold text-[10px] mb-4 truncate w-full text-center text-slate-200">${pdf.name}</h4>
+                    <a href="${pdf.data}" download="${pdf.name}" class="btn-blue w-full text-center py-2 rounded-xl text-[10px] font-bold hover:scale-105 transition shadow-lg shadow-blue-500/10">تحميل</a>
                 </div>
             `).join('');
 
             const tableBody = document.getElementById('usersTableBody');
-            tableBody.innerHTML = `<tr><td class="p-6 font-bold text-yellow-500"><i class="fas fa-crown ml-2"></i>Belal (القائد)</td><td class="p-6 italic text-slate-500">محمي</td><td class="p-6 text-center">-</td></tr>` +
-            users.map((u, i) => `<tr class="border-t border-white/5"><td class="p-6 font-bold">${u.name}</td><td class="p-6 font-mono text-sm text-slate-400">${u.pass}</td><td class="p-6 text-center"><i class="fas fa-user-minus text-red-500 cursor-pointer"></i></td></tr>`).join('');
+            tableBody.innerHTML = `
+                <tr class="bg-yellow-500/5">
+                    <td class="p-6 font-bold text-yellow-500 flex items-center gap-2"><i class="fas fa-crown"></i> Belal (القائد)</td>
+                    <td class="p-6 italic text-slate-500 text-sm">نظام محمي</td>
+                    <td class="p-6 text-center text-slate-500">-</td>
+                </tr>
+            ` + users.map((u, i) => `
+                <tr class="border-t border-white/5 hover:bg-white/[0.02] transition">
+                    <td class="p-6 font-bold text-slate-200">${u.name}</td>
+                    <td class="p-6 font-mono text-sm text-slate-400">${u.pass}</td>
+                    <td class="p-6 text-center"><i class="fas fa-user-minus text-red-500 cursor-pointer"></i></td>
+                </tr>
+            `).join('');
         }
 
         function logout() { localStorage.removeItem('kh_session'); location.reload(); }
