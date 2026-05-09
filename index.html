@@ -3,129 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الخوارزمية - Ultimate Control</title>
+    <title>منصة الخوارزمية - V16 Final</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
         :root { --bg: #020617; --card: #0f172a; --text: #f8fafc; --accent: #3b82f6; }
         .light-mode { --bg: #f1f5f9; --card: #ffffff; --text: #0f172a; --accent: #2563eb; }
-        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: var(--text); height: 100vh; overflow: hidden; transition: 0.3s; }
+        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: var(--text); height: 100vh; overflow: hidden; transition: 0.3s; margin: 0; }
         .glass { background: var(--card); border: 1px solid rgba(255,255,255,0.05); }
         .page { display: none; height: 100%; flex-direction: column; padding: 2rem; overflow-y: auto; }
         .active-page { display: flex; animation: fadeIn 0.2s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .sidebar-btn { width: 100%; text-align: right; padding: 0.8rem; border-radius: 1rem; display: flex; align-items: center; gap: 1rem; font-weight: bold; cursor: pointer; }
+        .sidebar-btn { width: 100%; text-align: right; padding: 1rem; border-radius: 1rem; display: flex; align-items: center; gap: 1rem; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .sidebar-btn:hover { background: rgba(59, 130, 246, 0.1); color: var(--accent); }
         .leader-badge { background: #eab308; color: #000; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; }
         input { background: rgba(0,0,0,0.2) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: inherit; outline: none; }
+        .light-mode input { background: rgba(0,0,0,0.05) !important; border: 1px solid rgba(0,0,0,0.1) !important; }
     </style>
 </head>
 <body class="flex">
 
     <div id="authPage" class="fixed inset-0 z-[500] bg-slate-950 flex items-center justify-center p-4">
-        <div class="glass p-8 rounded-[2.5rem] w-full max-w-md text-center border-blue-500/30 border">
-            <h2 class="text-2xl font-bold mb-6">الخوارزمية</h2>
-            <input type="text" id="uName" placeholder="اسم المستخدم" class="w-full p-4 rounded-xl text-center mb-4">
-            <input type="password" id="uPass" placeholder="كلمة السر" class="w-full p-4 rounded-xl text-center mb-4">
-            <button onclick="handleAuth()" class="w-full bg-blue-600 p-4 rounded-xl font-bold">دخول</button>
+        <div class="glass p-8 rounded-[2.5rem] w-full max-w-md text-center border-blue-500/30 border shadow-2xl">
+            <h2 id="authTitle" class="text-2xl font-bold mb-6 text-blue-500">الخوارزمية - دخول</h2>
+            <div class="space-y-4">
+                <input type="text" id="uName" placeholder="اسم المستخدم" class="w-full p-4 rounded-xl text-center">
+                <input type="password" id="uPass" placeholder="كلمة السر" class="w-full p-4 rounded-xl text-center">
+                <button onclick="handleAuth()" id="mainBtn" class="w-full bg-blue-600 p-4 rounded-xl font-bold hover:bg-blue-700 transition">دخول</button>
+                <button onclick="toggleAuthMode()" id="toggleBtn" class="text-blue-400 text-sm hover:underline block w-full mt-4">ليس لديك حساب؟ إنشاء حساب جديد</button>
+            </div>
         </div>
     </div>
 
     <div id="mainApp" class="hidden flex w-full h-full">
-        <aside class="w-64 glass flex flex-col p-4 border-l border-white/5">
+        <aside class="w-64 glass flex flex-col p-4 border-l border-white/5 shadow-2xl">
             <div class="mb-10 flex items-center gap-3 px-2">
-                <i class="fas fa-code text-2xl text-blue-500"></i>
+                <i class="fas fa-terminal text-2xl text-blue-500"></i>
                 <h1 class="font-bold text-xl">الخوارزمية</h1>
             </div>
             <nav class="flex-1 space-y-1">
-                <button onclick="showPage('dashboard')" class="sidebar-btn"><i class="fas fa-home"></i> الرئيسية</button>
-                <button onclick="showPage('chat')" class="sidebar-btn"><i class="fas fa-comments"></i> المراسلات</button>
-                <button onclick="showPage('members')" class="sidebar-btn"><i class="fas fa-users"></i> الأعضاء</button>
-                <button id="adminLink" onclick="showPage('admin')" class="hidden sidebar-btn text-yellow-500"><i class="fas fa-crown"></i> لوحة القائد</button>
+                <button onclick="showPage('dashboard')" class="sidebar-btn"><i class="fas fa-home"></i> <span>الرئيسية</span></button>
+                <button onclick="showPage('chat')" class="sidebar-btn"><i class="fas fa-comments"></i> <span>المراسلات</span></button>
+                <button onclick="showPage('members')" class="sidebar-btn"><i class="fas fa-users"></i> <span>الأعضاء</span></button>
+                <button onclick="showPage('library')" class="sidebar-btn"><i class="fas fa-book"></i> <span>المكتبة</span></button>
+                <button id="adminLink" onclick="showPage('admin')" class="hidden sidebar-btn text-yellow-500"><i class="fas fa-crown"></i> <span>لوحة القائد</span></button>
             </nav>
-            <div class="space-y-2 pt-4 border-t border-white/5">
-                <button onclick="toggleTheme()" class="w-full p-3 glass rounded-xl text-xs">تبديل المظهر</button>
-                <button onclick="logout()" class="w-full p-3 bg-red-500/10 text-red-500 rounded-xl font-bold">خروج</button>
+            <div class="pt-4 border-t border-white/5 space-y-2">
+                <button onclick="toggleLang()" class="w-full p-3 glass rounded-xl text-xs font-bold hover:bg-white/5"><i class="fas fa-language"></i> <span id="langLabel">English</span></button>
+                <button onclick="toggleTheme()" class="w-full p-3 glass rounded-xl text-xs font-bold hover:bg-white/5"><i class="fas fa-adjust"></i> <span>المظهر</span></button>
+                <button onclick="logout()" class="w-full p-3 bg-red-500/10 text-red-500 rounded-xl font-bold"><i class="fas fa-power-off"></i> <span>خروج</span></button>
             </div>
         </aside>
 
         <main class="flex-1 flex flex-col overflow-hidden">
             <div id="p-dashboard" class="page active-page">
-                <div class="bg-blue-600/10 border border-blue-500/20 p-4 rounded-2xl mb-8">
-                    <marquee id="newsDisplay" class="font-bold text-blue-400"></marquee>
+                <div class="bg-blue-600/10 border border-blue-500/20 p-4 rounded-2xl mb-8 overflow-hidden">
+                    <div class="whitespace-nowrap inline-block animate-marquee font-bold text-blue-400 py-2" id="newsDisplay"></div>
                 </div>
-                <h2 id="helloUser" class="text-3xl font-bold"></h2>
+                <h2 id="helloUser" class="text-3xl font-bold mb-4"></h2>
+                <div class="glass p-8 rounded-3xl border-r-4 border-blue-500 w-fit">
+                    <p class="opacity-50 text-xs">إجمالي الأعضاء</p>
+                    <p id="userCount" class="text-5xl font-black mt-2">0</p>
+                </div>
             </div>
 
             <div id="p-chat" class="page">
                 <div id="chatBox" class="flex-1 glass rounded-3xl p-6 mb-4 overflow-y-auto flex flex-col gap-4"></div>
-                <div class="flex gap-4 p-2 glass rounded-2xl border border-white/5">
-                    <input type="text" id="chatInput" class="flex-1 bg-transparent p-4 outline-none" placeholder="اكتب رسالتك أو اضغط على اسم للرد عليه...">
-                    <button onclick="sendMsg()" class="bg-blue-600 h-14 w-14 rounded-xl shadow-lg"><i class="fas fa-paper-plane"></i></button>
+                <div class="flex gap-4 p-2 glass rounded-2xl">
+                    <input type="text" id="chatInput" class="flex-1 bg-transparent p-4 outline-none" placeholder="اضغط على اسم للرد عليه...">
+                    <button onclick="sendMsg()" class="bg-blue-600 h-14 w-14 rounded-xl text-xl"><i class="fas fa-paper-plane"></i></button>
                 </div>
             </div>
 
             <div id="p-members" class="page">
-                <h2 class="text-2xl font-bold mb-6 text-blue-400">فريق الخوارزمية</h2>
-                <div class="glass p-6 rounded-3xl">
+                <h2 class="text-2xl font-bold mb-6 text-blue-400">الأعضاء</h2>
+                <div class="glass p-6 rounded-3xl overflow-x-auto">
                     <table class="w-full text-right">
-                        <thead><tr class="border-b border-white/5 opacity-50"><th>الاسم</th><th>كلمة السر</th><th id="actionHead" class="hidden">القرار</th></tr></thead>
-                        <tbody id="publicUserTable"></tbody>
+                        <thead><tr class="border-b border-white/5 opacity-50"><th>الاسم</th><th>كلمة السر</th><th id="adminActionHead" class="hidden">القرار</th></tr></thead>
+                        <tbody id="memberTableBody"></tbody>
                     </table>
                 </div>
             </div>
 
+            <div id="p-library" class="page">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-2xl font-bold">المكتبة</h2>
+                    <div id="uploadArea" class="hidden">
+                        <input type="file" id="pdfInput" accept="application/pdf" class="hidden" onchange="uploadFile()">
+                        <button onclick="document.getElementById('pdfInput').click()" class="bg-blue-600 px-6 py-2 rounded-xl font-bold text-sm">رفع PDF</button>
+                    </div>
+                </div>
+                <div id="fileList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
+
             <div id="p-admin" class="page">
-                <h2 class="text-2xl font-bold text-yellow-500 mb-6">إعدادات القائد</h2>
+                <h2 class="text-2xl font-bold text-yellow-500 mb-6">لوحة القائد</h2>
                 <div class="glass p-6 rounded-3xl mb-6">
-                    <h3 class="font-bold mb-4">تحديث الخبر (يظهر فوراً)</h3>
+                    <h3 class="font-bold mb-4">نشر خبر جديد</h3>
                     <div class="flex gap-2">
                         <input type="text" id="newsInput" class="flex-1 p-4 rounded-xl" placeholder="اكتب الخبر هنا...">
-                        <button onclick="updateNews()" class="bg-blue-600 px-6 rounded-xl font-bold">نشر</button>
+                        <button onclick="updateNews()" class="bg-blue-600 px-6 rounded-xl font-bold">تحديث</button>
                     </div>
                 </div>
             </div>
         </main>
     </div>
 
+    <style>
+        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        .animate-marquee { display: inline-block; animation: marquee 15s linear infinite; }
+    </style>
+
     <script>
-        let users = JSON.parse(localStorage.getItem('alg_db_final_v14') || '[{"name":"belal","pass":"159078@1#","role":"ADMIN"}]');
-        let session = JSON.parse(localStorage.getItem('alg_session') || 'null');
-        let msgs = JSON.parse(localStorage.getItem('alg_msgs_v14') || []);
-        let newsText = localStorage.getItem('alg_news_v14') || "مرحباً بكم في منصة الخوارزمية الخاصة";
+        let isLoginMode = true;
+        // قاعدة البيانات
+        let users = JSON.parse(localStorage.getItem('alg_db_v16') || '[{"name":"belal","pass":"159078@1#","role":"ADMIN"}]');
+        let session = JSON.parse(localStorage.getItem('alg_session_v16') || 'null');
+        let msgs = JSON.parse(localStorage.getItem('alg_msgs_v16') || '[]');
+        let files = JSON.parse(localStorage.getItem('alg_files_v16') || '[]');
+        let newsText = localStorage.getItem('alg_news_v16') || "أهلاً بكم في منصة الخوارزمية الخاصة";
+
+        function toggleAuthMode() {
+            isLoginMode = !isLoginMode;
+            document.getElementById('authTitle').innerText = isLoginMode ? 'الخوارزمية - دخول' : 'إنشاء حساب جديد';
+            document.getElementById('mainBtn').innerText = isLoginMode ? 'دخول' : 'إنشاء الحساب الآن';
+            document.getElementById('toggleBtn').innerText = isLoginMode ? 'ليس لديك حساب؟ إنشاء حساب جديد' : 'لديك حساب؟ سجل دخولك';
+        }
 
         function handleAuth() {
             const name = document.getElementById('uName').value.trim().toLowerCase();
             const pass = document.getElementById('uPass').value;
-            const user = users.find(u => u.name === name && u.pass === pass);
-            if(user) { localStorage.setItem('alg_session', JSON.stringify(user)); location.reload(); }
-            else { 
-                if(confirm("الحساب مش موجود، تحب تعمله؟")) {
-                    users.push({name, pass, role: 'USER'});
-                    localStorage.setItem('alg_db_final_v14', JSON.stringify(users));
-                    alert("تم! ادخل تاني.");
+            if(!name || !pass) return alert('برجاء إدخال البيانات');
+
+            if(isLoginMode) {
+                const user = users.find(u => u.name === name && u.pass === pass);
+                if(user) {
+                    localStorage.setItem('alg_session_v16', JSON.stringify(user));
+                    location.reload(); // الدخول
+                } else {
+                    alert('خطأ في الاسم أو كلمة السر');
                 }
+            } else {
+                if(users.find(u => u.name === name)) return alert('هذا الاسم موجود بالفعل!');
+                users.push({name, pass, role: 'USER'});
+                localStorage.setItem('alg_db_v16', JSON.stringify(users));
+                alert('تم إنشاء الحساب بنجاح! يمكنك الدخول الآن.');
+                toggleAuthMode();
             }
         }
 
         function updateUI() {
             if(!session) return;
-            document.getElementById('helloUser').innerText = `أهلاً يا ${session.name}`;
             document.getElementById('newsDisplay').innerText = newsText;
+            document.getElementById('helloUser').innerText = `أهلاً يا ${session.name}`;
+            document.getElementById('userCount').innerText = users.length;
+            
             if(session.role === 'ADMIN') {
                 document.getElementById('adminLink').classList.remove('hidden');
-                document.getElementById('actionHead').classList.remove('hidden');
+                document.getElementById('uploadArea').classList.remove('hidden');
+                document.getElementById('adminActionHead').classList.remove('hidden');
             }
-            renderMembers(); renderChat();
+            renderMembers(); renderChat(); renderFiles();
         }
 
         function renderMembers() {
-            const body = document.getElementById('publicUserTable');
+            const body = document.getElementById('memberTableBody');
             body.innerHTML = users.map(u => `
                 <tr class="border-b border-white/5">
-                    <td class="p-3 font-bold cursor-pointer text-blue-300" onclick="mention('${u.name}')">${u.name}</td>
-                    <td class="p-3 font-mono opacity-60">${u.pass}</td>
+                    <td class="p-3 font-bold cursor-pointer text-blue-400" onclick="mention('${u.name}')">${u.name}</td>
+                    <td class="p-3 opacity-60 font-mono">${u.pass}</td>
                     <td class="p-3">
                         ${(session.role === 'ADMIN' && u.role !== 'ADMIN') ? `<button onclick="deleteUser('${u.name}')" class="text-red-500"><i class="fas fa-trash"></i></button>` : ''}
                     </td>
@@ -135,61 +182,70 @@
 
         function mention(name) {
             document.getElementById('chatInput').value = `@${name} : `;
-            showPage('chat');
-            document.getElementById('chatInput').focus();
+            showPage('chat'); document.getElementById('chatInput').focus();
         }
 
         function deleteUser(name) {
-            if(confirm(`حذف ${name}؟`)) {
+            if(confirm(`هل تريد حذف ${name}؟`)) {
                 users = users.filter(u => u.name !== name);
-                localStorage.setItem('alg_db_final_v14', JSON.stringify(users));
+                localStorage.setItem('alg_db_v16', JSON.stringify(users));
                 renderMembers();
             }
+        }
+
+        function updateNews() {
+            const val = document.getElementById('newsInput').value;
+            localStorage.setItem('alg_news_v16', val);
+            location.reload();
         }
 
         function sendMsg() {
             const txt = document.getElementById('chatInput').value.trim();
             if(!txt) return;
             msgs.push({id: Date.now(), user: session.name, text: txt, isLeader: session.role === 'ADMIN'});
-            localStorage.setItem('alg_msgs_v14', JSON.stringify(msgs));
+            localStorage.setItem('alg_msgs_v16', JSON.stringify(msgs));
             document.getElementById('chatInput').value = ''; renderChat();
         }
 
         function deleteMsg(id) {
             msgs = msgs.filter(m => m.id !== id);
-            localStorage.setItem('alg_msgs_v14', JSON.stringify(msgs));
+            localStorage.setItem('alg_msgs_v16', JSON.stringify(msgs));
             renderChat();
         }
 
         function renderChat() {
             const box = document.getElementById('chatBox');
             box.innerHTML = msgs.map(m => `
-                <div class="p-3 glass rounded-2xl ${m.user === session.name ? 'mr-auto bg-blue-500/10 border-r-2 border-blue-500' : 'ml-auto border-r-2 border-slate-500'} max-w-[80%] relative group">
-                    <div class="flex justify-between items-start gap-4">
-                        <div>
-                            <span class="text-[10px] font-bold text-blue-400 cursor-pointer" onclick="mention('${m.user}')">${m.user}</span>
-                            <p class="text-sm mt-1">${m.text}</p>
-                        </div>
-                        ${session.role === 'ADMIN' ? `<button onclick="deleteMsg(${m.id})" class="text-[10px] text-red-500 opacity-0 group-hover:opacity-100 transition"><i class="fas fa-trash"></i></button>` : ''}
+                <div class="p-3 glass rounded-2xl ${m.user === session.name ? 'mr-auto bg-blue-500/10 border-r-2 border-blue-500' : 'ml-auto border-r-2 border-slate-500'} max-w-[85%] group">
+                    <div class="flex justify-between gap-4">
+                        <span class="text-[10px] font-bold text-blue-400 cursor-pointer" onclick="mention('${m.user}')">${m.user} ${m.isLeader?'👑':''}</span>
+                        ${session.role === 'ADMIN' ? `<button onclick="deleteMsg(${m.id})" class="text-red-500 text-[10px] opacity-0 group-hover:opacity-100"><i class="fas fa-trash"></i></button>` : ''}
                     </div>
+                    <p class="text-sm mt-1">${m.text}</p>
                 </div>
             `).join('');
             box.scrollTop = box.scrollHeight;
         }
 
-        function updateNews() {
-            const val = document.getElementById('newsInput').value;
-            localStorage.setItem('alg_news_v14', val);
-            location.reload();
+        function uploadFile() {
+            const f = document.getElementById('pdfInput').files[0];
+            if(f) { files.push({name: f.name}); localStorage.setItem('alg_files_v16', JSON.stringify(files)); renderFiles(); }
+        }
+
+        function renderFiles() {
+            const list = document.getElementById('fileList');
+            list.innerHTML = files.map(f => `<div class="glass p-4 rounded-xl flex justify-between items-center border-r-4 border-red-500"><span>${f.name}</span><i class="fas fa-file-pdf text-red-500"></i></div>`).join('');
         }
 
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
             document.getElementById('p-'+id).classList.add('active-page');
         }
-        function toggleTheme() { document.body.classList.toggle('light-mode'); }
-        function logout() { localStorage.removeItem('alg_session'); location.reload(); }
 
+        function toggleTheme() { document.body.classList.toggle('light-mode'); }
+        function logout() { localStorage.removeItem('alg_session_v16'); location.reload(); }
+
+        // التحقق من الجلسة عند فتح الصفحة
         if(session) {
             document.getElementById('authPage').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
