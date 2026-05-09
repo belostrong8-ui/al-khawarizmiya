@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Algorithm</title>
+    <title>The Algorithm | Smart Groups</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -42,8 +42,8 @@
 
     <div id="mainApp" class="hidden flex h-screen overflow-hidden">
         <aside class="w-80 glass border-l flex flex-col p-6">
-            <div onclick="showPage('dashboard')" class="flex items-center gap-3 mb-10 p-2 cursor-pointer group">
-                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white text-lg group-hover:rotate-12 transition"><i class="fas fa-code"></i></div>
+            <div onclick="showPage('dashboard')" class="flex items-center gap-3 mb-10 p-2 cursor-pointer">
+                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white text-lg"><i class="fas fa-code"></i></div>
                 <span class="text-xl font-bold uppercase">The Algorithm</span>
             </div>
             <nav class="space-y-4 flex-1">
@@ -51,16 +51,15 @@
                     <i class="fas fa-home w-6 text-blue-500"></i> <span class="lang-txt" data-ar="الرئيسية" data-en="Dashboard">الرئيسية</span>
                 </button>
                 <button onclick="showPage('groups')" class="w-full text-right p-4 rounded-2xl hover:bg-blue-500/10 flex items-center gap-4 text-xl transition">
-                    <i class="fas fa-users-rectangle w-6 text-blue-500"></i> <span class="lang-txt" data-ar="مجموعاتي" data-en="My Groups">مجموعاتي</span>
+                    <i class="fas fa-comments w-6 text-blue-500"></i> <span class="lang-txt" data-ar="المجموعات" data-en="Groups Chat">المجموعات</span>
                 </button>
                 <button onclick="showPage('inbox')" class="w-full text-right p-4 rounded-2xl hover:bg-blue-500/10 flex items-center gap-4 text-xl transition">
-                    <i class="fas fa-inbox w-6 text-blue-500"></i> <span class="lang-txt" data-ar="بريدي" data-en="Inbox">بريدي</span>
+                    <i class="fas fa-inbox w-6 text-blue-500"></i> <span class="lang-txt" data-ar="بريدي" data-en="Private Inbox">بريدي</span>
                 </button>
                 <button id="adminBtn" onclick="showPage('admin')" class="hidden w-full text-right p-4 rounded-2xl hover:bg-yellow-500/10 flex items-center gap-4 text-xl text-yellow-500 font-bold">
-                    <i class="fas fa-shield-alt w-6"></i> <span class="lang-txt" data-ar="لوحة القائد" data-en="Admin Panel">لوحة القائد</span>
+                    <i class="fas fa-shield-alt w-6"></i> <span class="lang-txt" data-ar="لوحة القائد" data-en="Admin">لوحة القائد</span>
                 </button>
             </nav>
-            
             <div class="space-y-2 mb-4">
                 <button onclick="toggleTheme()" class="w-full p-3 rounded-xl glass text-sm font-bold flex items-center justify-center gap-2"><i class="fas fa-adjust"></i> <span class="lang-txt" data-ar="المظهر" data-en="Mode">المظهر</span></button>
                 <button onclick="toggleLang()" class="w-full p-3 rounded-xl glass text-sm font-bold flex items-center justify-center gap-2"><i class="fas fa-globe"></i> <span class="lang-txt" data-ar="اللغة" data-en="Language">اللغة</span></button>
@@ -71,9 +70,7 @@
         </aside>
 
         <main class="flex-1 p-8 overflow-y-auto">
-            <header class="flex justify-between items-center mb-10">
-                <h1 id="userNameDisplay" class="text-2xl font-bold text-blue-500"></h1>
-            </header>
+            <header class="flex justify-between items-center mb-10"><h1 id="userNameDisplay" class="text-2xl font-bold text-blue-500"></h1></header>
 
             <div id="page-dashboard" class="page active-page">
                 <div class="glass p-8 rounded-[2.5rem] border-r-8 border-blue-600">
@@ -83,32 +80,41 @@
             </div>
 
             <div id="page-groups" class="page">
-                <h2 class="text-3xl font-bold mb-8 lang-txt" data-ar="المجموعات الخاصة" data-en="Private Groups">المجموعات الخاصة</h2>
-                <div id="userGroupsList" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 h-[70vh]">
+                    <div class="glass p-4 rounded-2xl overflow-y-auto border-l border-white/5">
+                        <h3 class="font-bold mb-4 text-blue-500">غرف الدردشة</h3>
+                        <div id="groupsListMenu" class="space-y-2"></div>
+                    </div>
+                    <div id="chatArea" class="md:col-span-2 glass rounded-2xl flex flex-col hidden">
+                        <div id="chatHeader" class="p-4 border-b border-white/10 font-bold text-xl text-green-400"></div>
+                        <div id="chatMessages" class="flex-1 p-4 overflow-y-auto space-y-4 text-sm"></div>
+                        <div class="p-4 border-t border-white/10 flex gap-2">
+                            <input type="text" id="groupMsgInput" placeholder="اكتب رسالة للمجموعة..." class="flex-1 p-3 rounded-xl bg-black/20 border border-white/10 outline-none">
+                            <button onclick="sendGroupMsg()" class="btn-primary px-6 rounded-xl"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                    <div id="noChatSelected" class="md:col-span-2 glass rounded-2xl flex items-center justify-center text-slate-500">
+                        اختر مجموعة لبدء الدردشة الجماعية
+                    </div>
+                </div>
             </div>
 
             <div id="page-inbox" class="page">
-                <h2 class="text-3xl font-bold mb-8 lang-txt" data-ar="صندوق الرسائل" data-en="Messages Inbox">صندوق الرسائل</h2>
+                <h2 class="text-3xl font-bold mb-8">صندوق الرسائل الخاصة</h2>
                 <div id="myMessages" class="space-y-4"></div>
             </div>
 
             <div id="page-admin" class="page">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div class="glass p-8 rounded-[2.5rem]">
-                        <h3 class="text-xl font-bold mb-6 text-green-500"><i class="fas fa-users-plus ml-2"></i> إنشاء مجموعة</h3>
-                        <input type="text" id="groupName" placeholder="Group Name" class="w-full p-3 mb-3 rounded-xl bg-black/20 border border-white/10 outline-none">
-                        <input type="text" id="groupMembers" placeholder="Members (e.g. anas, hamza)" class="w-full p-3 mb-4 rounded-xl bg-black/20 border border-white/10 outline-none">
-                        <button onclick="createGroup()" class="btn-primary w-full py-3 rounded-xl font-bold">Create Group</button>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="glass p-6 rounded-2xl">
+                        <h3 class="font-bold mb-4 text-green-500">إنشاء مجموعة دردرشة</h3>
+                        <input type="text" id="groupNameInput" placeholder="اسم المجموعة" class="w-full p-3 mb-2 rounded-xl bg-black/20 border border-white/10 outline-none">
+                        <input type="text" id="groupMembersInput" placeholder="الأعضاء (anas, hamza)" class="w-full p-3 mb-4 rounded-xl bg-black/20 border border-white/10 outline-none">
+                        <button onclick="createGroup()" class="btn-primary w-full py-3 rounded-xl font-bold text-lg">تفعيل المجموعة</button>
                     </div>
-                    <div class="glass p-8 rounded-[2.5rem]">
-                        <h3 class="text-xl font-bold mb-6 text-blue-400"><i class="fas fa-paper-plane ml-2"></i> مراسلة عضو</h3>
-                        <input type="text" id="targetMember" placeholder="Member Name" class="w-full p-3 mb-3 rounded-xl bg-black/20 border border-white/10 outline-none">
-                        <textarea id="adminMsgTxt" placeholder="Message content..." class="w-full h-24 p-3 rounded-xl bg-black/20 border border-white/10 outline-none mb-4"></textarea>
-                        <button onclick="sendPrivateMsg()" class="btn-primary w-full py-3 rounded-xl font-bold">Send Private</button>
-                    </div>
-                    <div class="glass p-8 rounded-[2.5rem] lg:col-span-2">
-                        <h3 class="text-xl font-bold mb-4 text-yellow-500">سجل حسابات الفريق</h3>
-                        <div id="adminUsersList" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+                    <div class="glass p-6 rounded-2xl">
+                        <h3 class="font-bold mb-4 text-yellow-500">كشف حسابات الفريق</h3>
+                        <div id="adminUsersList" class="space-y-2 text-sm"></div>
                     </div>
                 </div>
             </div>
@@ -119,20 +125,20 @@
         const ADMIN_NAME = "belal"; const ADMIN_PASS = "159078@1#";
         let users = JSON.parse(localStorage.getItem('kh_users') || '[]');
         let groups = JSON.parse(localStorage.getItem('kh_groups') || '[]');
-        let privateMsgs = JSON.parse(localStorage.getItem('kh_p_msgs') || '[]');
+        let pMsgs = JSON.parse(localStorage.getItem('kh_p_msgs') || '[]');
         let news = JSON.parse(localStorage.getItem('kh_news') || '[]');
-        let currentUser = JSON.parse(localStorage.getItem('kh_session') || 'null');
+        let currentUser = null;
+        let currentGroupId = null;
         let currentLang = 'ar';
 
         function toggleAuth() { document.getElementById('loginForm').classList.toggle('hidden'); document.getElementById('registerForm').classList.toggle('hidden'); }
-
         function handleRegister() {
             const u = document.getElementById('regUser').value.trim().toLowerCase();
             const p = document.getElementById('regPass').value;
-            if(!u || !p || u === ADMIN_NAME) return alert("Invalid Data");
+            if(!u || !p || u === ADMIN_NAME) return alert("خطأ في البيانات");
             users.push({ name: u, pass: p });
             localStorage.setItem('kh_users', JSON.stringify(users));
-            alert("Registered!"); toggleAuth();
+            alert("تم الانضمام!"); toggleAuth();
         }
 
         function handleLogin() {
@@ -140,69 +146,75 @@
             const p = document.getElementById('logPass').value;
             if(u === ADMIN_NAME && p === ADMIN_PASS) currentUser = { name: "Belal", role: "ADMIN" };
             else { let f = users.find(x => x.name === u && x.pass === p); if(f) currentUser = { name: f.name, role: "MEMBER" }; }
-            if(currentUser) { localStorage.setItem('kh_session', JSON.stringify(currentUser)); renderApp(); } else alert("Error Login");
+            if(currentUser) { localStorage.setItem('kh_session', JSON.stringify(currentUser)); renderApp(); } else alert("بيانات خاطئة!");
         }
 
         function createGroup() {
-            const name = document.getElementById('groupName').value.trim();
-            const mems = document.getElementById('groupMembers').value.split(',').map(m => m.trim().toLowerCase());
-            if(!name || mems.length === 0) return alert("Fill data");
-            groups.push({ id: Date.now(), name, members: mems });
+            const name = document.getElementById('groupNameInput').value.trim();
+            const mems = document.getElementById('groupMembersInput').value.split(',').map(m => m.trim().toLowerCase());
+            if(!name || mems.length === 0) return alert("اكمل البيانات");
+            groups.push({ id: Date.now(), name, members: mems, chat: [] });
             localStorage.setItem('kh_groups', JSON.stringify(groups));
-            alert("Group Created"); updateUI();
+            alert("تم إنشاء غرفة الدردشة!"); updateUI();
         }
 
-        function sendPrivateMsg() {
-            const target = document.getElementById('targetMember').value.trim().toLowerCase();
-            const txt = document.getElementById('adminMsgTxt').value.trim();
-            if(!target || !txt) return alert("Fill data");
-            privateMsgs.unshift({ to: target, text: txt, time: new Date().toLocaleString('ar-EG') });
-            localStorage.setItem('kh_p_msgs', JSON.stringify(privateMsgs));
-            alert("Sent!"); updateUI();
+        function openChat(id) {
+            currentGroupId = id;
+            const g = groups.find(x => x.id === id);
+            document.getElementById('noChatSelected').classList.add('hidden');
+            document.getElementById('chatArea').classList.remove('hidden');
+            document.getElementById('chatHeader').innerText = "# " + g.name;
+            renderChatMessages();
+        }
+
+        function sendGroupMsg() {
+            const txt = document.getElementById('groupMsgInput').value.trim();
+            if(!txt || !currentGroupId) return;
+            const g = groups.find(x => x.id === currentGroupId);
+            g.chat.push({ sender: currentUser.name, text: txt, time: new Date().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'}) });
+            localStorage.setItem('kh_groups', JSON.stringify(groups));
+            document.getElementById('groupMsgInput').value = "";
+            renderChatMessages();
+        }
+
+        function renderChatMessages() {
+            const g = groups.find(x => x.id === currentGroupId);
+            document.getElementById('chatMessages').innerHTML = g.chat.map(m => `
+                <div class="flex flex-col ${m.sender === currentUser.name ? 'items-start' : 'items-end'}">
+                    <div class="px-4 py-2 rounded-2xl ${m.sender === currentUser.name ? 'bg-blue-600/30 border border-blue-500/50' : 'bg-white/10'} max-w-[80%]">
+                        <p class="text-xs font-bold text-blue-400 mb-1">${m.sender}</p>
+                        <p class="text-base">${m.text}</p>
+                        <span class="text-[10px] text-slate-500 block mt-1">${m.time}</span>
+                    </div>
+                </div>`).join('');
+            const chatDiv = document.getElementById('chatMessages');
+            chatDiv.scrollTop = chatDiv.scrollHeight;
         }
 
         function updateUI() {
-            // تحديث واجهة العضو (جروباته)
+            // قائمة الجروبات المتاحة للعضو
             const myG = groups.filter(g => g.members.includes(currentUser.name.toLowerCase()) || currentUser.role === 'ADMIN');
-            document.getElementById('userGroupsList').innerHTML = myG.map(g => `
-                <div class="glass p-6 rounded-2xl border-r-4 border-green-500 shadow-xl">
-                    <h4 class="text-xl font-bold text-green-400 mb-2">${g.name}</h4>
-                    <p class="text-sm text-slate-400">Members: ${g.members.join(', ')}</p>
-                </div>`).join('') || "No Groups.";
-
-            // تحديث البريد
-            const myInbox = privateMsgs.filter(m => m.to === currentUser.name.toLowerCase());
-            document.getElementById('myMessages').innerHTML = myInbox.map(m => `
-                <div class="p-4 glass rounded-xl border-r-4 border-blue-500">
-                    <p class="font-bold text-blue-400">From: Commander Belal 👑</p>
-                    <p class="text-lg">${m.text}</p>
-                </div>`).join('') || "Inbox Empty.";
+            document.getElementById('groupsListMenu').innerHTML = myG.map(g => `
+                <div onclick="openChat(${g.id})" class="p-3 glass rounded-xl cursor-pointer hover:bg-blue-500/20 transition flex items-center gap-3">
+                    <div class="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center text-green-500 text-xs"><i class="fas fa-hashtag"></i></div>
+                    <span class="font-bold">${g.name}</span>
+                </div>`).join('') || "لا مجموعات.";
 
             if(currentUser.role === 'ADMIN') {
-                document.getElementById('adminUsersList').innerHTML = users.map(u => `
-                    <div class="p-3 glass rounded-xl text-sm">
-                        <b>${u.name}</b> : <span class="text-blue-500">${u.pass}</span>
-                    </div>`).join('');
+                document.getElementById('adminUsersList').innerHTML = users.map(u => `<div class="p-2 glass rounded-lg flex justify-between"><b>${u.name}</b> <span>${u.pass}</span></div>`).join('');
             }
-            document.getElementById('newsFeed').innerHTML = news.map(n => `<div class="p-3 bg-blue-500/10 rounded-xl font-bold">${n.text}</div>`).join('') || "Stable.";
         }
 
         function toggleTheme() { document.body.classList.toggle('light-mode'); }
-
         function toggleLang() {
             currentLang = currentLang === 'ar' ? 'en' : 'ar';
             document.body.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
-            document.querySelectorAll('.lang-txt').forEach(el => {
-                el.innerText = el.getAttribute('data-' + currentLang);
-            });
-            document.getElementById('userNameDisplay').innerText = (currentLang === 'ar' ? "مرحباً: " : "Welcome: ") + currentUser.name;
+            document.querySelectorAll('.lang-txt').forEach(el => el.innerText = el.getAttribute('data-' + currentLang));
         }
-
-        function showPage(id) { document.querySelectorAll('.page').forEach(p=>p.classList.remove('active-page')); document.getElementById('page-'+id).classList.add('active-page'); }
         function renderApp() {
             document.getElementById('authScreen').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
-            document.getElementById('userNameDisplay').innerText = "مرحباً: " + currentUser.name;
+            document.getElementById('userNameDisplay').innerText = (currentLang === 'ar' ? "مرحباً: " : "Welcome: ") + currentUser.name;
             if(currentUser.role === 'ADMIN') document.getElementById('adminBtn').classList.remove('hidden');
             updateUI();
         }
