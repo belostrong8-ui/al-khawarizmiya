@@ -17,7 +17,7 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .sidebar-btn { width: 100%; text-align: right; padding: 1rem; border-radius: 1rem; display: flex; align-items: center; gap: 1rem; font-weight: bold; transition: 0.2s; }
         .sidebar-btn:hover { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
-        .msg-bubble { max-width: 70%; padding: 0.8rem 1.2rem; border-radius: 1.5rem; margin-bottom: 0.5rem; }
+        .msg-bubble { max-width: 75%; padding: 0.8rem 1.2rem; border-radius: 1.2rem; margin-bottom: 0.5rem; }
         .my-msg { background: #2563eb; color: white; align-self: flex-start; border-bottom-right-radius: 0; }
         .their-msg { background: rgba(255,255,255,0.1); align-self: flex-end; border-bottom-left-radius: 0; }
     </style>
@@ -27,17 +27,17 @@
     <div id="authPage" class="fixed inset-0 z-[100] bg-slate-950 flex items-center justify-center p-4">
         <div class="glass p-10 rounded-[3rem] w-full max-w-md text-center border-blue-500/20 border shadow-2xl">
             <div id="loginForm">
-                <i class="fas fa-terminal text-5xl text-blue-500 mb-6"></i>
+                <div class="w-20 h-20 bg-blue-600 rounded-3xl flex items-center justify-center text-white text-4xl mx-auto mb-6 shadow-xl shadow-blue-500/20"><i class="fas fa-terminal"></i></div>
                 <h2 class="text-3xl font-bold mb-8">الخوارزمية</h2>
                 <input type="text" id="uName" placeholder="اسم المستخدم" class="w-full p-4 mb-4 rounded-2xl bg-black/40 border border-white/10 outline-none text-center">
                 <input type="password" id="uPass" placeholder="كلمة السر" class="w-full p-4 mb-6 rounded-2xl bg-black/40 border border-white/10 outline-none text-center">
-                <button onclick="login()" class="w-full bg-blue-600 p-4 rounded-2xl font-bold text-xl hover:bg-blue-700 transition">دخول</button>
-                <button onclick="toggleAuth(true)" class="mt-4 text-sm text-slate-400">إنشاء حساب جديد</button>
+                <button onclick="login()" class="w-full bg-blue-600 p-4 rounded-2xl font-bold text-xl hover:bg-blue-700 transition shadow-lg shadow-blue-500/20">دخول النظام</button>
+                <button onclick="toggleAuth(true)" class="mt-4 text-sm text-slate-400 underline">إنشاء حساب جديد</button>
             </div>
             <div id="regForm" class="hidden">
                 <h2 class="text-2xl font-bold mb-8">عضوية جديدة</h2>
-                <input type="text" id="rName" placeholder="اسمك بالكامل" class="w-full p-4 mb-4 rounded-2xl bg-black/40 border border-white/10 outline-none text-center">
-                <input type="password" id="rPass" placeholder="كلمة سر قوية" class="w-full p-4 mb-6 rounded-2xl bg-black/40 border border-white/10 outline-none text-center">
+                <input type="text" id="rName" placeholder="اكتب اسمك هنا" class="w-full p-4 mb-4 rounded-2xl bg-black/40 border border-white/10 outline-none text-center">
+                <input type="password" id="rPass" placeholder="كلمة السر" class="w-full p-4 mb-6 rounded-2xl bg-black/40 border border-white/10 outline-none text-center">
                 <button onclick="register()" class="w-full bg-green-600 p-4 rounded-2xl font-bold text-xl">تأكيد التسجيل</button>
                 <button onclick="toggleAuth(false)" class="mt-4 text-sm text-slate-400">رجوع للدخول</button>
             </div>
@@ -46,31 +46,31 @@
 
     <div id="mainApp" class="hidden flex w-full h-full">
         <aside class="w-72 glass flex flex-col p-6 shadow-2xl">
-            <div class="mb-10 text-center cursor-pointer" onclick="goHome()">
-                <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-3xl mx-auto mb-2 shadow-lg"><i class="fas fa-code"></i></div>
-                <h1 class="font-bold text-xl tracking-tighter lang-txt" data-ar="الخوارزمية" data-en="Algorithm">الخوارزمية</h1>
+            <div class="mb-10 text-center cursor-pointer group" onclick="goHome()">
+                <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-3xl mx-auto mb-2 transition group-hover:rotate-6"><i class="fas fa-code"></i></div>
+                <h1 class="font-bold text-xl tracking-tighter">الخوارزمية</h1>
             </div>
             <nav class="space-y-2 flex-1">
-                <button onclick="showPage('dashboard')" class="sidebar-btn"><i class="fas fa-home text-blue-500"></i> <span class="lang-txt" data-ar="الرئيسية" data-en="Home">الرئيسية</span></button>
-                <button onclick="showPage('library')" class="sidebar-btn"><i class="fas fa-book text-red-500"></i> <span class="lang-txt" data-ar="مكتبتي" data-en="Library">مكتبتي</span></button>
-                <button onclick="showPage('chat')" class="sidebar-btn"><i class="fas fa-comments text-green-500"></i> <span class="lang-txt" data-ar="المراسلات" data-en="Messages">المراسلات</span></button>
+                <button onclick="showPage('dashboard')" class="sidebar-btn"><i class="fas fa-home text-blue-500"></i> الرئيسية</button>
+                <button onclick="showPage('library')" class="sidebar-btn"><i class="fas fa-book text-red-500"></i> مكتبتي</button>
+                <button onclick="showPage('chat')" class="sidebar-btn"><i class="fas fa-users text-green-500"></i> المراسلات</button>
             </nav>
             <div class="pt-4 border-t border-white/10 space-y-2">
-                <button onclick="toggleLang()" class="w-full p-3 rounded-xl glass text-xs font-bold"><i class="fas fa-language"></i> <span id="lBtn">English</span></button>
+                <button onclick="toggleTheme()" class="w-full p-3 rounded-xl glass text-xs font-bold"><i class="fas fa-adjust text-yellow-500"></i> تبديل المظهر</button>
                 <button onclick="logout()" class="w-full p-3 rounded-xl bg-red-500/10 text-red-500 font-bold"><i class="fas fa-sign-out-alt"></i> خروج</button>
             </div>
         </aside>
 
         <main class="flex-1 p-8 overflow-hidden">
             <div id="p-dashboard" class="page active-page">
-                <h2 id="wHead" class="text-4xl font-bold mb-10"></h2>
+                <h2 id="wHead" class="text-3xl font-bold mb-10 text-blue-500"></h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="glass p-10 rounded-[3rem] border-r-8 border-blue-600">
-                        <h3 class="text-xl font-bold opacity-60">الأعضاء</h3>
-                        <p id="sUsers" class="text-6xl font-bold">1</p>
+                    <div class="glass p-10 rounded-[2.5rem] border-l-8 border-blue-600 shadow-xl">
+                        <h3 class="text-xl font-bold opacity-60 mb-2">أعضاء الموقع</h3>
+                        <p id="sUsers" class="text-6xl font-bold">0</p>
                     </div>
-                    <div class="glass p-10 rounded-[3rem] border-r-8 border-red-600">
-                        <h3 class="text-xl font-bold opacity-60">الملفات</h3>
+                    <div class="glass p-10 rounded-[2.5rem] border-l-8 border-red-600 shadow-xl">
+                        <h3 class="text-xl font-bold opacity-60 mb-2">الملفات المرفوعة</h3>
                         <p id="sFiles" class="text-6xl font-bold">0</p>
                     </div>
                 </div>
@@ -78,26 +78,29 @@
 
             <div id="p-library" class="page">
                 <div class="flex justify-between items-center mb-10">
-                    <h2 class="text-3xl font-bold">مكتبتي</h2>
+                    <h2 class="text-2xl font-bold">مكتبة الملفات</h2>
                     <div id="adminUp" class="hidden">
-                        <label class="bg-blue-600 px-6 py-2 rounded-xl font-bold cursor-pointer">رفع PDF <input type="file" onchange="upload(this)" class="hidden"></label>
+                        <label class="bg-blue-600 px-6 py-2 rounded-xl font-bold cursor-pointer hover:bg-blue-700 transition">
+                            <i class="fas fa-upload ml-2"></i> رفع ملف PDF
+                            <input type="file" onchange="upload(this)" class="hidden" accept="application/pdf">
+                        </label>
                     </div>
                 </div>
                 <div id="lGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
             </div>
 
             <div id="p-chat" class="page">
-                <div class="flex h-full gap-6">
+                <div class="flex h-full gap-6 overflow-hidden">
                     <div class="w-1/3 glass rounded-3xl p-4 flex flex-col">
-                        <h4 class="font-bold mb-4 p-2 border-b border-white/5">مين موجود؟</h4>
-                        <div id="uOnline" class="flex-1 overflow-y-auto space-y-2"></div>
+                        <h4 class="font-bold mb-4 p-2 border-b border-white/5 text-blue-400">قائمة الأعضاء</h4>
+                        <div id="uOnline" class="flex-1 overflow-y-auto space-y-2 pr-2"></div>
                     </div>
                     <div class="flex-1 glass rounded-3xl flex flex-col overflow-hidden">
-                        <div id="cHead" class="p-4 bg-white/5 font-bold border-b border-white/5">اختر عضواً</div>
-                        <div id="mBox" class="flex-1 p-6 overflow-y-auto flex flex-col"></div>
-                        <div id="cInp" class="p-4 flex gap-2 hidden">
-                            <input type="text" id="mInp" class="flex-1 bg-black/40 p-4 rounded-2xl outline-none" placeholder="اكتب هنا...">
-                            <button onclick="send()" class="bg-blue-600 px-6 rounded-2xl"><i class="fas fa-paper-plane"></i></button>
+                        <div id="cHead" class="p-4 bg-white/5 font-bold border-b border-white/5 text-center">اختر عضواً لبدء الشات</div>
+                        <div id="mBox" class="flex-1 p-6 overflow-y-auto flex flex-col gap-2"></div>
+                        <div id="cInp" class="p-4 flex gap-2 hidden border-t border-white/5">
+                            <input type="text" id="mInp" class="flex-1 bg-black/40 p-4 rounded-2xl outline-none focus:border-blue-500 border border-transparent" placeholder="اكتب رسالتك هنا...">
+                            <button onclick="send()" class="bg-blue-600 w-14 h-14 rounded-2xl flex items-center justify-center hover:bg-blue-700 transition"><i class="fas fa-paper-plane"></i></button>
                         </div>
                     </div>
                 </div>
@@ -109,7 +112,7 @@
         let users = JSON.parse(localStorage.getItem('alg_users') || '[]');
         let library = JSON.parse(localStorage.getItem('alg_lib') || '[]');
         let chats = JSON.parse(localStorage.getItem('alg_chats') || '[]');
-        let user = JSON.parse(localStorage.getItem('alg_session') || 'null');
+        let session = JSON.parse(localStorage.getItem('alg_session') || 'null');
         let target = null;
 
         function toggleAuth(reg) {
@@ -118,91 +121,126 @@
         }
 
         function register() {
-            const n = document.getElementById('rName').value;
+            const n = document.getElementById('rName').value.trim();
             const p = document.getElementById('rPass').value;
-            if(!n || !p) return alert("امسح البيانات!");
+            if(!n || !p) return alert("من فضلك كمل البيانات");
+            if(users.find(x => x.name === n) || n.toLowerCase() === 'belal') return alert("الاسم ده موجود قبل كدة");
             users.push({name: n, pass: p, role: 'USER'});
             localStorage.setItem('alg_users', JSON.stringify(users));
-            alert("تم! سجل دخولك دلوقتي."); toggleAuth(false);
+            alert("تم التسجيل بنجاح!"); toggleAuth(false);
         }
 
         function login() {
-            const n = document.getElementById('uName').value;
+            const n = document.getElementById('uName').value.trim();
             const p = document.getElementById('uPass').value;
-            if(n.toLowerCase() === 'belal' && p === '159078@1#') user = {name: 'Belal', role: 'ADMIN'};
-            else user = users.find(x => x.name === n && x.pass === p);
+            let current;
+            if(n.toLowerCase() === 'belal' && p === '159078@1#') current = {name: 'Belal', role: 'ADMIN'};
+            else current = users.find(x => x.name === n && x.pass === p);
             
-            if(user) {
-                localStorage.setItem('alg_session', JSON.stringify(user));
+            if(current) {
+                localStorage.setItem('alg_session', JSON.stringify(current));
                 location.reload();
-            } else alert("بيانات غلط!");
+            } else alert("الاسم أو الباسورد غلط!");
         }
 
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
             document.getElementById('p-' + id).classList.add('active-page');
-            if(id === 'chat') renderOnline();
+            if(id === 'chat') renderOnlineList();
+            updateStats();
         }
 
-        function renderOnline() {
+        function renderOnlineList() {
             const list = document.getElementById('uOnline');
-            let pool = [{name: 'Belal'}, ...users].filter(x => x.name !== user.name);
-            list.innerHTML = pool.map(u => `<div onclick="startChat('${u.name}')" class="p-4 rounded-2xl hover:bg-white/5 cursor-pointer flex items-center gap-3"><span class="w-3 h-3 bg-green-500 rounded-full"></span> <b>${u.name}</b></div>`).join('');
+            let pool = [{name: 'Belal', role: 'ADMIN'}, ...users].filter(x => x.name !== session.name);
+            list.innerHTML = pool.map(u => `
+                <div onclick="startChat('${u.name}')" class="p-4 rounded-2xl hover:bg-blue-500/10 cursor-pointer flex items-center justify-between transition group">
+                    <div class="flex items-center gap-3">
+                        <span class="w-3 h-3 bg-green-500 rounded-full shadow-[0_0_8px_#22c55e]"></span>
+                        <b class="group-hover:text-blue-400">${u.name}</b>
+                    </div>
+                    ${u.role === 'ADMIN' ? '<i class="fas fa-crown text-yellow-500 text-xs"></i>' : ''}
+                </div>`).join('');
         }
 
         function startChat(name) {
             target = name;
-            document.getElementById('cHead').innerText = "شات مع: " + name;
+            document.getElementById('cHead').innerHTML = `<i class="fas fa-comments text-blue-500 ml-2"></i> مراسلة: ${name}`;
             document.getElementById('cInp').classList.remove('hidden');
-            renderMsgs();
+            renderMessages();
         }
 
         function send() {
-            const val = document.getElementById('mInp').value;
+            const val = document.getElementById('mInp').value.trim();
             if(!val) return;
-            chats.push({from: user.name, to: target, text: val});
+            chats.push({from: session.name, to: target, text: val, time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})});
             localStorage.setItem('alg_chats', JSON.stringify(chats));
             document.getElementById('mInp').value = "";
-            renderMsgs();
+            renderMessages();
         }
 
-        function renderMsgs() {
+        function renderMessages() {
             const box = document.getElementById('mBox');
-            const msgs = chats.filter(c => (c.from === user.name && c.to === target) || (c.from === target && c.to === user.name));
-            box.innerHTML = msgs.map(m => `<div class="msg-bubble ${m.from === user.name ? 'my-msg' : 'their-msg'}"><b>${m.from}:</b><br>${m.text}</div>`).join('');
+            const relevant = chats.filter(c => (c.from === session.name && c.to === target) || (c.from === target && c.to === session.name));
+            box.innerHTML = relevant.map(m => `
+                <div class="flex flex-col ${m.from === session.name ? 'items-start' : 'items-end'}">
+                    <div class="msg-bubble ${m.from === session.name ? 'my-msg' : 'their-msg'}">
+                        <p class="text-sm">${m.text}</p>
+                        <span class="text-[9px] opacity-50 block mt-1">${m.time}</span>
+                    </div>
+                </div>`).join('');
             box.scrollTop = box.scrollHeight;
         }
 
         function upload(input) {
             const file = input.files[0];
+            if(!file || file.type !== 'application/pdf') return alert("ارفع ملف PDF بس");
             const reader = new FileReader();
             reader.onload = (e) => {
                 library.push({id: Date.now(), name: file.name, data: e.target.result});
                 localStorage.setItem('alg_lib', JSON.stringify(library));
-                location.reload();
+                renderLibrary();
+                updateStats();
             };
             reader.readAsDataURL(file);
         }
 
-        function goHome() { showPage('dashboard'); }
-
-        if(user) {
-            document.getElementById('authPage').classList.add('hidden');
-            document.getElementById('mainApp').classList.remove('hidden');
-            document.getElementById('wHead').innerText = "أهلاً يا " + user.name;
-            document.getElementById('sUsers').innerText = users.length + 1;
-            document.getElementById('sFiles').innerText = library.length;
-            if(user.role === 'ADMIN') document.getElementById('adminUp').classList.remove('hidden');
-            
-            document.getElementById('lGrid').innerHTML = library.map(f => `
-                <div class="glass p-6 rounded-[2rem] text-center">
-                    <i class="fas fa-file-pdf text-4xl text-red-500 mb-4"></i>
-                    <h4 class="font-bold truncate">${f.name}</h4>
-                    <a href="${f.data}" target="_blank" class="block bg-blue-600 mt-4 py-2 rounded-xl">عرض</a>
+        function renderLibrary() {
+            const grid = document.getElementById('lGrid');
+            grid.innerHTML = library.map(f => `
+                <div class="glass p-6 rounded-[2rem] text-center border-t-4 border-red-500 hover:scale-105 transition">
+                    <i class="fas fa-file-pdf text-5xl text-red-500 mb-4"></i>
+                    <h4 class="font-bold truncate text-sm mb-4">${f.name}</h4>
+                    <a href="${f.data}" target="_blank" class="block bg-blue-600 py-2 rounded-xl text-sm font-bold shadow-lg shadow-blue-500/10">عرض الملف</a>
+                    ${session.role === 'ADMIN' ? `<button onclick="deleteFile(${f.id})" class="text-red-500 mt-3 text-xs underline">حذف</button>` : ''}
                 </div>`).join('');
         }
 
+        function deleteFile(id) {
+            if(!confirm("عايز تمسح الملف ده؟")) return;
+            library = library.filter(l => l.id !== id);
+            localStorage.setItem('alg_lib', JSON.stringify(library));
+            renderLibrary();
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('sUsers').innerText = users.length + 1;
+            document.getElementById('sFiles').innerText = library.length;
+        }
+
+        function goHome() { showPage('dashboard'); }
+        function toggleTheme() { document.body.classList.toggle('light-mode'); }
         function logout() { localStorage.removeItem('alg_session'); location.reload(); }
+
+        if(session) {
+            document.getElementById('authPage').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            document.getElementById('wHead').innerText = "أهلاً يا " + session.name;
+            if(session.role === 'ADMIN') document.getElementById('adminUp').classList.remove('hidden');
+            renderLibrary();
+            updateStats();
+        }
     </script>
 </body>
 </html>
