@@ -8,155 +8,220 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
-        :root { --bg: #020617; --card: #0f172a; --text: #f8fafc; }
-        .light-mode { --bg: #f8fafc; --card: #ffffff; --text: #0f172a; }
-        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: var(--text); transition: 0.3s; overflow: hidden; }
-        .glass { background: var(--card); border: 1px solid rgba(255,255,255,0.05); }
-        .page { display: none; }
-        .active-page { display: flex; flex-direction: column; animation: fadeIn 0.4s ease; height: 100%; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .btn-action { background: #2563eb; color: white; border: none; cursor: pointer; transition: 0.2s; }
-        .user-online { width: 10px; height: 10px; background: #22c55e; border-radius: 50%; }
+        :root { --bg: #020617; --card: #0f172a; --text: #f8fafc; --accent: #3b82f6; }
+        .light-mode { --bg: #f1f5f9; --card: #ffffff; --text: #0f172a; --accent: #2563eb; }
+        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: var(--text); transition: 0.3s; overflow: hidden; height: 100vh; }
+        .glass { background: var(--card); border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .page { display: none; height: 100%; flex-direction: column; }
+        .active-page { display: flex; animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        .sidebar-btn { width: 100%; text-align: right; padding: 1rem; border-radius: 1rem; transition: 0.2s; display: flex; align-items: center; gap: 1rem; font-weight: bold; }
+        .sidebar-btn:hover { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+        .chat-bubble { max-width: 80%; padding: 0.75rem 1rem; border-radius: 1.25rem; font-size: 0.9rem; position: relative; }
+        .my-msg { background: #3b82f6; color: white; align-self: flex-start; border-bottom-right-radius: 0.25rem; }
+        .their-msg { background: rgba(255,255,255,0.1); align-self: flex-end; border-bottom-left-radius: 0.25rem; }
     </style>
 </head>
-<body class="h-screen flex">
+<body class="flex">
 
-    <aside class="w-72 glass flex flex-col p-6 shadow-2xl">
-        <div class="mb-10 text-center cursor-pointer" onclick="showPage('dashboard')">
-            <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-3xl mx-auto mb-2 shadow-lg"><i class="fas fa-terminal"></i></div>
-            <h1 class="font-bold text-xl tracking-widest lang-txt" data-ar="الخوارزمية" data-en="ALGO">الخوارزمية</h1>
+    <aside class="w-80 glass flex flex-col p-6 z-50">
+        <div class="mb-8 text-center cursor-pointer group" onclick="showPage('dashboard')">
+            <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-3xl mx-auto mb-2 transition group-hover:rotate-12">
+                <i class="fas fa-terminal"></i>
+            </div>
+            <h1 class="text-2xl font-bold tracking-widest lang-txt" data-ar="الخوارزمية" data-en="ALGORITHM">الخوارزمية</h1>
         </div>
-        
+
         <nav class="space-y-2 flex-1">
-            <button onclick="showPage('dashboard')" class="w-full text-right p-4 rounded-xl hover:bg-white/5 flex items-center gap-4 transition"><i class="fas fa-home text-blue-500"></i> <span class="lang-txt" data-ar="الرئيسية" data-en="Home">الرئيسية</span></button>
-            <button onclick="showPage('library')" class="w-full text-right p-4 rounded-xl hover:bg-white/5 flex items-center gap-4 transition"><i class="fas fa-book text-red-500"></i> <span class="lang-txt" data-ar="مكتبتي" data-en="Library">مكتبتي</span></button>
-            <button onclick="showPage('chat')" class="w-full text-right p-4 rounded-xl hover:bg-white/5 flex items-center gap-4 transition"><i class="fas fa-comments text-green-500"></i> <span class="lang-txt" data-ar="المراسلات" data-en="Messages">المراسلات</span></button>
-            <button id="adminBtn" onclick="showPage('admin')" class="hidden w-full text-right p-4 rounded-xl border border-yellow-500/20 text-yellow-500 flex items-center gap-4 mt-4 font-bold"><i class="fas fa-crown"></i> <span class="lang-txt" data-ar="لوحة Belal" data-en="Belal Panel">لوحة Belal</span></button>
+            <button onclick="showPage('dashboard')" class="sidebar-btn"><i class="fas fa-home text-blue-500"></i> <span class="lang-txt" data-ar="الرئيسية" data-en="Home">الرئيسية</span></button>
+            <button onclick="showPage('library')" class="sidebar-btn"><i class="fas fa-book-open text-red-500"></i> <span class="lang-txt" data-ar="مكتبتي" data-en="Library">مكتبتي</span></button>
+            <button onclick="showPage('chat')" class="sidebar-btn"><i class="fas fa-comments text-green-500"></i> <span class="lang-txt" data-ar="المراسلات" data-en="Messages">المراسلات</span></button>
+            <button id="adminBtn" onclick="showPage('admin')" class="hidden sidebar-btn border border-yellow-500/20 text-yellow-500 mt-4"><i class="fas fa-crown"></i> <span class="lang-txt" data-ar="لوحة Belal" data-en="Belal Panel">لوحة Belal</span></button>
         </nav>
 
-        <div class="mt-auto space-y-2 border-t border-white/5 pt-4">
-            <button onclick="toggleLang()" class="w-full p-3 rounded-lg glass text-xs font-bold flex items-center justify-center gap-2"><i class="fas fa-language"></i> <span id="langBtnTxt">English</span></button>
-            <button onclick="toggleTheme()" class="w-full p-3 rounded-lg glass text-xs font-bold flex items-center justify-center gap-2"><i class="fas fa-sun"></i> <span class="lang-txt" data-ar="تبديل الوضع" data-en="Theme">تبديل الوضع</span></button>
-            <button onclick="logout()" class="w-full p-3 rounded-lg bg-red-500/10 text-red-500 font-bold flex items-center justify-center gap-2 mt-2"><i class="fas fa-sign-out-alt"></i> <span class="lang-txt" data-ar="خروج" data-en="Exit">خروج</span></button>
+        <div class="mt-auto space-y-3 pt-6 border-t border-white/10">
+            <button onclick="toggleLang()" class="w-full p-3 rounded-xl glass text-xs font-bold flex items-center justify-center gap-2"><i class="fas fa-language"></i> <span id="langBtnTxt">English</span></button>
+            <button onclick="toggleTheme()" class="w-full p-3 rounded-xl glass text-xs font-bold flex items-center justify-center gap-2"><i class="fas fa-moon"></i> <span class="lang-txt" data-ar="المظهر" data-en="Theme">المظهر</span></button>
+            <button onclick="logout()" class="w-full p-3 rounded-xl bg-red-500/10 text-red-500 font-bold flex items-center justify-center gap-2"><i class="fas fa-power-off"></i> <span class="lang-txt" data-ar="خروج" data-en="Exit">خروج</span></button>
         </div>
     </aside>
 
-    <main class="flex-1 p-8 overflow-y-auto">
+    <main class="flex-1 p-8 overflow-hidden flex flex-col">
         
-        <div id="page-chat" class="page">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 h-[80vh]">
-                <div class="glass rounded-3xl p-4 flex flex-col">
-                    <h3 class="font-bold mb-4 text-blue-400 lang-txt" data-ar="مين موجود؟" data-en="Who's Online?">مين موجود؟</h3>
-                    <div id="onlineList" class="space-y-3 overflow-y-auto">
+        <div id="page-dashboard" class="page active-page">
+            <h2 id="welcomeHeader" class="text-4xl font-bold mb-10 text-blue-500"></h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="glass p-10 rounded-[3rem] border-r-8 border-blue-600 flex justify-between items-center">
+                    <div>
+                        <h3 class="text-xl font-bold opacity-60 lang-txt" data-ar="الأعضاء" data-en="Members">الأعضاء</h3>
+                        <p id="statUsers" class="text-6xl font-bold">1</p>
+                    </div>
+                    <i class="fas fa-users text-5xl opacity-10"></i>
+                </div>
+                <div class="glass p-10 rounded-[3rem] border-r-8 border-red-600 flex justify-between items-center">
+                    <div>
+                        <h3 class="text-xl font-bold opacity-60 lang-txt" data-ar="الملفات" data-en="Files">الملفات</h3>
+                        <p id="statFiles" class="text-6xl font-bold">0</p>
+                    </div>
+                    <i class="fas fa-file-pdf text-5xl opacity-10"></i>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-library" class="page overflow-y-auto">
+            <div class="flex justify-between items-center mb-10">
+                <h2 class="text-3xl font-bold"><i class="fas fa-folder-open text-red-500 ml-3"></i> <span class="lang-txt" data-ar="مكتبة الملفات" data-en="Library">مكتبة الملفات</span></h2>
+                <div id="adminControls" class="hidden">
+                    <label class="bg-blue-600 px-6 py-3 rounded-2xl font-bold cursor-pointer hover:bg-blue-700 transition">
+                        <i class="fas fa-upload ml-2"></i> رفع PDF
+                        <input type="file" id="pdfUpload" accept="application/pdf" class="hidden" onchange="handleUpload(this)">
+                    </label>
+                </div>
+            </div>
+            <div id="libGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+        </div>
+
+        <div id="page-chat" class="page overflow-hidden">
+            <div class="flex h-full gap-6">
+                <div class="w-1/3 glass rounded-[2rem] flex flex-col p-4">
+                    <h3 class="p-4 font-bold border-b border-white/5 text-blue-400 lang-txt" data-ar="الأعضاء المتصلين" data-en="Online Members">الأعضاء المتصلين</h3>
+                    <div id="userChatList" class="flex-1 overflow-y-auto p-2 space-y-2 mt-4">
                         </div>
                 </div>
-                <div class="md:col-span-3 glass rounded-3xl flex flex-col overflow-hidden">
-                    <div id="chatTargetName" class="p-4 bg-white/5 font-bold border-b border-white/5">اختر شخصاً لمراسلته</div>
-                    <div id="chatMessages" class="flex-1 p-6 overflow-y-auto space-y-4"></div>
-                    <div id="chatInputArea" class="p-4 border-t border-white/5 flex gap-2 hidden">
-                        <input type="text" id="chatInput" placeholder="اكتب رسالتك..." class="flex-1 p-4 rounded-2xl bg-black/20 border border-white/10 outline-none">
-                        <button onclick="sendChatMessage()" class="btn-action px-8 rounded-2xl"><i class="fas fa-paper-plane"></i></button>
+                <div class="flex-1 glass rounded-[2rem] flex flex-col overflow-hidden">
+                    <div id="chatHeader" class="p-5 bg-white/5 font-bold border-b border-white/5 flex items-center gap-3">
+                        <i class="fas fa-comments text-blue-500"></i> <span id="targetName">اختر عضواً لبدء الشات</span>
+                    </div>
+                    <div id="msgBox" class="flex-1 p-6 overflow-y-auto flex flex-col gap-4"></div>
+                    <div id="chatInputGroup" class="p-4 bg-white/5 flex gap-3 hidden">
+                        <input type="text" id="chatMsg" placeholder="اكتب رسالة..." class="flex-1 bg-black/40 border border-white/10 rounded-2xl p-4 outline-none focus:border-blue-500">
+                        <button onclick="sendMsg()" class="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-xl hover:bg-blue-700 transition"><i class="fas fa-paper-plane"></i></button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="page-dashboard" class="page active-page">
-            <h2 id="welcomeHeader" class="text-4xl font-bold mb-8"></h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="glass p-8 rounded-[2.5rem] border-l-8 border-green-500 shadow-xl">
-                    <h3 class="text-xl font-bold mb-2 lang-txt" data-ar="الأعضاء" data-en="Members">الأعضاء</h3>
-                    <p id="userCount" class="text-5xl font-bold">1</p>
-                </div>
-                <div class="glass p-8 rounded-[2.5rem] border-l-8 border-blue-500 shadow-xl">
-                    <h3 class="text-xl font-bold mb-2 lang-txt" data-ar="الملفات" data-en="Files">الملفات</h3>
-                    <p id="fileCount" class="text-5xl font-bold">0</p>
-                </div>
+        <div id="page-admin" class="page overflow-y-auto">
+            <h2 class="text-3xl font-bold mb-8">لوحة القائد Belal</h2>
+            <div id="adminMessages" class="space-y-4">
+                <p class="opacity-50">جميع الرسائل تظهر هنا للرد السريع.</p>
             </div>
-        </div>
-        
-        <div id="page-library" class="page">
-             <div class="flex justify-between items-center mb-8">
-                <h2 class="text-3xl font-bold lang-txt" data-ar="مكتبتي" data-en="Library">مكتبتي</h2>
-                <div id="adminUpload" class="hidden">
-                    <label class="btn-action px-6 py-2 rounded-xl cursor-pointer"><i class="fas fa-plus"></i> رفع PDF <input type="file" class="hidden" onchange="uploadPDF(this)"></label>
-                </div>
-             </div>
-             <div id="libGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
         </div>
 
     </main>
 
     <script>
         let users = JSON.parse(localStorage.getItem('alg_users') || '[]');
-        let currentU = JSON.parse(localStorage.getItem('alg_session') || 'null');
+        let library = JSON.parse(localStorage.getItem('alg_lib') || '[]');
         let chats = JSON.parse(localStorage.getItem('alg_chats') || '[]');
+        let session = JSON.parse(localStorage.getItem('alg_session') || 'null');
         let selectedUser = null;
+        let lang = 'ar';
 
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
             document.getElementById('page-' + id).classList.add('active-page');
-            if(id === 'chat') renderOnline();
-            updateUI();
+            if(id === 'chat') renderUserList();
+            updateStats();
         }
 
-        function renderOnline() {
-            const list = document.getElementById('onlineList');
-            // القائد Belal دايماً متاح، وباقي الأعضاء المسجلين
-            let all = [{name: 'Belal', role: 'ADMIN'}, ...users].filter(u => u.name !== currentU.name);
-            list.innerHTML = all.map(u => `
-                <div onclick="selectChat('${u.name}')" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 cursor-pointer transition">
-                    <div class="user-online"></div>
+        function renderUserList() {
+            const list = document.getElementById('userChatList');
+            // List everyone except yourself
+            let pool = [{name: 'Belal', role: 'ADMIN'}, ...users].filter(u => u.name !== session.name);
+            list.innerHTML = pool.map(u => `
+                <div onclick="openChat('${u.name}')" class="p-4 rounded-2xl hover:bg-white/5 cursor-pointer flex justify-between items-center transition">
                     <span class="font-bold">${u.name}</span>
-                    ${u.role === 'ADMIN' ? '<i class="fas fa-crown text-yellow-500 text-[10px]"></i>' : ''}
+                    <span class="w-3 h-3 bg-green-500 rounded-full shadow-[0_0_10px_#22c55e]"></span>
                 </div>
             `).join('');
         }
 
-        function selectChat(name) {
+        function openChat(name) {
             selectedUser = name;
-            document.getElementById('chatTargetName').innerText = "مراسلة: " + name;
-            document.getElementById('chatInputArea').classList.remove('hidden');
-            renderMessages();
+            document.getElementById('targetName').innerText = "شات مع: " + name;
+            document.getElementById('chatInputGroup').classList.remove('hidden');
+            renderMsgs();
         }
 
-        function sendChatMessage() {
-            const txt = document.getElementById('chatInput').value.trim();
-            if(!txt) return;
-            chats.push({ from: currentU.name, to: selectedUser, text: txt, time: new Date().toLocaleTimeString() });
+        function sendMsg() {
+            const input = document.getElementById('chatMsg');
+            if(!input.value.trim()) return;
+            chats.push({ from: session.name, to: selectedUser, text: input.value, time: new Date().toLocaleTimeString() });
             localStorage.setItem('alg_chats', JSON.stringify(chats));
-            document.getElementById('chatInput').value = "";
-            renderMessages();
+            input.value = "";
+            renderMsgs();
         }
 
-        function renderMessages() {
-            const box = document.getElementById('chatMessages');
-            const myMsgs = chats.filter(c => (c.from === currentU.name && c.to === selectedUser) || (c.from === selectedUser && c.to === currentU.name));
-            box.innerHTML = myMsgs.map(m => `
-                <div class="flex flex-col ${m.from === currentU.name ? 'items-start' : 'items-end'}">
-                    <div class="p-3 rounded-2xl ${m.from === currentU.name ? 'bg-blue-600' : 'bg-white/10'} max-w-[80%]">
-                        <p class="text-sm">${m.text}</p>
-                        <span class="text-[9px] opacity-50">${m.time}</span>
-                    </div>
+        function renderMsgs() {
+            const box = document.getElementById('msgBox');
+            const relevant = chats.filter(c => (c.from === session.name && c.to === selectedUser) || (c.from === selectedUser && c.to === session.name));
+            box.innerHTML = relevant.map(m => `
+                <div class="chat-bubble ${m.from === session.name ? 'my-msg' : 'their-msg'}">
+                    <p>${m.text}</p>
+                    <span class="text-[10px] opacity-40 block mt-1">${m.from} • ${m.time}</span>
                 </div>
             `).join('');
             box.scrollTop = box.scrollHeight;
         }
 
-        function updateUI() {
-            document.getElementById('userCount').innerText = users.length + 1; // +1 عشان Belal
-            if(currentU.role === 'ADMIN') document.getElementById('adminBtn').classList.remove('hidden');
-            document.getElementById('welcomeHeader').innerText = "أهلاً، " + currentU.name;
+        function handleUpload(input) {
+            const file = input.files[0];
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                library.push({id: Date.now(), name: file.name, data: e.target.result});
+                localStorage.setItem('alg_lib', JSON.stringify(library));
+                renderLibrary();
+                updateStats();
+            };
+            reader.readAsDataURL(file);
         }
 
-        function startApp() {
-            if(!currentU) return; // حماية
-            document.getElementById('mainApp').classList.remove('hidden');
-            updateUI();
+        function renderLibrary() {
+            const grid = document.getElementById('libGrid');
+            grid.innerHTML = library.map(f => `
+                <div class="glass p-6 rounded-[2rem] text-center group">
+                    <i class="fas fa-file-pdf text-5xl text-red-500 mb-4 transition group-hover:scale-110"></i>
+                    <h4 class="font-bold truncate mb-4">${f.name}</h4>
+                    <a href="${f.data}" target="_blank" class="block bg-blue-600 py-3 rounded-xl font-bold">عرض الملف</a>
+                    ${session.role === 'ADMIN' ? `<button onclick="deleteFile(${f.id})" class="text-red-500 mt-4 text-sm underline">حذف</button>` : ''}
+                </div>`).join('');
         }
+
+        function deleteFile(id) {
+            library = library.filter(l => l.id !== id);
+            localStorage.setItem('alg_lib', JSON.stringify(library));
+            renderLibrary();
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('statUsers').innerText = users.length + 1;
+            document.getElementById('statFiles').innerText = library.length;
+            renderLibrary();
+        }
+
+        function toggleTheme() { document.body.classList.toggle('light-mode'); }
         
+        function toggleLang() {
+            lang = lang === 'ar' ? 'en' : 'ar';
+            document.body.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            document.getElementById('langBtnTxt').innerText = lang === 'ar' ? 'English' : 'العربية';
+            document.querySelectorAll('.lang-txt').forEach(el => el.innerText = el.getAttribute('data-' + lang));
+        }
+
+        function init() {
+            if(!session) { location.href = "login.html"; return; } // لو مفيش سيشن يرجع
+            document.getElementById('welcomeHeader').innerText = (lang === 'ar' ? "أهلاً، " : "Welcome, ") + session.name;
+            if(session.role === 'ADMIN') {
+                document.getElementById('adminBtn').classList.remove('hidden');
+                document.getElementById('adminControls').classList.remove('hidden');
+            }
+            updateStats();
+        }
+
         function logout() { localStorage.removeItem('alg_session'); location.reload(); }
-        startApp();
+        init();
     </script>
 </body>
 </html>
