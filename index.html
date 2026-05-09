@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الخوارزمية - Ultimate Chat Edition</title>
+    <title>الخوارزمية</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -15,94 +15,118 @@
         .page { display: none; height: 100%; flex-direction: column; overflow-y: auto; padding: 1.5rem; }
         .active-page { display: flex; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .sidebar-btn { width: 100%; text-align: right; padding: 0.8rem; border-radius: 1rem; display: flex; align-items: center; gap: 1rem; font-weight: bold; transition: 0.2s; }
+        
+        /* شريط الأخبار المفقود */
+        .news-ticker { background: rgba(59, 130, 246, 0.1); height: 45px; display: flex; align-items: center; overflow: hidden; border-bottom: 1px solid rgba(59, 130, 246, 0.2); }
+        .news-label { background: #3b82f6; color: white; padding: 0 15px; height: 100%; display: flex; align-items: center; font-weight: bold; font-size: 13px; z-index: 10; box-shadow: 5px 0 15px rgba(0,0,0,0.3); }
+        .news-content { display: inline-block; animation: marquee 20s linear infinite; white-space: nowrap; padding-right: 50px; font-size: 14px; }
+        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+        .sidebar-btn { width: 100%; text-align: right; padding: 0.8rem; border-radius: 1rem; display: flex; align-items: center; gap: 1rem; font-weight: bold; transition: 0.2s; cursor: pointer; }
         .sidebar-btn:hover { background: rgba(59, 130, 246, 0.1); color: var(--accent); }
-        .msg-bubble { max-width: 80%; padding: 0.8rem; border-radius: 1.2rem; position: relative; }
+        .msg-bubble { max-width: 85%; padding: 10px; border-radius: 15px; position: relative; }
         .my-msg { background: var(--accent); color: white; align-self: flex-start; border-bottom-right-radius: 4px; }
         .their-msg { background: rgba(255,255,255,0.08); align-self: flex-end; border-bottom-left-radius: 4px; }
-        .del-btn { opacity: 0; transition: 0.2s; position: absolute; top: -5px; left: -5px; background: #ef4444; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; cursor: pointer; z-index: 10; }
+        .del-btn { opacity: 0; transition: 0.2s; position: absolute; top: -5px; left: -5px; background: #ef4444; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; cursor: pointer; z-index: 20; }
         .msg-bubble:hover .del-btn { opacity: 1; }
-        .chat-img { max-width: 250px; border-radius: 0.8rem; margin-top: 5px; cursor: pointer; }
-        audio { height: 35px; width: 200px; margin-top: 5px; filter: invert(1); }
-        .file-link { display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 8px; margin-top: 5px; font-size: 12px; }
+        .chat-img { max-width: 100%; border-radius: 10px; margin-top: 5px; }
+        audio { height: 35px; width: 220px; margin-top: 5px; filter: invert(1); }
     </style>
 </head>
 <body class="flex">
 
-    <div id="authPage" class="fixed inset-0 z-[100] bg-slate-950 flex items-center justify-center p-4">
-        <div class="glass p-8 rounded-[2.5rem] w-full max-w-md text-center border-blue-500/20 border">
-            <i class="fas fa-shield-halved text-5xl text-blue-500 mb-6"></i>
-            <h2 class="text-3xl font-bold mb-8 lang-txt" data-ar="منصة الخوارزمية" data-en="Algorithm Platform">منصة الخوارزمية</h2>
+    <div id="authPage" class="fixed inset-0 z-[200] bg-slate-950 flex items-center justify-center p-4">
+        <div class="glass p-8 rounded-[2.5rem] w-full max-w-md text-center border-blue-500/20 border shadow-2xl">
+            <i class="fas fa-code text-5xl text-blue-500 mb-6"></i>
+            <h2 class="text-3xl font-bold mb-8">الخوارزمية</h2>
             <div id="loginForm">
                 <input type="text" id="uName" placeholder="اسم المستخدم" class="w-full p-4 mb-4 rounded-2xl bg-black/40 border border-white/10 outline-none text-center">
                 <input type="password" id="uPass" placeholder="كلمة السر" class="w-full p-4 mb-6 rounded-2xl bg-black/40 border border-white/10 outline-none text-center">
-                <button onclick="login()" class="w-full bg-blue-600 p-4 rounded-2xl font-bold text-xl lang-txt" data-ar="دخول" data-en="Login">دخول</button>
-                <p class="mt-4 text-xs text-slate-500 lang-txt" data-ar="اتصل بالقائد للتسجيل" data-en="Contact Admin to register">اتصل بالقائد للتسجيل</p>
+                <button onclick="login()" class="w-full bg-blue-600 p-4 rounded-2xl font-bold text-xl hover:bg-blue-700 transition">دخول</button>
             </div>
         </div>
     </div>
 
     <div id="mainApp" class="hidden flex w-full h-full">
-        <aside class="w-64 glass flex flex-col p-5 shadow-2xl">
-            <div class="mb-8 text-center cursor-pointer" onclick="showPage('dashboard')">
-                <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white text-xl mx-auto mb-2"><i class="fas fa-terminal"></i></div>
-                <h1 class="font-bold text-md">الخوارزمية</h1>
+        <aside class="w-64 glass flex flex-col p-5 shadow-2xl border-l border-white/5">
+            <div class="mb-10 text-center">
+                <div class="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-2xl mx-auto mb-2 shadow-lg shadow-blue-600/20"><i class="fas fa-terminal"></i></div>
+                <h1 class="font-bold text-lg">الخوارزمية</h1>
             </div>
             
             <nav class="space-y-2 flex-1">
-                <button onclick="showPage('dashboard')" class="sidebar-btn"><i class="fas fa-chart-line text-blue-500"></i> <span class="lang-txt" data-ar="الرئيسية" data-en="Home">الرئيسية</span></button>
-                <button onclick="showPage('chat')" class="sidebar-btn"><i class="fas fa-comment-dots text-green-500"></i> <span class="lang-txt" data-ar="المراسلات" data-en="Chat">المراسلات</span></button>
-                <button onclick="showPage('library')" class="sidebar-btn"><i class="fas fa-folder-open text-red-500"></i> <span class="lang-txt" data-ar="المكتبة" data-en="Library">المكتبة</span></button>
+                <button onclick="showPage('dashboard')" class="sidebar-btn"><i class="fas fa-th-large text-blue-500"></i> <span class="lang-txt" data-ar="الرئيسية" data-en="Home">الرئيسية</span></button>
+                <button onclick="showPage('chat')" class="sidebar-btn"><i class="fas fa-comments text-green-500"></i> <span class="lang-txt" data-ar="المراسلات" data-en="Chat">المراسلات</span></button>
+                <button onclick="showPage('library')" class="sidebar-btn"><i class="fas fa-book-open text-red-500"></i> <span class="lang-txt" data-ar="المكتبة" data-en="Library">المكتبة</span></button>
                 <button id="adminLink" onclick="showPage('admin')" class="hidden sidebar-btn border border-yellow-500/20 text-yellow-500 mt-4"><i class="fas fa-crown"></i> <span class="lang-txt" data-ar="لوحة القائد" data-en="Leader Panel">لوحة القائد</span></button>
             </nav>
 
             <div class="pt-4 border-t border-white/10 space-y-2">
                 <button onclick="toggleLang()" class="w-full p-3 rounded-xl glass text-xs font-bold flex items-center justify-center gap-2"><i class="fas fa-language"></i> <span id="langBtn">English</span></button>
-                <button onclick="toggleTheme()" class="w-full p-3 rounded-xl glass text-xs font-bold flex items-center justify-center gap-2"><i class="fas fa-adjust"></i> <span class="lang-txt" data-ar="المظهر" data-en="Theme">المظهر</span></button>
+                <button onclick="toggleTheme()" class="w-full p-3 rounded-xl glass text-xs font-bold flex items-center justify-center gap-2"><i class="fas fa-moon"></i> <span class="lang-txt" data-ar="المظهر" data-en="Theme">المظهر</span></button>
                 <button onclick="logout()" class="w-full p-3 rounded-xl bg-red-500/10 text-red-500 font-bold"><i class="fas fa-sign-out-alt"></i> <span class="lang-txt" data-ar="خروج" data-en="Logout">خروج</span></button>
             </div>
         </aside>
 
         <main class="flex-1 flex flex-col overflow-hidden">
-            <div class="flex-1 overflow-hidden relative">
+            <div class="news-ticker">
+                <div class="news-label lang-txt" data-ar="آخر الأخبار" data-en="News">آخر الأخبار</div>
+                <div class="news-content" id="tickerText">أهلاً بك في منصة الخوارزمية.. نظام مشفر وآمن بالكامل</div>
+            </div>
+
+            <div class="flex-1 relative">
                 <div id="p-dashboard" class="page active-page">
-                    <h2 id="wHead" class="text-2xl font-bold mb-6 text-blue-500"></h2>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="glass p-6 rounded-2xl border-l-4 border-blue-500 shadow-lg">
-                            <h3 class="opacity-50 text-xs">Members</h3><p id="sUsers" class="text-4xl font-bold">0</p>
+                    <h2 id="wHead" class="text-3xl font-bold mb-8 text-blue-500"></h2>
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="glass p-8 rounded-3xl border-r-4 border-blue-600">
+                            <h3 class="opacity-50 text-sm lang-txt" data-ar="أعضاء الموقع" data-en="Members">أعضاء الموقع</h3>
+                            <p id="sUsers" class="text-5xl font-bold">0</p>
                         </div>
-                        <div class="glass p-6 rounded-2xl border-l-4 border-red-500 shadow-lg">
-                            <h3 class="opacity-50 text-xs">Files</h3><p id="sFiles" class="text-4xl font-bold">0</p>
+                        <div class="glass p-8 rounded-3xl border-r-4 border-red-600">
+                            <h3 class="opacity-50 text-sm lang-txt" data-ar="الملفات المرفوعة" data-en="Files">الملفات المرفوعة</h3>
+                            <p id="sFiles" class="text-5xl font-bold">0</p>
                         </div>
                     </div>
                 </div>
 
-                <div id="p-chat" class="page flex-row gap-4 p-4">
-                    <div class="w-1/3 glass rounded-2xl p-4 flex flex-col">
-                        <h4 class="font-bold border-b border-white/5 pb-2 mb-4 text-xs opacity-60">الأعضاء</h4>
+                <div id="p-chat" class="page flex-row gap-6 p-4">
+                    <div class="w-1/3 glass rounded-3xl p-4 flex flex-col">
+                        <h4 class="font-bold border-b border-white/5 pb-2 mb-4 text-xs opacity-50">الأعضاء المتصلون</h4>
                         <div id="uList" class="space-y-2 overflow-y-auto"></div>
                     </div>
-                    <div class="flex-1 glass rounded-2xl flex flex-col overflow-hidden">
-                        <div id="chatHeader" class="p-3 bg-white/5 border-b border-white/5 font-bold text-center text-sm">Select Contact</div>
+                    <div class="flex-1 glass rounded-3xl flex flex-col overflow-hidden">
+                        <div id="chatHeader" class="p-3 bg-white/5 border-b border-white/5 font-bold text-center text-sm">اختر زميلاً لبدء المحادثة</div>
                         <div id="mBox" class="flex-1 p-4 overflow-y-auto flex flex-col gap-3"></div>
-                        
-                        <div id="chatInputArea" class="p-3 border-t border-white/5 hidden bg-black/10">
-                            <div class="flex items-center gap-2">
-                                <label class="cursor-pointer text-slate-400 hover:text-blue-500 transition">
-                                    <i class="fas fa-paperclip text-xl"></i>
-                                    <input type="file" id="chatFile" class="hidden" onchange="sendMedia(this)">
-                                </label>
-                                <input type="text" id="msgIn" class="flex-1 bg-black/20 p-3 rounded-xl outline-none border border-transparent focus:border-blue-500 text-sm" placeholder="اكتب هنا...">
-                                <button onclick="send()" class="bg-blue-600 w-10 h-10 rounded-xl flex items-center justify-center hover:bg-blue-700 transition"><i class="fas fa-paper-plane text-xs"></i></button>
-                            </div>
+                        <div id="chatInputArea" class="p-4 border-t border-white/5 hidden flex gap-3 items-center">
+                            <label class="cursor-pointer text-slate-400 hover:text-blue-500 transition">
+                                <i class="fas fa-paperclip text-xl"></i>
+                                <input type="file" id="chatFile" class="hidden" onchange="handleFile(this)">
+                            </label>
+                            <input type="text" id="msgIn" class="flex-1 bg-black/20 p-4 rounded-2xl outline-none" placeholder="اكتب هنا (Enter للإرسال)...">
+                            <button onclick="send()" class="bg-blue-600 w-12 h-12 rounded-2xl"><i class="fas fa-paper-plane"></i></button>
                         </div>
                     </div>
                 </div>
 
-                <div id="p-library" class="page"><div id="lGrid" class="grid grid-cols-3 gap-4"></div></div>
+                <div id="p-library" class="page">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold">المكتبة الرقمية</h2>
+                        <div id="adminUp" class="hidden"><label class="bg-blue-600 px-5 py-2 rounded-xl cursor-pointer">رفع PDF <input type="file" onchange="uploadLib(this)" class="hidden"></label></div>
+                    </div>
+                    <div id="lGrid" class="grid grid-cols-3 gap-6"></div>
+                </div>
+
                 <div id="p-admin" class="page">
-                    <table class="w-full text-right glass rounded-xl">
-                        <thead><tr class="text-blue-400 border-b border-white/10"><th class="p-3">User</th><th class="p-3">Pass</th><th class="p-3">Del</th></tr></thead>
+                    <h2 class="text-2xl font-bold mb-6 text-yellow-500">إدارة القائد</h2>
+                    <div class="glass p-4 rounded-2xl mb-6">
+                        <h4 class="mb-2 text-sm">تغيير شريط الأخبار:</h4>
+                        <div class="flex gap-2">
+                            <input type="text" id="newTick" class="flex-1 bg-black/40 p-3 rounded-xl outline-none">
+                            <button onclick="saveTick()" class="bg-blue-600 px-6 rounded-xl font-bold">تحديث</button>
+                        </div>
+                    </div>
+                    <table class="w-full text-right glass rounded-2xl overflow-hidden">
+                        <thead class="bg-blue-600/20"><tr><th class="p-4">المستخدم</th><th class="p-4">الباسورد</th><th class="p-4">حذف</th></tr></thead>
                         <tbody id="aTable"></tbody>
                     </table>
                 </div>
@@ -118,109 +142,96 @@
         let lang = 'ar';
         let target = null;
 
-        document.getElementById('msgIn')?.addEventListener('keypress', (e) => { if(e.key==='Enter') send(); });
+        document.getElementById('msgIn')?.addEventListener('keypress', (e) => { if(e.key==='Enter' && !e.shiftKey) send(); });
 
         function login() {
             const n = document.getElementById('uName').value.trim();
             const p = document.getElementById('uPass').value;
             let found = (n.toLowerCase()==='belal' && p==='159078@1#') ? {name:'Belal',role:'ADMIN'} : users.find(u=>u.name===n && u.pass===p);
             if(found) { localStorage.setItem('alg_session', JSON.stringify(found)); location.reload(); }
-            else alert("Error!");
-        }
-
-        function toggleLang() {
-            lang = lang === 'ar' ? 'en' : 'ar';
-            document.body.dir = lang === 'ar' ? 'rtl' : 'ltr';
-            document.getElementById('langBtn').innerText = lang === 'ar' ? 'English' : 'العربية';
-            document.querySelectorAll('.lang-txt').forEach(el => el.innerText = el.getAttribute('data-'+lang));
+            else alert("بيانات غلط!");
         }
 
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p=>p.classList.remove('active-page'));
             document.getElementById('p-'+id).classList.add('active-page');
-            if(id==='chat') renderU();
-            if(id==='admin') renderA();
+            if(id==='chat') renderUsers();
+            if(id==='admin') renderAdmin();
         }
 
-        function renderU() {
-            let p = [{name:'Belal'}, ...users].filter(x=>x.name!==session.name);
-            document.getElementById('uList').innerHTML = p.map(u=>`<div onclick="startC('${u.name}')" class="p-3 rounded-xl hover:bg-white/5 cursor-pointer border border-white/5 text-sm">${u.name}</div>`).join('');
-        }
-
-        function startC(n) {
-            target = n;
-            document.getElementById('chatHeader').innerText = n;
-            document.getElementById('chatInputArea').classList.remove('hidden');
-            renderM();
+        function handleFile(input) {
+            const f = input.files[0]; if(!f) return;
+            const r = new FileReader();
+            r.onload = (e) => {
+                let type = 'file';
+                if(f.type.startsWith('image/')) type = 'image';
+                else if(f.type.startsWith('audio/')) type = 'audio';
+                pushMsg({type, content: e.target.result, fileName: f.name});
+            };
+            r.readAsDataURL(f);
         }
 
         function send() {
             const v = document.getElementById('msgIn').value.trim();
             if(!v) return;
-            pushMsg({type: 'text', content: v});
+            pushMsg({type:'text', content: v});
             document.getElementById('msgIn').value = "";
-        }
-
-        function sendMedia(input) {
-            const file = input.files[0];
-            if(!file) return;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                let type = 'file';
-                if(file.type.startsWith('image/')) type = 'image';
-                else if(file.type.startsWith('audio/')) type = 'audio';
-                pushMsg({type: type, content: e.target.result, fileName: file.name});
-            };
-            reader.readAsDataURL(file);
         }
 
         function pushMsg(data) {
             chats.push({id: Date.now(), f: session.name, t: target, ...data});
             localStorage.setItem('alg_chats', JSON.stringify(chats));
-            renderM();
+            renderMsgs();
         }
 
         function deleteMsg(id) {
             chats = chats.filter(c => c.id !== id);
             localStorage.setItem('alg_chats', JSON.stringify(chats));
-            renderM();
+            renderMsgs();
         }
 
-        function renderM() {
+        function renderMsgs() {
             const b = document.getElementById('mBox');
             const filtered = chats.filter(c=>(c.f===session.name && c.t===target)||(c.f===target && c.t===session.name));
             b.innerHTML = filtered.map(m=>`
                 <div class="flex flex-col ${m.f===session.name?'items-start':'items-end'}">
                     <div class="msg-bubble ${m.f===session.name?'my-msg':'their-msg'}">
                         ${m.f===session.name?`<div class="del-btn" onclick="deleteMsg(${m.id})"><i class="fas fa-times"></i></div>`:''}
-                        ${renderMsgContent(m)}
+                        ${m.type==='text'?`<p>${m.content}</p>` : m.type==='image'?`<img src="${m.content}" class="chat-img">` : m.type==='audio'?`<audio controls src="${m.content}"></audio>` : `<a href="${m.content}" download="${m.fileName}" class="text-xs underline"><i class="fas fa-file"></i> ${m.fileName}</a>`}
                     </div>
                 </div>`).join('');
             b.scrollTop = b.scrollHeight;
         }
 
-        function renderMsgContent(m) {
-            if(m.type === 'text') return `<p class="text-sm">${m.content}</p>`;
-            if(m.type === 'image') return `<img src="${m.content}" class="chat-img" onclick="window.open(this.src)">`;
-            if(m.type === 'audio') return `<audio controls src="${m.content}"></audio>`;
-            return `<a href="${m.content}" download="${m.fileName}" class="file-link"><i class="fas fa-file"></i> ${m.fileName}</a>`;
+        function renderUsers() {
+            let list = [{name:'Belal'}, ...users].filter(x=>x.name!==session.name);
+            document.getElementById('uList').innerHTML = list.map(u=>`<div onclick="startC('${u.name}')" class="p-3 rounded-xl hover:bg-white/5 cursor-pointer border border-white/5">${u.name}</div>`).join('');
         }
 
-        function renderA() {
-            document.getElementById('aTable').innerHTML = users.map((u,i)=>`<tr><td class="p-3">${u.name}</td><td class="p-3 font-mono text-yellow-500">${u.pass}</td><td class="p-3"><button onclick="delU(${i})" class="text-red-500"><i class="fas fa-trash"></i></button></td></tr>`).join('');
+        function startC(n) {
+            target = n;
+            document.getElementById('chatHeader').innerText = "محادثة مع: " + n;
+            document.getElementById('chatInputArea').classList.remove('hidden');
+            renderMsgs();
         }
 
-        function delU(i) { users.splice(i,1); localStorage.setItem('alg_users', JSON.stringify(users)); renderA(); }
+        function saveTick() { let v = document.getElementById('newTick').value; localStorage.setItem('alg_tick', v); location.reload(); }
+        function uploadLib(i) { const f=i.files[0]; const r=new FileReader(); r.onload=(e)=>{files.push({n:f.name, d:e.target.result}); localStorage.setItem('alg_lib', JSON.stringify(files)); location.reload();}; r.readAsDataURL(f); }
+        function renderAdmin() { document.getElementById('aTable').innerHTML = users.map((u,i)=>`<tr><td class="p-4">${u.name}</td><td class="p-4 text-yellow-500">${u.pass}</td><td class="p-4"><button onclick="delU(${i})" class="text-red-500"><i class="fas fa-trash"></i></button></td></tr>`).join(''); }
+        function delU(i) { users.splice(i,1); localStorage.setItem('alg_users', JSON.stringify(users)); renderAdmin(); }
+        function toggleLang() { lang = lang === 'ar' ? 'en' : 'ar'; document.body.dir = lang === 'ar' ? 'rtl' : 'ltr'; document.getElementById('langBtn').innerText = lang === 'ar' ? 'English' : 'العربية'; document.querySelectorAll('.lang-txt').forEach(el => el.innerText = el.getAttribute('data-'+lang)); }
         function toggleTheme() { document.body.classList.toggle('light-mode'); }
         function logout() { localStorage.removeItem('alg_session'); location.reload(); }
 
         if(session) {
             document.getElementById('authPage').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
-            document.getElementById('wHead').innerText = "Belal Dashboard";
+            document.getElementById('wHead').innerText = "أهلاً يا " + session.name;
             document.getElementById('sUsers').innerText = users.length + 1;
             document.getElementById('sFiles').innerText = files.length;
-            if(session.role==='ADMIN') document.getElementById('adminLink').classList.remove('hidden');
+            document.getElementById('tickerText').innerText = localStorage.getItem('alg_tick') || "أهلاً بك في الخوارزمية!";
+            if(session.role==='ADMIN') { document.getElementById('adminLink').classList.remove('hidden'); document.getElementById('adminUp').classList.remove('hidden'); }
+            document.getElementById('lGrid').innerHTML = files.map(f=>`<div class="glass p-4 rounded-2xl text-center"><i class="fas fa-file-pdf text-red-500 text-3xl mb-2"></i><p class="text-xs truncate">${f.n}</p><a href="${f.d}" target="_blank" class="block bg-blue-600 mt-2 rounded-lg py-1 text-xs">عرض</a></div>`).join('');
         }
     </script>
 </body>
