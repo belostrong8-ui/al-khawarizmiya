@@ -17,42 +17,33 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .sidebar-btn { width: 100%; text-align: right; padding: 0.8rem; border-radius: 1rem; display: flex; align-items: center; gap: 1rem; font-weight: bold; transition: 0.2s; cursor: pointer; }
         .sidebar-btn:hover { background: rgba(59, 130, 246, 0.1); color: var(--accent); }
-        .logo-area:hover { transform: scale(1.05); transition: 0.3s; }
+        .news-bar { background: rgba(59, 130, 246, 0.1); border-right: 4px solid var(--accent); padding: 10px; margin-bottom: 20px; border-radius: 10px; }
     </style>
 </head>
 <body class="flex">
 
     <div id="authPage" class="fixed inset-0 z-[200] bg-slate-950 flex items-center justify-center p-4">
         <div class="glass p-8 rounded-[2.5rem] w-full max-w-md text-center border-blue-500/20 border shadow-2xl">
-            <i class="fas fa-user-shield text-5xl text-blue-500 mb-6"></i>
-            <h2 id="authTitle" class="text-3xl font-bold mb-8 lang-txt" data-ar="الخوارزمية" data-en="Algorithm">الخوارزمية</h2>
-            <div id="authForms">
-                <input type="text" id="uName" placeholder="اسم المستخدم" class="w-full p-4 mb-4 rounded-2xl bg-black/40 border border-white/10 outline-none text-center">
-                <input type="password" id="uPass" placeholder="كلمة السر" class="w-full p-4 mb-6 rounded-2xl bg-black/40 border border-white/10 outline-none text-center">
-                <div id="loginBox">
-                    <button onclick="login()" class="w-full bg-blue-600 p-4 rounded-2xl font-bold text-xl hover:bg-blue-700 transition lang-txt" data-ar="دخول" data-en="Login">دخول</button>
-                    <p class="mt-4 text-sm text-slate-400"><span class="lang-txt" data-ar="ليس لديك حساب؟" data-en="Don't have an account?">ليس لديك حساب؟</span> <a href="#" onclick="toggleAuth(true)" class="text-blue-500 font-bold lang-txt" data-ar="سجل الآن" data-en="Register Now">سجل الآن</a></p>
-                </div>
-                <div id="registerBox" class="hidden">
-                    <button onclick="register()" class="w-full bg-green-600 p-4 rounded-2xl font-bold text-xl hover:bg-green-700 transition lang-txt" data-ar="إنشاء حساب" data-en="Create Account">إنشاء حساب</button>
-                    <p class="mt-4 text-sm text-slate-400"><span class="lang-txt" data-ar="لديك حساب بالفعل؟" data-en="Already have an account?">لديك حساب بالفعل؟</span> <a href="#" onclick="toggleAuth(false)" class="text-blue-500 font-bold lang-txt" data-ar="دخول" data-en="Login">دخول</a></p>
-                </div>
-            </div>
+            <h2 class="text-3xl font-bold mb-8 lang-txt" data-ar="الخوارزمية" data-en="Algorithm">الخوارزمية</h2>
+            <input type="text" id="uName" placeholder="اسم المستخدم" class="w-full p-4 mb-4 rounded-2xl bg-black/40 border border-white/10 outline-none text-center">
+            <input type="password" id="uPass" placeholder="كلمة السر" class="w-full p-4 mb-6 rounded-2xl bg-black/40 border border-white/10 outline-none text-center">
+            <button onclick="login()" class="w-full bg-blue-600 p-4 rounded-2xl font-bold text-xl hover:bg-blue-700 transition lang-txt" data-ar="دخول" data-en="Login">دخول</button>
         </div>
     </div>
 
     <div id="mainApp" class="hidden flex w-full h-full">
         <aside class="w-64 glass flex flex-col p-5 shadow-2xl border-l border-white/5">
-            <div class="mb-10 text-center cursor-pointer logo-area" onclick="showPage('dashboard')">
-                <div class="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-2xl mx-auto mb-2 shadow-lg shadow-blue-500/20"><i class="fas fa-terminal"></i></div>
+            <div class="mb-10 text-center cursor-pointer" onclick="showPage('dashboard')">
+                <div class="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-2xl mx-auto mb-2"><i class="fas fa-terminal"></i></div>
                 <h1 class="font-bold text-lg lang-txt" data-ar="الخوارزمية" data-en="Algorithm">الخوارزمية</h1>
             </div>
             <nav class="space-y-2 flex-1">
                 <button onclick="showPage('dashboard')" class="sidebar-btn"><i class="fas fa-home text-blue-500"></i> <span class="lang-txt" data-ar="الرئيسية" data-en="Home">الرئيسية</span></button>
-                <button onclick="showPage('chat')" class="sidebar-btn"><i class="fas fa-comments text-green-500"></i> <span class="lang-txt" data-ar="المراسلات" data-en="Chat">المراسلات</span></button>
                 <button onclick="showPage('library')" class="sidebar-btn"><i class="fas fa-book text-red-500"></i> <span class="lang-txt" data-ar="المكتبة" data-en="Library">المكتبة</span></button>
+                <button id="adminLink" onclick="showPage('admin')" class="hidden sidebar-btn border border-yellow-500/20 text-yellow-500 mt-4"><i class="fas fa-crown"></i> <span class="lang-txt" data-ar="لوحة القائد" data-en="Leader Panel">لوحة القائد</span></button>
             </nav>
             <div class="pt-4 border-t border-white/10 space-y-2">
+                <button onclick="toggleTheme()" class="w-full p-3 rounded-xl glass text-xs font-bold flex items-center justify-center gap-2"><i class="fas fa-moon"></i> <span class="lang-txt" data-ar="تبديل المظهر" data-en="Toggle Theme">تبديل المظهر</span></button>
                 <button onclick="toggleLang()" class="w-full p-3 rounded-xl glass text-xs font-bold flex items-center justify-center gap-2"><i class="fas fa-language"></i> <span id="langBtn">English</span></button>
                 <button onclick="logout()" class="w-full p-3 rounded-xl bg-red-500/10 text-red-500 font-bold"><i class="fas fa-sign-out-alt"></i> <span class="lang-txt" data-ar="خروج" data-en="Logout">خروج</span></button>
             </div>
@@ -60,84 +51,106 @@
 
         <main class="flex-1 flex flex-col overflow-hidden">
             <div id="p-dashboard" class="page active-page">
+                <div class="news-bar"><i class="fas fa-bullhorn text-blue-500 mr-2"></i> <span id="newsText" class="lang-txt" data-ar="أهلاً بك في الخوارزمية يا Belal!" data-en="Welcome to Algorithm, Belal!">أهلاً بك في الخوارزمية يا Belal!</span></div>
                 <h2 id="welcomeHead" class="text-3xl font-bold mb-8 text-blue-500"></h2>
                 <div class="grid grid-cols-2 gap-6">
                     <div class="glass p-8 rounded-3xl border-r-4 border-blue-600 shadow-xl text-center">
                         <h3 class="opacity-50 text-sm lang-txt" data-ar="أعضاء الموقع" data-en="Site Members">أعضاء الموقع</h3>
-                        <p id="sUsers" class="text-5xl font-bold">0</p>
+                        <p id="sUsers" class="text-5xl font-bold">2</p>
                     </div>
+                    <div class="glass p-8 rounded-3xl border-r-4 border-red-600 shadow-xl text-center">
+                        <h3 class="opacity-50 text-sm lang-txt" data-ar="الملفات المرفوعة" data-en="Uploaded Files">الملفات المرفوعة</h3>
+                        <p id="fCount" class="text-5xl font-bold">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="p-library" class="page">
+                <h2 class="text-2xl font-bold mb-6 lang-txt" data-ar="مكتبة الملفات" data-en="File Library">مكتبة الملفات</h2>
+                <div class="glass p-6 rounded-2xl mb-6">
+                    <input type="file" id="pdfInput" accept="application/pdf" class="hidden" onchange="uploadPDF()">
+                    <button onclick="document.getElementById('pdfInput').click()" class="bg-red-600 px-6 py-3 rounded-xl font-bold hover:bg-red-700 transition">
+                        <i class="fas fa-file-pdf ml-2"></i> <span class="lang-txt" data-ar="رفع ملف PDF" data-en="Upload PDF">رفع ملف PDF</span>
+                    </button>
+                </div>
+                <div id="fileList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
+
+            <div id="p-admin" class="page">
+                <h2 class="text-2xl font-bold mb-6 text-yellow-500 lang-txt" data-ar="لوحة القائد" data-en="Leader Panel">لوحة القائد</h2>
+                <div class="glass p-6 rounded-2xl">
+                    <p class="lang-txt" data-ar="تحكم في أخبار الموقع:" data-en="Control Site News:">تحكم في أخبار الموقع:</p>
+                    <input type="text" id="newsInput" class="w-full p-4 mt-2 mb-4 rounded-xl bg-black/20 border border-white/10 outline-none" placeholder="اكتب الخبر هنا...">
+                    <button onclick="updateNews()" class="bg-yellow-600 px-6 py-2 rounded-xl font-bold lang-txt" data-ar="تحديث الخبر" data-en="Update News">تحديث الخبر</button>
                 </div>
             </div>
         </main>
     </div>
 
     <script>
-        let users = JSON.parse(localStorage.getItem('alg_users') || '[]');
         let session = JSON.parse(localStorage.getItem('alg_session') || 'null');
-        let lang = 'ar'; 
+        let lang = 'ar';
+        let files = JSON.parse(localStorage.getItem('alg_files') || '[]');
 
         function updateUI() {
             document.body.dir = lang === 'ar' ? 'rtl' : 'ltr';
             document.getElementById('langBtn').innerText = lang === 'ar' ? 'English' : 'العربية';
             document.getElementById('tabTitle').innerText = lang === 'ar' ? 'الخوارزمية' : 'Algorithm';
-            document.querySelectorAll('.lang-txt').forEach(el => {
-                el.innerText = el.getAttribute('data-' + lang);
-            });
-            if(session) {
-                const welcomeMsg = lang === 'ar' ? 'أهلاً يا ' : 'Welcome, ';
-                // هنا التعديل عشان يفضل Belal زي ما تحب
-                document.getElementById('welcomeHead').innerText = welcomeMsg + session.name;
-            }
+            document.querySelectorAll('.lang-txt').forEach(el => el.innerText = el.getAttribute('data-' + lang));
+            if(session) document.getElementById('welcomeHead').innerText = (lang === 'ar' ? 'أهلاً يا ' : 'Welcome, ') + session.name;
+            renderFiles();
         }
 
-        function toggleLang() {
-            lang = lang === 'ar' ? 'en' : 'ar';
-            updateUI();
-        }
-
-        function toggleAuth(isReg) {
-            document.getElementById('loginBox').classList.toggle('hidden', isReg);
-            document.getElementById('registerBox').classList.toggle('hidden', !isReg);
-        }
-
-        function login() {
-            const n = document.getElementById('uName').value.trim();
-            const p = document.getElementById('uPass').value;
-            // تسجيل الدخول باسمك بحرف الـ E
-            if(n.toLowerCase()==='belal' && p==='159078@1#') {
-                localStorage.setItem('alg_session', JSON.stringify({name:'Belal', role:'ADMIN'}));
-                location.reload();
-            } else {
-                let found = users.find(u=>u.name===n && u.pass===p);
-                if(found) { localStorage.setItem('alg_session', JSON.stringify(found)); location.reload(); }
-                else alert(lang==='ar'?"خطأ في البيانات!":"Error!");
-            }
-        }
-
-        function register() {
-            const n = document.getElementById('uName').value.trim();
-            const p = document.getElementById('uPass').value;
-            if(!n || !p) return alert(lang==='ar'?"املا البيانات!":"Fill data!");
-            if(n.toLowerCase()==='belal' || users.find(u=>u.name===n)) return alert(lang==='ar'?"الاسم موجود!":"Exists!");
-            users.push({name: n, pass: p, role: 'USER'});
-            localStorage.setItem('alg_users', JSON.stringify(users));
-            alert(lang==='ar'?"تم التسجيل!":"Registered!");
-            toggleAuth(false);
-        }
-
+        function toggleTheme() { document.body.classList.toggle('light-mode'); }
+        function toggleLang() { lang = lang === 'ar' ? 'en' : 'ar'; updateUI(); }
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p=>p.classList.remove('active-page'));
             document.getElementById('p-'+id).classList.add('active-page');
         }
 
+        function login() {
+            const n = document.getElementById('uName').value.trim();
+            const p = document.getElementById('uPass').value;
+            if(n.toLowerCase()==='belal' && p==='159078@1#') {
+                localStorage.setItem('alg_session', JSON.stringify({name:'Belal', role:'ADMIN'}));
+                location.reload();
+            }
+        }
+
+        function uploadPDF() {
+            const file = document.getElementById('pdfInput').files[0];
+            if(file) {
+                files.push({ name: file.name, date: new Date().toLocaleDateString() });
+                localStorage.setItem('alg_files', JSON.stringify(files));
+                renderFiles();
+            }
+        }
+
+        function renderFiles() {
+            const list = document.getElementById('fileList');
+            list.innerHTML = '';
+            files.forEach(f => {
+                list.innerHTML += `<div class="glass p-4 rounded-xl flex justify-between items-center border-r-4 border-red-500">
+                    <div><p class="font-bold">${f.name}</p><small class="opacity-50">${f.date}</small></div>
+                    <i class="fas fa-file-pdf text-red-500 text-xl"></i>
+                </div>`;
+            });
+            document.getElementById('fCount').innerText = files.length;
+        }
+
+        function updateNews() {
+            const txt = document.getElementById('newsInput').value;
+            document.getElementById('newsText').innerText = txt;
+            alert("تم تحديث الخبر يا قائد!");
+        }
+
         function logout() { localStorage.removeItem('alg_session'); location.reload(); }
 
         updateUI();
-
         if(session) {
             document.getElementById('authPage').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
-            document.getElementById('sUsers').innerText = users.length + 1;
+            if(session.role === 'ADMIN') document.getElementById('adminLink').classList.remove('hidden');
         }
     </script>
 </body>
