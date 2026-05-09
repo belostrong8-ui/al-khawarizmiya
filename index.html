@@ -3,20 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Algorithm | Groups System</title>
+    <title>The Algorithm</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap');
         :root { --bg: #020617; --card: rgba(30, 41, 59, 0.5); --text: #f8fafc; --border: rgba(255, 255, 255, 0.05); }
-        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: var(--text); overflow-x: hidden; }
+        .light-mode { --bg: #f8fafc; --card: rgba(255, 255, 255, 0.9); --text: #0f172a; --border: rgba(0, 0, 0, 0.1); }
+        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: var(--text); transition: 0.3s; }
         .page { display: none; }
         .active-page { display: block; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .glass { background: var(--card); backdrop-filter: blur(12px); border: 1px solid var(--border); }
-        .btn-primary { background: linear-gradient(45deg, #3b82f6, #1d4ed8); color: white; transition: 0.3s; }
-        .btn-primary:hover { transform: translateY(-2px); shadow: 0 10px 20px rgba(59, 130, 246, 0.3); }
-        .admin-badge { background: linear-gradient(45deg, #f59e0b, #d97706); }
+        .btn-primary { background: linear-gradient(45deg, #3b82f6, #1d4ed8); color: white; }
     </style>
 </head>
 <body>
@@ -24,85 +23,73 @@
     <div id="authScreen" class="fixed inset-0 flex items-center justify-center z-[100] p-4 bg-slate-950">
         <div class="glass p-10 rounded-[2.5rem] w-full max-w-md shadow-2xl border border-white/5 text-center">
             <div id="loginForm">
-                <div class="w-20 h-20 bg-blue-600/20 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-blue-500/30">
-                    <i class="fas fa-microchip text-4xl text-blue-500"></i>
-                </div>
-                <h2 class="text-4xl font-bold mb-2">The Algorithm</h2>
-                <p class="text-slate-500 font-bold mb-8 uppercase tracking-widest">نظام التحكم المركزي</p>
-                <input type="text" id="logUser" placeholder="اسم المستخدم" class="w-full p-4 mb-4 rounded-2xl bg-black/20 border border-white/10 outline-none text-xl focus:border-blue-500">
-                <input type="password" id="logPass" placeholder="كلمة السر" class="w-full p-4 mb-8 rounded-2xl bg-black/20 border border-white/10 outline-none text-xl focus:border-blue-500">
-                <button onclick="handleLogin()" class="w-full btn-primary p-4 rounded-2xl font-bold text-xl shadow-lg">دخول</button>
-                <p class="mt-6 text-slate-400">عضو جديد؟ <button onclick="toggleAuth()" class="text-blue-500 font-bold">إنشاء حساب</button></p>
+                <div class="w-20 h-20 bg-blue-600/20 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-blue-500/30 text-blue-500 text-4xl"><i class="fas fa-terminal"></i></div>
+                <h2 class="text-4xl font-bold mb-8">The Algorithm</h2>
+                <input type="text" id="logUser" placeholder="User Name" class="w-full p-4 mb-4 rounded-2xl bg-black/20 border border-white/10 outline-none text-xl focus:border-blue-500">
+                <input type="password" id="logPass" placeholder="Password" class="w-full p-4 mb-8 rounded-2xl bg-black/20 border border-white/10 outline-none text-xl focus:border-blue-500">
+                <button onclick="handleLogin()" class="w-full btn-primary p-4 rounded-2xl font-bold text-xl">Login</button>
+                <p class="mt-6 text-slate-400">New Member? <button onclick="toggleAuth()" class="text-blue-500 font-bold">Register</button></p>
             </div>
             <div id="registerForm" class="hidden">
-                <h2 class="text-3xl font-bold mb-8">تسجيل عضوية</h2>
-                <input type="text" id="regUser" placeholder="اسم المستخدم" class="w-full p-4 mb-4 rounded-2xl bg-black/20 border border-white/10 outline-none text-xl">
-                <input type="password" id="regPass" placeholder="كلمة السر" class="w-full p-4 mb-8 rounded-2xl bg-black/20 border border-white/10 outline-none text-xl">
-                <button onclick="handleRegister()" class="w-full bg-green-600 p-4 rounded-2xl font-bold text-xl text-white">تأكيد</button>
-                <button onclick="toggleAuth()" class="mt-4 text-slate-400 block w-full text-center">رجوع</button>
+                <h2 class="text-3xl font-bold mb-8">Join The Algorithm</h2>
+                <input type="text" id="regUser" placeholder="Choose User Name" class="w-full p-4 mb-4 rounded-2xl bg-black/20 border border-white/10 outline-none text-xl">
+                <input type="password" id="regPass" placeholder="Choose Password" class="w-full p-4 mb-8 rounded-2xl bg-black/20 border border-white/10 outline-none text-xl">
+                <button onclick="handleRegister()" class="w-full bg-green-600 p-4 rounded-2xl font-bold text-xl text-white">Confirm</button>
+                <button onclick="toggleAuth()" class="mt-4 text-slate-400 block w-full text-center">Back</button>
             </div>
         </div>
     </div>
 
     <div id="mainApp" class="hidden flex h-screen overflow-hidden">
         <aside class="w-80 glass border-l flex flex-col p-6">
-            <div onclick="showPage('dashboard')" class="flex items-center gap-3 mb-12 p-2 cursor-pointer">
-                <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-xl"><i class="fas fa-terminal"></i></div>
-                <span class="text-2xl font-bold uppercase">The Algorithm</span>
+            <div onclick="showPage('dashboard')" class="flex items-center gap-3 mb-10 p-2 cursor-pointer">
+                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white text-lg shadow-lg"><i class="fas fa-code"></i></div>
+                <span class="text-xl font-bold uppercase tracking-tight">The Algorithm</span>
             </div>
             <nav class="space-y-4 flex-1">
-                <button onclick="showPage('dashboard')" class="w-full text-right p-4 rounded-2xl hover:bg-blue-500/10 flex items-center gap-4 text-xl transition"><i class="fas fa-home text-blue-500 w-6"></i> الرئيسية</button>
-                <button onclick="showPage('groups')" class="w-full text-right p-4 rounded-2xl hover:bg-blue-500/10 flex items-center gap-4 text-xl transition"><i class="fas fa-users-rectangle text-blue-500 w-6"></i> مجموعاتي</button>
-                <button onclick="showPage('contact')" class="w-full text-right p-4 rounded-2xl hover:bg-blue-500/10 flex items-center gap-4 text-xl transition"><i class="fas fa-comment text-blue-500 w-6"></i> مراسلة القائد</button>
-                <button id="adminBtn" onclick="showPage('admin')" class="hidden w-full text-right p-4 rounded-2xl hover:bg-yellow-500/10 flex items-center gap-4 text-xl text-yellow-500 font-bold"><i class="fas fa-shield-alt w-6"></i> لوحة القائد</button>
+                <button onclick="showPage('dashboard')" class="w-full text-right p-4 rounded-2xl hover:bg-blue-500/10 flex items-center gap-4 text-xl transition"><i class="fas fa-home w-6"></i> <span class="lang-txt" data-ar="الرئيسية" data-en="Dashboard">الرئيسية</span></button>
+                <button onclick="showPage('inbox')" class="w-full text-right p-4 rounded-2xl hover:bg-blue-500/10 flex items-center gap-4 text-xl transition"><i class="fas fa-inbox w-6"></i> <span class="lang-txt" data-ar="بريدي" data-en="Inbox">بريدي</span></button>
+                <button id="adminBtn" onclick="showPage('admin')" class="hidden w-full text-right p-4 rounded-2xl hover:bg-yellow-500/10 flex items-center gap-4 text-xl text-yellow-500 font-bold"><i class="fas fa-shield-alt w-6"></i> <span class="lang-txt" data-ar="لوحة القائد" data-en="Command Center">لوحة القائد</span></button>
             </nav>
-            <button onclick="logout()" class="text-red-500 p-4 font-bold text-lg hover:bg-red-500/5 rounded-xl"><i class="fas fa-power-off ml-2"></i> خروج</button>
+            
+            <div class="space-y-2 mb-4">
+                <button onclick="toggleTheme()" class="w-full p-3 rounded-xl glass text-sm font-bold flex items-center justify-center gap-2"><i class="fas fa-adjust"></i> Mode</button>
+                <button onclick="toggleLang()" class="w-full p-3 rounded-xl glass text-sm font-bold flex items-center justify-center gap-2"><i class="fas fa-globe"></i> Language</button>
+            </div>
+            <button onclick="logout()" class="text-red-500 p-4 font-bold text-lg hover:bg-red-500/5 rounded-xl"><i class="fas fa-power-off ml-2"></i> Exit</button>
         </aside>
 
         <main class="flex-1 p-8 overflow-y-auto">
             <header class="flex justify-between items-center mb-10">
-                <h1 id="userNameDisplay" class="text-3xl font-bold"></h1>
-                <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg"><i class="fas fa-user-secret"></i></div>
+                <h1 id="userNameDisplay" class="text-2xl font-bold"></h1>
+                <div class="flex gap-4">
+                    <div class="glass px-4 py-2 rounded-xl text-xs font-bold border border-blue-500/30">STATUS: ONLINE</div>
+                </div>
             </header>
 
             <div id="page-dashboard" class="page active-page">
-                <div class="glass p-8 rounded-[2.5rem] mb-10">
-                    <h3 class="text-2xl font-bold mb-6 text-blue-500"><i class="fas fa-rss ml-2"></i> تحديثات النظام</h3>
+                <div class="glass p-8 rounded-[2.5rem]">
+                    <h3 class="text-2xl font-bold mb-6 text-blue-500"><i class="fas fa-satellite-dish ml-2"></i> <span class="lang-txt" data-ar="آخر التحديثات" data-en="System News">آخر التحديثات</span></h3>
                     <div id="newsFeed" class="space-y-4"></div>
                 </div>
             </div>
 
-            <div id="page-groups" class="page">
-                <h2 class="text-4xl font-bold mb-8 text-blue-500">المجموعات المشترك بها</h2>
-                <div id="userGroupsList" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    </div>
-            </div>
-
-            <div id="page-contact" class="page">
-                <div class="max-w-2xl mx-auto glass p-8 rounded-[2rem]">
-                    <h3 class="text-2xl font-bold mb-6">ارسل رسالة للقائد بلال</h3>
-                    <textarea id="msgContent" class="w-full h-32 p-4 rounded-xl bg-black/20 border border-white/10 mb-4 outline-none"></textarea>
-                    <button onclick="sendMessage()" class="btn-primary w-full py-4 rounded-xl font-bold text-xl">إرسال</button>
-                    <div id="myMessages" class="mt-10 space-y-4"></div>
-                </div>
+            <div id="page-inbox" class="page">
+                <h2 class="text-3xl font-bold mb-8 lang-txt" data-ar="الرسائل المستلمة" data-en="Messages Inbox">الرسائل المستلمة</h2>
+                <div id="myMessages" class="space-y-4"></div>
             </div>
 
             <div id="page-admin" class="page">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <div class="glass p-8 rounded-[2.5rem]">
-                        <h3 class="text-2xl font-bold mb-6 text-blue-400"><i class="fas fa-plus-circle ml-2"></i> إنشاء مجموعة جديدة</h3>
-                        <input type="text" id="groupNameInput" placeholder="اسم المجموعة" class="w-full p-4 mb-4 rounded-xl bg-black/20 border border-white/10">
-                        <p class="text-sm text-slate-400 mb-2">اختر الأعضاء (اكتب الأسماء وبينهما فاصلة):</p>
-                        <input type="text" id="groupMembersInput" placeholder="anas, hamza" class="w-full p-4 mb-4 rounded-xl bg-black/20 border border-white/10">
-                        <button onclick="createGroup()" class="btn-primary w-full py-3 rounded-xl font-bold">إنشاء المجموعة</button>
+                        <h3 class="text-xl font-bold mb-6 text-blue-400 lang-txt" data-ar="مراسلة عضو محدد" data-en="Message Member">مراسلة عضو محدد</h3>
+                        <input type="text" id="targetMember" placeholder="Member Name" class="w-full p-4 mb-4 rounded-xl bg-black/20 border border-white/10 outline-none">
+                        <textarea id="adminMsgTxt" placeholder="Write message..." class="w-full h-32 p-4 rounded-xl bg-black/20 border border-white/10 outline-none mb-4"></textarea>
+                        <button onclick="sendPrivateMsg()" class="btn-primary w-full py-3 rounded-xl font-bold">Send Message</button>
                     </div>
                     <div class="glass p-8 rounded-[2.5rem]">
-                        <h3 class="text-2xl font-bold mb-6 text-green-500"><i class="fas fa-users ml-2"></i> كشف حسابات الفريق</h3>
+                        <h3 class="text-xl font-bold mb-6 text-green-500 lang-txt" data-ar="كشف حسابات الفريق" data-en="Team Accounts">كشف حسابات الفريق</h3>
                         <div id="adminUsersList" class="space-y-3"></div>
-                    </div>
-                    <div class="glass p-8 rounded-[2.5rem] lg:col-span-2">
-                        <h3 class="text-2xl font-bold mb-6 text-yellow-500">الرسائل والردود</h3>
-                        <div id="adminMessagesList" class="space-y-4"></div>
                     </div>
                 </div>
             </div>
@@ -112,20 +99,20 @@
     <script>
         const ADMIN_NAME = "belal"; const ADMIN_PASS = "159078@1#";
         let users = JSON.parse(localStorage.getItem('kh_users') || '[]');
-        let groups = JSON.parse(localStorage.getItem('kh_groups') || '[]');
-        let msgs = JSON.parse(localStorage.getItem('kh_msgs') || '[]');
+        let privateMsgs = JSON.parse(localStorage.getItem('kh_p_msgs') || '[]');
         let news = JSON.parse(localStorage.getItem('kh_news') || '[]');
         let currentUser = JSON.parse(localStorage.getItem('kh_session') || 'null');
+        let currentLang = 'ar';
 
         function toggleAuth() { document.getElementById('loginForm').classList.toggle('hidden'); document.getElementById('registerForm').classList.toggle('hidden'); }
 
         function handleRegister() {
             const u = document.getElementById('regUser').value.trim().toLowerCase();
             const p = document.getElementById('regPass').value;
-            if(!u || !p || u === ADMIN_NAME) return alert("بيانات غير صالحة");
+            if(!u || !p || u === ADMIN_NAME) return alert("Error");
             users.push({ name: u, pass: p });
             localStorage.setItem('kh_users', JSON.stringify(users));
-            alert("تم التسجيل!"); toggleAuth();
+            alert("Success!"); toggleAuth();
         }
 
         function handleLogin() {
@@ -133,80 +120,59 @@
             const p = document.getElementById('logPass').value;
             if(u === ADMIN_NAME && p === ADMIN_PASS) currentUser = { name: "Belal", role: "ADMIN" };
             else { let f = users.find(x => x.name === u && x.pass === p); if(f) currentUser = { name: f.name, role: "MEMBER" }; }
-            if(currentUser) { localStorage.setItem('kh_session', JSON.stringify(currentUser)); renderApp(); } else alert("خطأ!");
+            if(currentUser) { localStorage.setItem('kh_session', JSON.stringify(currentUser)); renderApp(); } else alert("Access Denied");
         }
 
-        // وظائف الجروبات (للقائد)
-        function createGroup() {
-            const name = document.getElementById('groupNameInput').value.trim();
-            const members = document.getElementById('groupMembersInput').value.split(',').map(m => m.trim().toLowerCase());
-            if(!name || members.length === 0) return alert("اكمل البيانات");
-            groups.push({ id: Date.now(), name: name, members: members });
-            localStorage.setItem('kh_groups', JSON.stringify(groups));
-            alert("تم إنشاء الجروب بنجاح!");
-            updateUI();
+        function sendPrivateMsg() {
+            const target = document.getElementById('targetMember').value.trim().toLowerCase();
+            const txt = document.getElementById('adminMsgTxt').value.trim();
+            if(!target || !txt) return alert("Fill data");
+            privateMsgs.unshift({ to: target, text: txt, time: new Date().toLocaleString('ar-EG') });
+            localStorage.setItem('kh_p_msgs', JSON.stringify(privateMsgs));
+            alert("Sent to " + target);
+            document.getElementById('adminMsgTxt').value = "";
         }
-
-        function deleteGroup(id) { groups = groups.filter(g => g.id !== id); localStorage.setItem('kh_groups', JSON.stringify(groups)); updateUI(); }
 
         function updateUI() {
-            // تحديث الأخبار
-            document.getElementById('newsFeed').innerHTML = news.map(n => `<div class="p-4 bg-blue-500/10 rounded-xl mb-2"><b>${n.text}</b></div>`).join('') || "لا أخبار";
-
-            // عرض الجروبات (للعضو المضاف فيها فقط)
-            const myGroups = groups.filter(g => g.members.includes(currentUser.name.toLowerCase()) || currentUser.role === 'ADMIN');
-            document.getElementById('userGroupsList').innerHTML = myGroups.map(g => `
-                <div class="glass p-6 rounded-2xl border-r-4 border-green-500">
-                    <h4 class="text-xl font-bold text-green-400 mb-2"><i class="fas fa-users ml-2"></i> ${g.name}</h4>
-                    <p class="text-sm text-slate-400">أعضاء الجروب: ${g.members.join(', ')}</p>
-                    <div class="mt-4 p-3 bg-white/5 rounded-lg text-xs italic text-blue-300 italic">هذا المحتوى سري لأعضاء الجروب فقط.</div>
-                </div>`).join('') || "<p class='text-slate-500'>أنت لست مضافاً في أي مجموعة حالياً.</p>";
+            // بريد العضو
+            const myInbox = privateMsgs.filter(m => m.to === currentUser.name.toLowerCase());
+            document.getElementById('myMessages').innerHTML = myInbox.map(m => `
+                <div class="p-5 glass rounded-2xl border-r-4 border-blue-600 bg-blue-600/5">
+                    <p class="font-bold text-blue-400 mb-2">FROM: COMMANDER BELAL 👑</p>
+                    <p class="text-xl">${m.text}</p>
+                    <span class="text-xs text-slate-500 block mt-2">${m.time}</span>
+                </div>`).join('') || "<p class='text-slate-500'>No private messages.</p>";
 
             if(currentUser.role === 'ADMIN') {
-                // كشف الحسابات
                 document.getElementById('adminUsersList').innerHTML = users.map(u => `
-                    <div class="p-3 glass rounded-xl flex justify-between">
-                        <span><b>${u.name}</b> : ${u.pass}</span>
-                    </div>`).join('');
-                
-                // رسائل الإدارة والردود
-                document.getElementById('adminMessagesList').innerHTML = msgs.map(m => `
-                    <div class="p-4 glass rounded-xl">
-                        <div class="flex justify-between font-bold text-blue-400"><span>من: ${m.from}</span></div>
-                        <p>${m.text}</p>
-                        <button onclick="replyToMsg(${m.id})" class="text-yellow-500 text-sm mt-2 font-bold underline">رد على الرسالة</button>
-                        ${m.reply ? `<p class="text-xs text-slate-400 mt-2 italic">ردك: ${m.reply}</p>` : ''}
+                    <div class="p-3 glass rounded-xl flex justify-between text-sm">
+                        <span><b>${u.name}</b></span> <span class="text-blue-500">${u.pass}</span>
                     </div>`).join('');
             }
-
-            // رسائل العضو
-            if(currentUser.role !== 'ADMIN') {
-                const myM = msgs.filter(m => m.from === currentUser.name);
-                document.getElementById('myMessages').innerHTML = myM.map(m => `<div class="p-4 glass rounded-xl mb-2"><p><b>أنت:</b> ${m.text}</p>${m.reply?`<p class='text-yellow-500'><b>بلال:</b> ${m.reply}</p>`:''}</div>`).join('');
-            }
+            
+            document.getElementById('newsFeed').innerHTML = news.map(n => `<div class="p-4 bg-white/5 rounded-xl border-r-4 border-blue-500 font-bold">${n.text}</div>`).join('') || "System stable.";
         }
 
-        function replyToMsg(id) {
-            const r = prompt("اكتب ردك:");
-            if(r) { let m = msgs.find(x => x.id === id); if(m) m.reply = r; localStorage.setItem('kh_msgs', JSON.stringify(msgs)); updateUI(); }
-        }
+        function toggleTheme() { document.body.classList.toggle('light-mode'); }
 
-        function sendMessage() {
-            const t = document.getElementById('msgContent').value.trim();
-            if(!t) return;
-            msgs.unshift({ id: Date.now(), from: currentUser.name, text: t, reply: null });
-            localStorage.setItem('kh_msgs', JSON.stringify(msgs));
-            document.getElementById('msgContent').value = ""; updateUI();
+        function toggleLang() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            document.body.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            document.querySelectorAll('.lang-txt').forEach(el => {
+                el.innerText = el.getAttribute('data-' + currentLang);
+            });
         }
 
         function showPage(id) { document.querySelectorAll('.page').forEach(p=>p.classList.remove('active-page')); document.getElementById('page-'+id).classList.add('active-page'); }
+        
         function renderApp() {
             document.getElementById('authScreen').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
-            document.getElementById('userNameDisplay').innerText = "القائد: " + currentUser.name;
+            document.getElementById('userNameDisplay').innerText = (currentLang === 'ar' ? "مرحباً: " : "Welcome: ") + currentUser.name;
             if(currentUser.role === 'ADMIN') document.getElementById('adminBtn').classList.remove('hidden');
             updateUI();
         }
+
         function logout() { localStorage.removeItem('kh_session'); location.reload(); }
     </script>
 </body>
