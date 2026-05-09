@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الخوارزمية - V22 Fixed</title>
+    <title>منصة الخوارزمية - V23 Final</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -15,114 +15,131 @@
         .page { display: none; height: 100%; flex-direction: column; padding: 1.5rem; overflow-y: auto; }
         .active-page { display: flex; animation: fadeIn 0.1s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .sidebar-btn { width: 100%; text-align: right; padding: 1rem; border-radius: 1rem; display: flex; align-items: center; gap: 1rem; font-weight: bold; cursor: pointer; }
+        .sidebar-btn { width: 100%; text-align: right; padding: 1rem; border-radius: 1rem; display: flex; align-items: center; gap: 1rem; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .sidebar-btn:hover, .sidebar-btn.active { background: var(--accent); color: white; }
-        .news-container { background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 15px; padding: 10px; overflow: hidden; }
-        .marquee { display: inline-block; white-space: nowrap; animation: scroll 12s linear infinite; }
-        @keyframes scroll { 0% { transform: translateX(100%); } 100% { transform: translateX(-120%); } }
+        .marquee-box { background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 15px; padding: 10px; overflow: hidden; }
+        .marquee-text { display: inline-block; white-space: nowrap; animation: scroll 15s linear infinite; }
+        @keyframes scroll { 0% { transform: translateX(100%); } 100% { transform: translateX(-150%); } }
     </style>
 </head>
 <body class="flex">
 
     <div id="authPage" class="fixed inset-0 z-[500] bg-slate-950 flex items-center justify-center p-4">
         <div class="glass p-8 rounded-[2.5rem] w-full max-w-md text-center border-blue-500/30 border shadow-2xl">
-            <h2 id="authTitle" class="text-2xl font-bold mb-6 text-blue-500 font-mono">ALGORITHM - LOGIN</h2>
+            <h2 class="text-2xl font-bold mb-6 text-blue-500">الخوارزمية - دخول القائد</h2>
             <div class="space-y-4">
-                <input type="text" id="uName" placeholder="User Name" class="w-full p-4 rounded-xl text-center bg-slate-900 border border-white/10 outline-none">
-                <input type="password" id="uPass" placeholder="Password" class="w-full p-4 rounded-xl text-center bg-slate-900 border border-white/10 outline-none">
-                <button onclick="handleAuth()" class="w-full bg-blue-600 p-4 rounded-xl font-bold hover:bg-blue-700 transition">LOGIN</button>
+                <input type="text" id="uName" placeholder="اسم المستخدم" class="w-full p-4 rounded-xl text-center bg-slate-900 border border-white/10 outline-none">
+                <input type="password" id="uPass" placeholder="كلمة السر" class="w-full p-4 rounded-xl text-center bg-slate-900 border border-white/10 outline-none">
+                <button onclick="handleAuth()" class="w-full bg-blue-600 p-4 rounded-xl font-bold hover:bg-blue-700 transition">دخول</button>
             </div>
         </div>
     </div>
 
     <div id="mainApp" class="hidden flex w-full h-full">
         <aside class="w-64 glass flex flex-col p-4 border-l border-white/5">
-            <div class="mb-10 px-2"><h1 class="font-bold text-xl text-blue-500">الخوارزمية</h1></div>
+            <div class="mb-10 px-2 flex items-center gap-3">
+                <i class="fas fa-shield-alt text-2xl text-blue-500"></i>
+                <h1 class="font-bold text-xl">منصة القائد</h1>
+            </div>
             <nav class="flex-1 space-y-1">
-                <button onclick="showPage('dashboard')" id="btn-dashboard" class="sidebar-btn"><i class="fas fa-home"></i> <span class="nav-txt" data-ar="الرئيسية" data-en="Home">الرئيسية</span></button>
-                <button onclick="showPage('chat')" id="btn-chat" class="sidebar-btn"><i class="fas fa-comments"></i> <span class="nav-txt" data-ar="المراسلات" data-en="Chat">المراسلات</span></button>
-                <button onclick="showPage('members')" id="btn-members" class="sidebar-btn"><i class="fas fa-users"></i> <span class="nav-txt" data-ar="الأعضاء" data-en="Members">الأعضاء</span></button>
-                <button onclick="showPage('library')" id="btn-library" class="sidebar-btn"><i class="fas fa-book"></i> <span class="nav-txt" data-ar="المكتبة" data-en="Library">المكتبة</span></button>
-                <button id="adminLink" onclick="showPage('admin')" class="hidden sidebar-btn text-yellow-500"><i class="fas fa-crown"></i> <span class="nav-txt" data-ar="لوحة القائد" data-en="Admin">لوحة القائد</span></button>
+                <button onclick="showPage('dashboard')" id="btn-dashboard" class="sidebar-btn active"><i class="fas fa-th-large"></i> الرئيسية</button>
+                <button onclick="showPage('chat')" id="btn-chat" class="sidebar-btn"><i class="fas fa-comment-dots"></i> غرفة المراسلة</button>
+                <button onclick="showPage('members')" id="btn-members" class="sidebar-btn"><i class="fas fa-user-friends"></i> الأعضاء</button>
+                <button onclick="showPage('library')" id="btn-library" class="sidebar-btn"><i class="fas fa-folder-open"></i> مكتبة الملفات</button>
+                <button id="adminLink" onclick="showPage('admin')" class="hidden sidebar-btn text-yellow-500"><i class="fas fa-crown"></i> لوحة الإدارة</button>
             </nav>
             <div class="pt-4 border-t border-white/5 space-y-2">
-                <button onclick="toggleLang()" class="w-full p-3 glass rounded-xl text-xs"><i class="fas fa-language"></i> EN/AR</button>
-                <button onclick="toggleTheme()" class="w-full p-3 glass rounded-xl text-xs"><i class="fas fa-adjust"></i> <span id="themeBtnTxt">الوضع المضيء</span></button>
-                <button onclick="logout()" class="w-full p-3 bg-red-500/10 text-red-500 rounded-xl font-bold">Logout</button>
+                <button onclick="toggleTheme()" class="w-full p-3 glass rounded-xl text-xs flex justify-between items-center">
+                    <span id="themeBtnTxt">الوضع المضيء</span> <i class="fas fa-moon"></i>
+                </button>
+                <button onclick="logout()" class="w-full p-3 bg-red-500/10 text-red-500 rounded-xl font-bold">تسجيل خروج</button>
             </div>
         </aside>
 
         <main class="flex-1 flex flex-col overflow-hidden">
             <div id="p-dashboard" class="page active-page">
-                <div class="news-container mb-8"><div id="newsDisplay" class="marquee font-bold text-blue-400"></div></div>
-                <h2 id="helloUser" class="text-3xl font-bold mb-4"></h2>
-                <div class="glass p-6 rounded-3xl border-r-4 border-blue-500 w-fit">
-                    <p class="opacity-50 text-xs">Total Members</p>
-                    <p id="userCount" class="text-4xl font-black mt-1">0</p>
+                <div class="marquee-box mb-8"><div id="newsDisplay" class="marquee-text font-bold text-blue-400"></div></div>
+                <h2 id="helloUser" class="text-3xl font-bold mb-8"></h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="glass p-8 rounded-[2rem] border-r-8 border-red-500 shadow-xl relative overflow-hidden group">
+                        <i class="fas fa-file-upload absolute -bottom-4 -right-4 text-8xl opacity-5 group-hover:scale-110 transition"></i>
+                        <p class="opacity-60 font-bold mb-2">الملفات المرفوعة</p>
+                        <p id="fileCount" class="text-6xl font-black">0</p>
+                    </div>
+                    <div class="glass p-8 rounded-[2rem] border-r-8 border-blue-500 shadow-xl relative overflow-hidden group">
+                        <i class="fas fa-users absolute -bottom-4 -right-4 text-8xl opacity-5 group-hover:scale-110 transition"></i>
+                        <p class="opacity-60 font-bold mb-2">الأعضاء المتصلين</p>
+                        <p id="userCount" class="text-6xl font-black">0</p>
+                    </div>
                 </div>
             </div>
 
             <div id="p-chat" class="page">
-                <div class="flex gap-4 h-full overflow-hidden">
-                    <div class="w-48 glass rounded-2xl p-3 overflow-y-auto hidden md:block">
-                        <h3 class="text-[10px] font-bold mb-3 opacity-40">SELECT MEMBER</h3>
+                <div class="flex gap-4 h-full">
+                    <div class="w-48 glass rounded-2xl p-4 overflow-y-auto hidden md:block border-l border-white/5">
+                        <h3 class="text-[10px] font-bold mb-4 opacity-40 tracking-widest uppercase">الفريق</h3>
                         <div id="chatUserList" class="flex flex-col gap-2"></div>
                     </div>
-                    <div class="flex-1 flex flex-col overflow-hidden">
-                        <div id="chatBox" class="flex-1 glass rounded-2xl p-4 mb-4 overflow-y-auto flex flex-col gap-3"></div>
-                        <div class="flex gap-2 p-2 glass rounded-2xl">
-                            <input type="file" id="chatFile" accept="application/pdf" class="hidden" onchange="uploadFile()">
-                            <button id="chatMediaBtn" onclick="document.getElementById('chatFile').click()" class="hidden bg-slate-700 h-12 w-12 rounded-xl text-xl"><i class="fas fa-paperclip"></i></button>
-                            <input type="text" id="chatInput" class="flex-1 bg-transparent p-4 outline-none" placeholder="Type message or click a member...">
-                            <button onclick="sendMsg()" class="bg-blue-600 h-12 w-12 rounded-xl"><i class="fas fa-paper-plane"></i></button>
+                    <div class="flex-1 flex flex-col">
+                        <div id="chatBox" class="flex-1 glass rounded-3xl p-6 mb-4 overflow-y-auto flex flex-col gap-4"></div>
+                        <div class="flex gap-3 p-3 glass rounded-2xl items-center">
+                            <input type="file" id="chatFile" accept="application/pdf" class="hidden" onchange="uploadAction()">
+                            <button id="chatMediaBtn" onclick="document.getElementById('chatFile').click()" class="hidden bg-slate-800 h-12 w-12 rounded-xl hover:bg-blue-600 transition"><i class="fas fa-paperclip"></i></button>
+                            <input type="text" id="chatInput" class="flex-1 bg-transparent p-2 outline-none" placeholder="اكتب رسالة أو اختر عضواً...">
+                            <button onclick="sendMsg()" class="bg-blue-600 h-12 w-12 rounded-xl shadow-lg hover:scale-105 transition"><i class="fas fa-paper-plane"></i></button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div id="p-members" class="page">
-                <h2 class="text-2xl font-bold mb-4 text-blue-400">Team Ledger</h2>
-                <div class="glass p-4 rounded-2xl overflow-x-auto text-sm">
-                    <table class="w-full text-right"><thead class="opacity-40"><tr><th>Name</th><th>Password</th><th id="adminHead" class="hidden">Action</th></tr></thead><tbody id="memberTableBody"></tbody></table>
-                </div>
-            </div>
-
             <div id="p-library" class="page">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold">Library</h2>
-                    <button id="libUploadBtn" onclick="document.getElementById('chatFile').click()" class="hidden bg-blue-600 px-6 py-2 rounded-xl font-bold text-sm">Upload PDF</button>
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-2xl font-bold">مكتبة الملفات</h2>
+                    <button id="libUploadBtn" onclick="document.getElementById('chatFile').click()" class="hidden bg-blue-600 px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-blue-700 transition">رفع ملف جديد</button>
                 </div>
                 <div id="fileList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
             </div>
 
             <div id="p-admin" class="page">
-                <h2 class="text-2xl font-bold text-yellow-500 mb-6">Commander Console</h2>
-                <div class="glass p-6 rounded-2xl"><h3 class="font-bold mb-4">Update News Flash</h3><div class="flex gap-2"><input type="text" id="newsInput" class="flex-1 p-4 rounded-xl bg-slate-900 border border-white/10" placeholder="New headline..."><button onclick="updateNews()" class="bg-blue-600 px-8 rounded-xl font-bold">Update</button></div></div>
+                <h2 class="text-2xl font-bold text-yellow-500 mb-6">لوحة الإدارة</h2>
+                <div class="glass p-6 rounded-3xl border border-yellow-500/20">
+                    <h3 class="font-bold mb-4">تغيير شريط الأخبار</h3>
+                    <div class="flex gap-3">
+                        <input type="text" id="newsInput" class="flex-1 p-4 rounded-xl bg-slate-900 border border-white/10 outline-none focus:border-blue-500 transition" placeholder="ما الجديد اليوم يا قائد؟">
+                        <button onclick="updateNews()" class="bg-blue-600 px-10 rounded-xl font-bold">تحديث الخبر</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="p-members" class="page">
+                <h2 class="text-2xl font-bold mb-4">سجل الأعضاء</h2>
+                <div class="glass rounded-2xl overflow-hidden"><table class="w-full text-right"><thead class="bg-white/5 opacity-50"><tr><th class="p-4">الاسم</th><th class="p-4">كلمة السر</th><th id="adminHead" class="hidden p-4">الإجراء</th></tr></thead><tbody id="memberTableBody"></tbody></table></div>
             </div>
         </main>
     </div>
 
     <script>
-        let users = JSON.parse(localStorage.getItem('alg_db_v22') || '[{"name":"belal","pass":"159078@1#","role":"ADMIN"}]');
-        let session = JSON.parse(localStorage.getItem('alg_session_v22') || 'null');
-        let msgs = JSON.parse(localStorage.getItem('alg_msgs_v22') || '[]');
-        let files = JSON.parse(localStorage.getItem('alg_files_v22') || '[]');
-        let newsText = localStorage.getItem('alg_news_v22') || "Welcome to The Algorithm Platform";
-        let lang = 'ar';
+        let users = JSON.parse(localStorage.getItem('alg_db_v23') || '[{"name":"belal","pass":"159078@1#","role":"ADMIN"}]');
+        let session = JSON.parse(localStorage.getItem('alg_session_v23') || 'null');
+        let msgs = JSON.parse(localStorage.getItem('alg_msgs_v23') || '[]');
+        let files = JSON.parse(localStorage.getItem('alg_files_v23') || '[]');
+        let newsText = localStorage.getItem('alg_news_v23') || "مرحباً بك يا قائد بلال في النسخة النهائية من الخوارزمية";
 
         function handleAuth() {
-            const name = document.getElementById('uName').value.trim().toLowerCase();
-            const pass = document.getElementById('uPass').value;
-            const user = users.find(u => u.name === name && u.pass === pass);
-            if(user) { localStorage.setItem('alg_session_v22', JSON.stringify(user)); location.reload(); }
-            else alert('Invalid Login!');
+            const n = document.getElementById('uName').value.trim().toLowerCase();
+            const p = document.getElementById('uPass').value;
+            const u = users.find(x => x.name === n && x.pass === p);
+            if(u) { localStorage.setItem('alg_session_v23', JSON.stringify(u)); location.reload(); }
+            else alert('البيانات غير صحيحة!');
         }
 
         function updateUI() {
             if(!session) return;
             document.getElementById('newsDisplay').innerText = newsText;
-            document.getElementById('helloUser').innerText = `أهلاً يا ${session.name}`;
+            document.getElementById('helloUser').innerText = `مرحباً بك، ${session.name}`;
             document.getElementById('userCount').innerText = users.length;
+            document.getElementById('fileCount').innerText = files.length;
             if(session.role === 'ADMIN') {
                 document.getElementById('adminLink').classList.remove('hidden');
                 document.getElementById('adminHead').classList.remove('hidden');
@@ -132,68 +149,70 @@
             renderChat(); renderMembers(); renderFiles(); renderChatUsers();
         }
 
-        function renderChatUsers() {
-            const list = document.getElementById('chatUserList');
-            list.innerHTML = users.map(u => `<button onclick="mention('${u.name}')" class="p-2 text-[10px] glass rounded-lg hover:bg-blue-600/20 text-right truncate font-bold">${u.name} ${u.role==='ADMIN'?'👑':''}</button>`).join('');
-        }
-
-        function mention(name) {
-            document.getElementById('chatInput').value = `@${name} : `;
-            document.getElementById('chatInput').focus();
-        }
-
-        function uploadFile() {
+        function uploadAction() {
             const f = document.getElementById('chatFile').files[0];
             if(f) {
-                files.push({id: Date.now(), name: f.name, sender: session.name});
-                msgs.push({id: Date.now(), user: session.name, text: `📎 ملف مرفق: ${f.name}`, isFile: true});
-                localStorage.setItem('alg_files_v22', JSON.stringify(files));
-                localStorage.setItem('alg_msgs_v22', JSON.stringify(msgs));
-                renderChat(); renderFiles(); alert('تم الرفع!');
+                files.push({id: Date.now(), name: f.name, date: new Date().toLocaleDateString()});
+                msgs.push({id: Date.now(), user: session.name, text: `📎 تم رفع ملف: ${f.name}`, isFile: true});
+                localStorage.setItem('alg_files_v23', JSON.stringify(files));
+                localStorage.setItem('alg_msgs_v23', JSON.stringify(msgs));
+                updateUI(); alert('تم الرفع بنجاح!');
             }
         }
 
         function sendMsg() {
-            const txt = document.getElementById('chatInput').value.trim();
-            if(!txt) return;
-            msgs.push({id: Date.now(), user: session.name, text: txt, isLeader: session.role==='ADMIN'});
-            localStorage.setItem('alg_msgs_v22', JSON.stringify(msgs));
+            const t = document.getElementById('chatInput').value.trim();
+            if(!t) return;
+            msgs.push({id: Date.now(), user: session.name, text: t, isLeader: session.role==='ADMIN'});
+            localStorage.setItem('alg_msgs_v23', JSON.stringify(msgs));
             document.getElementById('chatInput').value = ''; renderChat();
         }
 
         function renderChat() {
-            const box = document.getElementById('chatBox');
-            box.innerHTML = msgs.map(m => `
-                <div class="p-3 glass rounded-xl ${m.user === session.name ? 'mr-auto bg-blue-500/10' : 'ml-auto'} max-w-[85%] group">
-                    <div class="flex justify-between gap-4">
-                        <span class="text-[10px] font-bold text-blue-400 cursor-pointer" onclick="mention('${m.user}')">${m.user}</span>
-                        ${session.role==='ADMIN' ? `<button onclick="deleteMsg(${m.id})" class="text-red-500 opacity-0 group-hover:opacity-100 text-xs"><i class="fas fa-times"></i></button>` : ''}
+            const b = document.getElementById('chatBox');
+            b.innerHTML = msgs.map(m => `
+                <div class="p-4 glass rounded-2xl ${m.user === session.name ? 'mr-auto bg-blue-500/10 border-blue-500/20' : 'ml-auto border-white/5'} max-w-[80%] group">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-[10px] font-bold text-blue-400 cursor-pointer" onclick="mention('${m.user}')">${m.user} ${m.isLeader?'👑':''}</span>
+                        ${session.role==='ADMIN' ? `<i onclick="delMsg(${m.id})" class="fas fa-times text-red-500 opacity-0 group-hover:opacity-100 cursor-pointer text-[10px]"></i>`:''}
                     </div>
-                    <p class="text-sm mt-1 ${m.isFile?'text-green-400 font-bold':''}">${m.text}</p>
+                    <p class="text-sm ${m.isFile?'text-green-400 font-bold':''}">${m.text}</p>
                 </div>
             `).join('');
-            box.scrollTop = box.scrollHeight;
+            b.scrollTop = b.scrollHeight;
         }
 
-        function deleteMsg(id) { msgs = msgs.filter(m => m.id !== id); localStorage.setItem('alg_msgs_v21', JSON.stringify(msgs)); renderChat(); }
-        function renderMembers() {
-            const body = document.getElementById('memberTableBody');
-            body.innerHTML = users.map(u => `<tr class="border-b border-white/5"><td class="p-3 font-bold">${u.name}</td><td class="p-3 opacity-60">${u.pass}</td><td class="p-3">${(session.role==='ADMIN' && u.name!=='belal') ? `<button onclick="deleteUser('${u.name}')" class="text-red-500"><i class="fas fa-trash"></i></button>` : '-'}</td></tr>`).join('');
-        }
-        function deleteUser(name) { users = users.filter(u => u.name !== name); localStorage.setItem('alg_db_v22', JSON.stringify(users)); renderMembers(); renderChatUsers(); }
         function renderFiles() {
-            const list = document.getElementById('fileList');
-            list.innerHTML = files.map(f => `<div class="glass p-4 rounded-xl flex items-center justify-between border-r-4 border-red-500"><span>${f.name}</span><i class="fas fa-file-pdf text-red-500"></i></div>`).join('');
+            document.getElementById('fileList').innerHTML = files.map(f => `
+                <div class="glass p-5 rounded-2xl flex items-center justify-between border-r-4 border-red-500">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-file-pdf text-red-500 text-2xl"></i>
+                        <div><p class="font-bold text-sm truncate w-32">${f.name}</p><p class="text-[9px] opacity-40">${f.date}</p></div>
+                    </div>
+                    ${session.role==='ADMIN' ? `<i onclick="delFile(${f.id})" class="fas fa-trash text-red-500/50 hover:text-red-500 cursor-pointer"></i>`:''}
+                </div>
+            `).join('');
         }
-        function updateNews() { localStorage.setItem('alg_news_v22', document.getElementById('newsInput').value); location.reload(); }
-        function toggleTheme() { document.body.classList.toggle('light-mode'); document.getElementById('themeBtnTxt').innerText = document.body.classList.contains('light-mode')?"الوضع المظلم":"الوضع المضيء"; }
-        function toggleLang() {
-            lang = lang === 'ar' ? 'en' : 'ar';
-            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-            document.querySelectorAll('.nav-txt').forEach(t => t.innerText = t.getAttribute('data-'+lang));
+
+        function renderMembers() {
+            document.getElementById('memberTableBody').innerHTML = users.map(u => `
+                <tr class="border-b border-white/5"><td class="p-4 font-bold text-blue-400">${u.name}</td><td class="p-4 opacity-50">${u.pass}</td>
+                <td class="p-4">${(session.role==='ADMIN' && u.name!=='belal') ? `<i onclick="delUser('${u.name}')" class="fas fa-user-minus text-red-500 cursor-pointer"></i>` : '-'}</td></tr>
+            `).join('');
         }
+
+        function renderChatUsers() {
+            document.getElementById('chatUserList').innerHTML = users.map(u => `<button onclick="mention('${u.name}')" class="p-2 text-[11px] glass rounded-xl hover:bg-blue-600/20 text-right truncate font-bold w-full">${u.name}</button>`).join('');
+        }
+
+        function mention(n) { document.getElementById('chatInput').value = `@${n} : `; document.getElementById('chatInput').focus(); }
+        function delMsg(id) { msgs = msgs.filter(x => x.id !== id); localStorage.setItem('alg_msgs_v23', JSON.stringify(msgs)); renderChat(); }
+        function delFile(id) { files = files.filter(x => x.id !== id); localStorage.setItem('alg_files_v23', JSON.stringify(files)); updateUI(); }
+        function delUser(n) { users = users.filter(x => x.name !== n); localStorage.setItem('alg_db_v23', JSON.stringify(users)); renderMembers(); renderChatUsers(); }
+        function updateNews() { localStorage.setItem('alg_news_v23', document.getElementById('newsInput').value); location.reload(); }
+        function toggleTheme() { document.body.classList.toggle('light-mode'); const isL = document.body.classList.contains('light-mode'); document.getElementById('themeBtnTxt').innerText = isL ? "الوضع المظلم" : "الوضع المضيء"; }
         function showPage(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page')); document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active')); document.getElementById('p-'+id).classList.add('active-page'); document.getElementById('btn-'+id).classList.add('active'); }
-        function logout() { localStorage.removeItem('alg_session_v22'); location.reload(); }
+        function logout() { localStorage.removeItem('alg_session_v23'); location.reload(); }
         if(session) { document.getElementById('authPage').classList.add('hidden'); document.getElementById('mainApp').classList.remove('hidden'); updateUI(); }
     </script>
 </body>
