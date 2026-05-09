@@ -17,10 +17,9 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .sidebar-btn { width: 100%; text-align: right; padding: 0.8rem; border-radius: 1rem; display: flex; align-items: center; gap: 1rem; font-weight: bold; transition: 0.2s; cursor: pointer; }
         .sidebar-btn:hover { background: rgba(59, 130, 246, 0.1); color: var(--accent); }
-        .news-ticker { background: linear-gradient(90deg, #1e293b, #3b82f633); border-radius: 12px; padding: 12px; margin-bottom: 20px; border: 1px solid #3b82f644; }
         .msg-bubble { background: #1e293b; padding: 12px; border-radius: 15px; margin-bottom: 10px; max-width: 85%; border-right: 3px solid var(--accent); }
-        .user-selector { cursor: pointer; transition: 0.3s; border: 2px solid transparent; }
-        .user-selector:hover { border-color: var(--accent); transform: scale(1.05); background: rgba(59, 130, 246, 0.05); }
+        .user-card { cursor: pointer; transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); }
+        .user-card:hover { border-color: var(--accent); transform: translateY(-3px); }
     </style>
 </head>
 <body class="flex">
@@ -28,11 +27,9 @@
     <div id="authPage" class="fixed inset-0 z-[200] bg-slate-950 flex items-center justify-center p-4">
         <div class="glass p-8 rounded-[2.5rem] w-full max-w-md text-center border-blue-500/20 border shadow-2xl">
             <h2 class="text-3xl font-bold mb-8">الخوارزمية</h2>
-            <div id="loginBox">
-                <input type="text" id="uName" placeholder="اسم المستخدم" class="w-full p-4 mb-4 rounded-2xl bg-black/40 border border-white/10 outline-none text-center">
-                <input type="password" id="uPass" placeholder="كلمة السر" class="w-full p-4 mb-6 rounded-2xl bg-black/40 border border-white/10 outline-none text-center">
-                <button onclick="login()" class="w-full bg-blue-600 p-4 rounded-2xl font-bold text-xl hover:bg-blue-700 transition">دخول</button>
-            </div>
+            <input type="text" id="uName" placeholder="اسم المستخدم" class="w-full p-4 mb-4 rounded-2xl bg-black/40 border border-white/10 outline-none text-center">
+            <input type="password" id="uPass" placeholder="كلمة السر" class="w-full p-4 mb-6 rounded-2xl bg-black/40 border border-white/10 outline-none text-center">
+            <button onclick="login()" class="w-full bg-blue-600 p-4 rounded-2xl font-bold text-xl hover:bg-blue-700 transition">دخول</button>
         </div>
     </div>
 
@@ -44,7 +41,7 @@
             </div>
             <nav class="space-y-2 flex-1">
                 <button onclick="showPage('dashboard')" class="sidebar-btn"><i class="fas fa-home text-blue-500"></i> <span class="lang-txt" data-ar="الرئيسية" data-en="Home">الرئيسية</span></button>
-                <button onclick="showPage('chat-init')" class="sidebar-btn"><i class="fas fa-comments text-green-500"></i> <span class="lang-txt" data-ar="المراسلات" data-en="Chat">المراسلات</span></button>
+                <button onclick="initChatSelection()" class="sidebar-btn"><i class="fas fa-comments text-green-500"></i> <span class="lang-txt" data-ar="المراسلات" data-en="Chat">المراسلات</span></button>
                 <button onclick="showPage('library')" class="sidebar-btn"><i class="fas fa-book text-red-500"></i> <span class="lang-txt" data-ar="المكتبة" data-en="Library">المكتبة</span></button>
                 <button id="adminLink" onclick="showPage('admin')" class="hidden sidebar-btn text-yellow-500 border border-yellow-500/10"><i class="fas fa-crown"></i> <span class="lang-txt" data-ar="لوحة القائد" data-en="Leader Panel">لوحة القائد</span></button>
             </nav>
@@ -57,62 +54,54 @@
 
         <main class="flex-1 flex flex-col overflow-hidden">
             <div id="p-dashboard" class="page active-page">
-                <div class="news-ticker flex items-center gap-4">
-                    <span class="bg-blue-600 px-3 py-1 rounded-lg text-xs font-bold">NEWS</span>
-                    <marquee id="newsDisplay" class="font-bold">مرحباً بك يا Belal! المنصة حالياً في وضع الاختبار.</marquee>
+                <div class="news-ticker flex items-center bg-blue-600/10 p-3 rounded-xl mb-6">
+                    <marquee id="newsDisplay" class="font-bold">أهلاً بك في المنصة يا Belal!</marquee>
                 </div>
                 <h2 id="welcomeHead" class="text-3xl font-bold mb-8 text-blue-500"></h2>
                 <div class="grid grid-cols-2 gap-6">
-                    <div class="glass p-8 rounded-3xl border-r-4 border-blue-600 shadow-xl text-center">
-                        <h3 class="opacity-50 text-sm lang-txt" data-ar="الأعضاء الحاليين" data-en="Current Members">الأعضاء الحاليين</h3>
-                        <p id="sUsers" class="text-5xl font-bold">3</p>
+                    <div class="glass p-8 rounded-3xl border-r-4 border-blue-600 text-center">
+                        <h3 class="opacity-50 text-sm lang-txt" data-ar="الأعضاء المسجلين" data-en="Registered Members">الأعضاء المسجلين</h3>
+                        <p id="sUsersCount" class="text-5xl font-bold">0</p>
                     </div>
-                    <div class="glass p-8 rounded-3xl border-r-4 border-red-600 shadow-xl text-center">
+                    <div class="glass p-8 rounded-3xl border-r-4 border-red-600 text-center">
                         <h3 class="opacity-50 text-sm lang-txt" data-ar="ملفات المكتبة" data-en="Library Files">ملفات المكتبة</h3>
                         <p id="fCount" class="text-5xl font-bold">0</p>
                     </div>
                 </div>
             </div>
 
-            <div id="p-chat-init" class="page items-center justify-center text-center">
-                <h2 class="text-2xl font-bold mb-8 lang-txt" data-ar="اختر حساب التيست" data-en="Select Test Account">اختر حساب التيست</h2>
-                <div class="grid grid-cols-3 gap-6 max-w-2xl w-full">
-                    <div onclick="startChat('Belal')" class="glass p-6 rounded-2xl user-selector border-blue-500/30">
-                        <div class="w-12 h-12 bg-blue-600 rounded-full mx-auto mb-3 flex items-center justify-center font-bold">B</div>
-                        <p class="font-bold">Belal</p>
-                    </div>
-                    <div onclick="startChat('Anas')" class="glass p-6 rounded-2xl user-selector border-green-500/30">
-                        <div class="w-12 h-12 bg-green-600 rounded-full mx-auto mb-3 flex items-center justify-center font-bold">A</div>
-                        <p class="font-bold">Anas</p>
-                    </div>
-                    <div onclick="startChat('Hamza')" class="glass p-6 rounded-2xl user-selector border-purple-500/30">
-                        <div class="w-12 h-12 bg-purple-600 rounded-full mx-auto mb-3 flex items-center justify-center font-bold">H</div>
-                        <p class="font-bold">Hamza</p>
-                    </div>
-                </div>
+            <div id="p-chat-init" class="page">
+                <h2 class="text-2xl font-bold mb-8 text-center lang-txt" data-ar="اختر حسابك للمراسلة" data-en="Select account to chat">اختر حسابك للمراسلة</h2>
+                <div id="activeUserList" class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto w-full"></div>
             </div>
 
             <div id="p-chat-main" class="page">
                 <div id="chatBox" class="flex-1 glass rounded-2xl p-4 mb-4 overflow-y-auto flex flex-col gap-2"></div>
                 <div class="flex gap-2">
-                    <input type="text" id="chatInput" class="flex-1 p-4 rounded-xl glass outline-none border border-white/5" placeholder="اكتب رسالة تجريبية...">
+                    <input type="text" id="chatInput" class="flex-1 p-4 rounded-xl glass outline-none" placeholder="اكتب رسالتك...">
                     <button onclick="sendMsg()" class="bg-blue-600 px-8 rounded-xl font-bold"><i class="fas fa-paper-plane"></i></button>
                 </div>
             </div>
 
             <div id="p-library" class="page">
-                <h2 class="text-2xl font-bold mb-6 lang-txt" data-ar="رفع ومشاركة الملفات" data-en="Files & PDF">رفع ومشاركة الملفات</h2>
+                <h2 class="text-2xl font-bold mb-6 lang-txt" data-ar="المكتبة" data-en="Library">المكتبة</h2>
                 <input type="file" id="pdfInput" accept="application/pdf" class="hidden" onchange="uploadPDF()">
-                <button onclick="document.getElementById('pdfInput').click()" class="bg-red-600 px-6 py-3 rounded-xl font-bold mb-6"><i class="fas fa-file-pdf ml-2"></i> اختر ملف PDF</button>
+                <button onclick="document.getElementById('pdfInput').click()" class="bg-red-600 px-6 py-3 rounded-xl font-bold mb-6"><i class="fas fa-file-pdf ml-2"></i> رفع PDF</button>
                 <div id="fileList" class="space-y-4"></div>
             </div>
 
             <div id="p-admin" class="page">
-                <h2 class="text-2xl font-bold mb-6 text-yellow-500 lang-txt" data-ar="لوحة التحكم" data-en="Admin Panel">لوحة التحكم</h2>
-                <div class="glass p-6 rounded-2xl">
-                    <p class="mb-2">تحديث شريط الأخبار:</p>
-                    <input type="text" id="newsInput" class="w-full p-4 mb-4 rounded-xl bg-black/20 border border-white/10 outline-none" placeholder="الخبر الجديد هنا...">
-                    <button onclick="updateNews()" class="bg-yellow-600 px-6 py-2 rounded-xl font-bold">نشر التحديث</button>
+                <h2 class="text-2xl font-bold mb-6 text-yellow-500 lang-txt" data-ar="لوحة القائد" data-en="Leader Panel">لوحة القائد</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="glass p-6 rounded-2xl">
+                        <h3 class="font-bold mb-4">الأعضاء المتواجدون الآن:</h3>
+                        <div id="adminUserList" class="space-y-2"></div>
+                    </div>
+                    <div class="glass p-6 rounded-2xl">
+                        <h3 class="font-bold mb-4">تحديث الأخبار:</h3>
+                        <input type="text" id="newsInput" class="w-full p-4 mb-4 rounded-xl bg-black/20 border border-white/10 outline-none">
+                        <button onclick="updateNews()" class="bg-yellow-600 px-6 py-2 rounded-xl font-bold w-full">نشر الخبر</button>
+                    </div>
                 </div>
             </div>
         </main>
@@ -120,10 +109,11 @@
 
     <script>
         let session = JSON.parse(localStorage.getItem('alg_session') || 'null');
+        let registeredUsers = JSON.parse(localStorage.getItem('alg_registered') || '[]');
         let lang = 'ar';
         let selectedUser = null;
-        let msgs = JSON.parse(localStorage.getItem('alg_msgs_final') || '[]');
-        let files = JSON.parse(localStorage.getItem('alg_files_final') || '[]');
+        let msgs = JSON.parse(localStorage.getItem('alg_msgs_v4') || '[]');
+        let files = JSON.parse(localStorage.getItem('alg_files_v4') || '[]');
 
         function updateUI() {
             document.body.dir = lang === 'ar' ? 'rtl' : 'ltr';
@@ -133,16 +123,47 @@
                 document.getElementById('welcomeHead').innerText = (lang === 'ar' ? 'أهلاً يا ' : 'Welcome, ') + session.name;
                 if(session.role === 'ADMIN') document.getElementById('adminLink').classList.remove('hidden');
             }
+            document.getElementById('sUsersCount').innerText = registeredUsers.length + 1; // +1 for Admin
             renderFiles();
+            renderAdminUsers();
         }
 
         function login() {
             const n = document.getElementById('uName').value.trim();
             const p = document.getElementById('uPass').value;
+            if(!n) return;
+
             if(n.toLowerCase()==='belal' && p==='159078@1#') {
                 localStorage.setItem('alg_session', JSON.stringify({name:'Belal', role:'ADMIN'}));
                 location.reload();
+            } else {
+                // Add to registered if not exists
+                if(!registeredUsers.includes(n)) {
+                    registeredUsers.push(n);
+                    localStorage.setItem('alg_registered', JSON.stringify(registeredUsers));
+                }
+                localStorage.setItem('alg_session', JSON.stringify({name:n, role:'USER'}));
+                location.reload();
             }
+        }
+
+        function initChatSelection() {
+            showPage('chat-init');
+            const list = document.getElementById('activeUserList');
+            const allUsers = ['Belal', ...registeredUsers];
+            list.innerHTML = allUsers.map(u => `
+                <div onclick="startChat('${u}')" class="glass p-6 rounded-2xl user-card text-center font-bold">
+                    <div class="w-12 h-12 bg-blue-600 rounded-full mx-auto mb-3 flex items-center justify-center">${u[0]}</div>
+                    ${u}
+                </div>
+            `).join('');
+        }
+
+        function renderAdminUsers() {
+            const list = document.getElementById('adminUserList');
+            if(!list) return;
+            const allUsers = ['Belal (القائد)', ...registeredUsers];
+            list.innerHTML = allUsers.map(u => `<div class="p-3 bg-white/5 rounded-lg flex items-center gap-3"><i class="fas fa-circle text-green-500 text-[8px]"></i> ${u}</div>`).join('');
         }
 
         function startChat(name) { selectedUser = name; showPage('chat-main'); renderChat(); }
@@ -151,7 +172,7 @@
             const txt = document.getElementById('chatInput').value;
             if(!txt) return;
             msgs.push({user: selectedUser, text: txt, time: new Date().toLocaleTimeString('ar-EG')});
-            localStorage.setItem('alg_msgs_final', JSON.stringify(msgs));
+            localStorage.setItem('alg_msgs_v4', JSON.stringify(msgs));
             document.getElementById('chatInput').value = '';
             renderChat();
         }
@@ -160,11 +181,8 @@
             const box = document.getElementById('chatBox');
             if(!box) return;
             box.innerHTML = msgs.map(m => `
-                <div class="msg-bubble ${m.user === selectedUser ? 'border-blue-500 mr-auto' : 'border-slate-600 ml-auto'}">
-                    <div class="flex justify-between gap-4 mb-1">
-                        <span class="text-blue-400 font-bold text-xs">${m.user}</span>
-                        <span class="text-[10px] opacity-40">${m.time}</span>
-                    </div>
+                <div class="msg-bubble ${m.user === selectedUser ? 'mr-auto border-blue-500' : 'ml-auto border-slate-600'}">
+                    <span class="text-blue-400 font-bold text-xs block mb-1">${m.user}</span>
                     <p class="text-sm">${m.text}</p>
                 </div>
             `).join('');
@@ -174,8 +192,8 @@
         function uploadPDF() {
             const f = document.getElementById('pdfInput').files[0];
             if(f) {
-                files.push({name: f.name, size: (f.size/1024/1024).toFixed(2) + 'MB'});
-                localStorage.setItem('alg_files_final', JSON.stringify(files));
+                files.push({name: f.name});
+                localStorage.setItem('alg_files_v4', JSON.stringify(files));
                 renderFiles();
             }
         }
@@ -183,12 +201,7 @@
         function renderFiles() {
             const list = document.getElementById('fileList');
             if(!list) return;
-            list.innerHTML = files.map(f => `
-                <div class="glass p-4 rounded-xl flex justify-between border-r-4 border-red-500">
-                    <div><p class="font-bold">${f.name}</p><small class="opacity-40">${f.size}</small></div>
-                    <i class="fas fa-file-pdf text-red-500 text-2xl"></i>
-                </div>
-            `).join('');
+            list.innerHTML = files.map(f => `<div class="glass p-4 rounded-xl flex justify-between border-r-4 border-red-500"><span>${f.name}</span> <i class="fas fa-file-pdf text-red-500"></i></div>`).join('');
             document.getElementById('fCount').innerText = files.length;
         }
 
