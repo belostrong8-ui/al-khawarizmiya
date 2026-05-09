@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الخوارزمية </title>
+    <title>الخوارزمية - Ultimate Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
         :root { --bg: #020617; --card: #0f172a; --text: #f8fafc; --accent: #3b82f6; }
-        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: var(--text); height: 100vh; overflow: hidden; margin: 0; }
+        .light-mode { --bg: #f1f5f9; --card: #ffffff; --text: #0f172a; --accent: #2563eb; }
+        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: var(--text); height: 100vh; overflow: hidden; margin: 0; transition: 0.3s; }
         .glass { background: var(--card); border: 1px solid rgba(255,255,255,0.05); }
         .page { display: none; height: 100%; flex-direction: column; padding: 2rem; overflow-y: auto; }
         .active-page { display: flex; animation: fadeIn 0.3s ease; }
@@ -17,21 +18,20 @@
         .sidebar-btn { width: 100%; text-align: right; padding: 1rem; border-radius: 1rem; display: flex; align-items: center; gap: 1rem; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .sidebar-btn:hover { background: rgba(59, 130, 246, 0.1); color: var(--accent); }
         .leader-badge { background: #eab308; color: #000; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; }
-        input { background: rgba(0,0,0,0.3) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: white; outline: none; }
-        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-        th, td { padding: 1rem; text-align: right; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        input, textarea { background: rgba(0,0,0,0.2) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: inherit; outline: none; }
+        .light-mode input { background: rgba(0,0,0,0.05) !important; border: 1px solid rgba(0,0,0,0.1) !important; }
     </style>
 </head>
 <body class="flex">
 
     <div id="authPage" class="fixed inset-0 z-[500] bg-slate-950 flex items-center justify-center p-4">
         <div class="glass p-8 rounded-[2.5rem] w-full max-w-md text-center border-blue-500/30 border shadow-2xl">
-            <h2 id="authTitle" class="text-2xl font-bold mb-6">تسجيل الدخول</h2>
+            <h2 id="authTitle" class="text-2xl font-bold mb-6">الخوارزمية - دخول</h2>
             <div class="space-y-4">
-                <input type="text" id="uName" placeholder="اسم المستخدم" class="w-full p-4 rounded-xl text-center font-bold">
+                <input type="text" id="uName" placeholder="اسم المستخدم" class="w-full p-4 rounded-xl text-center">
                 <input type="password" id="uPass" placeholder="كلمة السر" class="w-full p-4 rounded-xl text-center">
-                <button onclick="handleAuth()" id="mainBtn" class="w-full bg-blue-600 p-4 rounded-xl font-bold hover:bg-blue-700 transition shadow-lg">دخول</button>
-                <button onclick="toggleAuthMode()" id="toggleBtn" class="text-blue-400 text-sm hover:underline block w-full mt-4">ليس لديك حساب؟ إنشاء حساب جديد</button>
+                <button onclick="handleAuth()" id="mainBtn" class="w-full bg-blue-600 p-4 rounded-xl font-bold hover:bg-blue-700 transition">دخول</button>
+                <button onclick="toggleAuthMode()" id="toggleBtn" class="text-blue-400 text-sm hover:underline block w-full mt-4">ليس لديك حساب؟ إنشاء حساب</button>
             </div>
         </div>
     </div>
@@ -43,60 +43,69 @@
                 <h1 class="font-bold text-xl">الخوارزمية</h1>
             </div>
             <nav class="flex-1 space-y-1">
-                <button onclick="showPage('dashboard')" class="sidebar-btn"><i class="fas fa-home w-5"></i> الرئيسية</button>
-                <button onclick="showPage('chat')" class="sidebar-btn"><i class="fas fa-comments w-5"></i> المراسلات</button>
-                <button onclick="showPage('library')" class="sidebar-btn"><i class="fas fa-book w-5"></i> المكتبة</button>
-                <button id="adminLink" onclick="showPage('admin')" class="hidden sidebar-btn text-yellow-500 border border-yellow-500/10"><i class="fas fa-crown w-5"></i> لوحة القائد</button>
+                <button onclick="showPage('dashboard')" class="sidebar-btn"><i class="fas fa-home"></i> <span data-key="nav-home">الرئيسية</span></button>
+                <button onclick="showPage('chat')" class="sidebar-btn"><i class="fas fa-comments"></i> <span data-key="nav-chat">المراسلات</span></button>
+                <button onclick="showPage('library')" class="sidebar-btn"><i class="fas fa-book"></i> <span data-key="nav-lib">المكتبة</span></button>
+                <button id="adminLink" onclick="showPage('admin')" class="hidden sidebar-btn text-yellow-500"><i class="fas fa-crown"></i> <span data-key="nav-admin">لوحة القائد</span></button>
             </nav>
+            
             <div class="pt-4 border-t border-white/5 space-y-2">
-                <button onclick="logout()" class="w-full p-3 bg-red-500/10 text-red-500 rounded-xl font-bold hover:bg-red-500/20"><i class="fas fa-power-off"></i> خروج</button>
+                <button onclick="toggleLang()" class="w-full p-3 glass rounded-xl text-xs font-bold hover:bg-white/5"><i class="fas fa-language"></i> <span id="langLabel">English</span></button>
+                <button onclick="toggleTheme()" class="w-full p-3 glass rounded-xl text-xs font-bold hover:bg-white/5"><i class="fas fa-adjust"></i> <span data-key="nav-theme">المظهر</span></button>
+                <button onclick="logout()" class="w-full p-3 bg-red-500/10 text-red-500 rounded-xl font-bold mt-2"><i class="fas fa-power-off"></i> <span data-key="nav-logout">خروج</span></button>
             </div>
         </aside>
 
         <main class="flex-1 flex flex-col overflow-hidden">
             <div id="p-dashboard" class="page active-page">
+                <div class="bg-blue-600/10 border border-blue-500/20 p-4 rounded-2xl mb-8">
+                    <marquee id="newsDisplay" class="font-bold text-blue-400">مرحباً بكم في الخوارزمية</marquee>
+                </div>
                 <h2 id="helloUser" class="text-3xl font-bold mb-8"></h2>
                 <div class="grid grid-cols-2 gap-6">
                     <div class="glass p-8 rounded-3xl border-r-4 border-blue-500">
-                        <p class="opacity-50 text-xs">الأعضاء المسجلين</p>
+                        <p class="opacity-50 text-xs" data-key="stat-users">الأعضاء</p>
                         <p id="userCount" class="text-5xl font-black mt-2">0</p>
-                    </div>
-                    <div class="glass p-8 rounded-3xl border-r-4 border-red-500">
-                        <p class="opacity-50 text-xs">رسائل المجموعة</p>
-                        <p id="msgCount" class="text-5xl font-black mt-2">0</p>
                     </div>
                 </div>
             </div>
 
             <div id="p-chat" class="page">
-                <div id="chatBox" class="flex-1 glass rounded-3xl p-6 mb-4 overflow-y-auto flex flex-col gap-4 shadow-inner"></div>
-                <div class="flex gap-4 p-2 glass rounded-2xl border border-white/5">
-                    <input type="text" id="chatInput" class="flex-1 bg-transparent p-4 outline-none" placeholder="اكتب رسالتك يا بطل...">
-                    <button onclick="sendMsg()" class="bg-blue-600 h-14 w-14 rounded-xl text-xl hover:bg-blue-500 transition shadow-lg"><i class="fas fa-paper-plane"></i></button>
+                <div id="chatBox" class="flex-1 glass rounded-3xl p-6 mb-4 overflow-y-auto flex flex-col gap-4"></div>
+                <div class="flex gap-4 p-2 glass rounded-2xl">
+                    <input type="text" id="chatInput" class="flex-1 bg-transparent p-4 outline-none" placeholder="...">
+                    <button onclick="sendMsg()" class="bg-blue-600 h-14 w-14 rounded-xl"><i class="fas fa-paper-plane"></i></button>
                 </div>
             </div>
 
+            <div id="p-library" class="page">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-2xl font-bold" data-key="nav-lib">المكتبة</h2>
+                    <div id="uploadArea" class="hidden">
+                        <input type="file" id="pdfInput" accept="application/pdf" class="hidden" onchange="uploadFile()">
+                        <button onclick="document.getElementById('pdfInput').click()" class="bg-blue-600 px-6 py-2 rounded-xl font-bold text-sm">رفع PDF</button>
+                    </div>
+                </div>
+                <div id="fileList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
+
             <div id="p-admin" class="page">
-                <h2 class="text-2xl font-bold text-yellow-500 mb-6">لوحة تحكم القائد</h2>
-                <div class="glass p-6 rounded-3xl mb-8">
-                    <h3 class="font-bold mb-4 flex items-center gap-2"><i class="fas fa-users-cog"></i> إدارة الأعضاء وباسورداتهم</h3>
-                    <div class="overflow-x-auto">
-                        <table>
-                            <thead>
-                                <tr class="text-blue-400">
-                                    <th>الاسم</th>
-                                    <th>كلمة السر</th>
-                                    <th>الرتبة</th>
-                                </tr>
-                            </thead>
-                            <tbody id="userTableBody"></tbody>
-                        </table>
+                <h2 class="text-2xl font-bold text-yellow-500 mb-6">لوحة القائد</h2>
+                <div class="glass p-6 rounded-3xl mb-6">
+                    <h3 class="font-bold mb-4">تحديث الخبر</h3>
+                    <div class="flex gap-2">
+                        <input type="text" id="newsInput" class="flex-1 p-4 rounded-xl" placeholder="خبر جديد...">
+                        <button onclick="updateNews()" class="bg-blue-600 px-6 rounded-xl font-bold">تحديث</button>
                     </div>
                 </div>
                 <div class="glass p-6 rounded-3xl">
-                    <h3 class="font-bold mb-4">تحديث أخبار الموقع</h3>
-                    <input type="text" id="newsInput" class="w-full p-4 mb-4 rounded-xl" placeholder="اكتب الخبر الجديد هنا...">
-                    <button onclick="updateNews()" class="bg-yellow-600 w-full p-4 rounded-xl font-bold text-black hover:bg-yellow-500">نشر الخبر</button>
+                    <h3 class="font-bold mb-4">إدارة الأعضاء (حذف)</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-right">
+                            <thead><tr class="text-blue-400"><th>الاسم</th><th>كلمة السر</th><th>القرار</th></tr></thead>
+                            <tbody id="adminUserTable"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </main>
@@ -104,81 +113,113 @@
 
     <script>
         let isLoginMode = true;
-        // قاعدة البيانات المخزنة
-        let users = JSON.parse(localStorage.getItem('alg_db_v12') || '[{"name":"belal","pass":"159078@1#","role":"ADMIN"}]');
+        let users = JSON.parse(localStorage.getItem('alg_db_v13') || '[{"name":"belal","pass":"159078@1#","role":"ADMIN"}]');
         let session = JSON.parse(localStorage.getItem('alg_session') || 'null');
-        let msgs = JSON.parse(localStorage.getItem('alg_msgs_v12') || '[]');
+        let msgs = JSON.parse(localStorage.getItem('alg_msgs_v13') || '[]');
+        let files = JSON.parse(localStorage.getItem('alg_files_v13') || '[]');
+        let currentLang = localStorage.getItem('alg_lang') || 'ar';
+        let news = localStorage.getItem('alg_news_v13') || "أهلاً بك في نظام الخوارزمية";
+
+        const dict = {
+            ar: { 'nav-home': 'الرئيسية', 'nav-chat': 'المراسلات', 'nav-lib': 'المكتبة', 'nav-admin': 'لوحة القائد', 'nav-theme': 'المظهر', 'nav-logout': 'خروج', 'stat-users': 'الأعضاء' },
+            en: { 'nav-home': 'Home', 'nav-chat': 'Chat', 'nav-lib': 'Library', 'nav-admin': 'Admin', 'nav-theme': 'Theme', 'nav-logout': 'Logout', 'stat-users': 'Members' }
+        };
 
         function toggleAuthMode() {
             isLoginMode = !isLoginMode;
-            document.getElementById('authTitle').innerText = isLoginMode ? 'تسجيل الدخول' : 'إنشاء حساب جديد';
+            document.getElementById('authTitle').innerText = isLoginMode ? 'دخول' : 'حساب جديد';
             document.getElementById('mainBtn').innerText = isLoginMode ? 'دخول' : 'تسجيل';
-            document.getElementById('toggleBtn').innerText = isLoginMode ? 'ليس لديك حساب؟ إنشاء حساب جديد' : 'لديك حساب بالفعل؟ سجل دخولك';
+            document.getElementById('toggleBtn').innerText = isLoginMode ? 'إنشاء حساب' : 'لديك حساب؟';
         }
 
         function handleAuth() {
             const name = document.getElementById('uName').value.trim().toLowerCase();
             const pass = document.getElementById('uPass').value;
-            if(!name || !pass) return alert('كمل البيانات يا بطل!');
-
+            if(!name || !pass) return;
             if(isLoginMode) {
                 const user = users.find(u => u.name === name && u.pass === pass);
-                if(user) {
-                    localStorage.setItem('alg_session', JSON.stringify(user));
-                    location.reload();
-                } else { alert('الاسم أو الباسورد غلط!'); }
+                if(user) { localStorage.setItem('alg_session', JSON.stringify(user)); location.reload(); }
+                else alert('غلط!');
             } else {
-                if(users.find(u => u.name === name)) return alert('الاسم ده محجوز فعلاً!');
+                if(users.find(u => u.name === name)) return alert('موجود!');
                 users.push({name: name, pass: pass, role: 'USER'});
-                localStorage.setItem('alg_db_v12', JSON.stringify(users));
-                alert('تم إنشاء الحساب! سجل دخولك دلوقتي.');
+                localStorage.setItem('alg_db_v13', JSON.stringify(users));
                 toggleAuthMode();
             }
         }
 
         function updateUI() {
             if(!session) return;
-            document.getElementById('helloUser').innerText = `أهلاً بك يا ${session.name === 'belal' ? 'قائد بلال' : session.name}`;
+            document.getElementById('helloUser').innerText = (currentLang==='ar'?'أهلاً ':'Hi ') + session.name;
+            document.getElementById('newsDisplay').innerText = news;
             document.getElementById('userCount').innerText = users.length;
-            document.getElementById('msgCount').innerText = msgs.length;
+            document.getElementById('langLabel').innerText = currentLang === 'ar' ? 'English' : 'العربية';
+            document.querySelectorAll('[data-key]').forEach(el => el.innerText = dict[currentLang][el.getAttribute('data-key')]);
             
             if(session.role === 'ADMIN') {
                 document.getElementById('adminLink').classList.remove('hidden');
-                renderUserTable();
+                document.getElementById('uploadArea').classList.remove('hidden');
+                renderAdminUsers();
             }
-            renderChat();
+            renderFiles(); renderChat();
         }
 
-        function renderUserTable() {
-            const tbody = document.getElementById('userTableBody');
-            tbody.innerHTML = users.map(u => `
-                <tr>
-                    <td class="font-bold">${u.name}</td>
-                    <td class="text-blue-300 font-mono">${u.pass}</td>
-                    <td>${u.role === 'ADMIN' ? '<span class="leader-badge">القائد</span>' : 'عضو'}</td>
+        function toggleLang() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            localStorage.setItem('alg_lang', currentLang);
+            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            updateUI();
+        }
+
+        function toggleTheme() { document.body.classList.toggle('light-mode'); }
+
+        function renderAdminUsers() {
+            const body = document.getElementById('adminUserTable');
+            body.innerHTML = users.map(u => `
+                <tr class="border-b border-white/5">
+                    <td class="p-3">${u.name}</td>
+                    <td class="p-3">${u.pass}</td>
+                    <td class="p-3">${u.role !== 'ADMIN' ? `<button onclick="deleteUser('${u.name}')" class="text-red-500">حذف</button>` : 'القائد'}</td>
                 </tr>
             `).join('');
+        }
+
+        function deleteUser(name) {
+            users = users.filter(u => u.name !== name);
+            localStorage.setItem('alg_db_v13', JSON.stringify(users));
+            renderAdminUsers();
+        }
+
+        function updateNews() {
+            news = document.getElementById('newsInput').value;
+            localStorage.setItem('alg_news_v13', news);
+            location.reload();
+        }
+
+        function uploadFile() {
+            const f = document.getElementById('pdfInput').files[0];
+            if(f) { files.push({name: f.name}); localStorage.setItem('alg_files_v13', JSON.stringify(files)); renderFiles(); }
+        }
+
+        function renderFiles() {
+            const list = document.getElementById('fileList');
+            list.innerHTML = files.map(f => `<div class="glass p-4 rounded-xl flex justify-between border-r-4 border-red-500"><span>${f.name}</span><i class="fas fa-file-pdf text-red-500"></i></div>`).join('');
         }
 
         function sendMsg() {
             const txt = document.getElementById('chatInput').value.trim();
             if(!txt) return;
-            msgs.push({user: session.name, text: txt, isLeader: session.role === 'ADMIN'});
-            localStorage.setItem('alg_msgs_v12', JSON.stringify(msgs));
-            document.getElementById('chatInput').value = '';
-            renderChat();
+            msgs.push({user: session.name, isLeader: session.role === 'ADMIN', text: txt});
+            localStorage.setItem('alg_msgs_v13', JSON.stringify(msgs));
+            document.getElementById('chatInput').value = ''; renderChat();
         }
 
         function renderChat() {
             const box = document.getElementById('chatBox');
-            if(!box) return;
             box.innerHTML = msgs.map(m => `
-                <div class="p-4 glass rounded-2xl ${m.user === session.name ? 'mr-auto border-r-2 border-blue-500 bg-blue-500/5' : 'ml-auto border-r-2 border-slate-500'} max-w-[85%]">
-                    <div class="flex items-center gap-2 mb-1">
-                        <span class="text-[11px] font-bold text-blue-400">${m.user}</span>
-                        ${m.isLeader ? '<span class="leader-badge">الخوارزمية</span>' : ''}
-                    </div>
-                    <p class="text-sm leading-relaxed">${m.text}</p>
+                <div class="p-3 glass rounded-2xl ${m.user === session.name ? 'mr-auto border-r-2 border-blue-500' : 'ml-auto border-r-2 border-slate-500'} max-w-[80%]">
+                    <div class="flex items-center gap-2 mb-1"><span class="text-[10px] font-bold text-blue-400">${m.user}</span>${m.isLeader?'<span class="leader-badge">القائد</span>':''}</div>
+                    <p class="text-sm">${m.text}</p>
                 </div>
             `).join('');
             box.scrollTop = box.scrollHeight;
@@ -187,6 +228,7 @@
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
             document.getElementById('p-'+id).classList.add('active-page');
+            if(id==='chat') renderChat();
         }
 
         function logout() { localStorage.removeItem('alg_session'); location.reload(); }
@@ -194,6 +236,7 @@
         if(session) {
             document.getElementById('authPage').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
+            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
             updateUI();
         }
     </script>
