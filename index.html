@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الخوارزمية Ultimate - V30</title>
+    <title>الخوارزمية Ultimate - V30.1</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -16,7 +16,6 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .sidebar-btn { width: 100%; text-align: right; padding: 1rem; border-radius: 1rem; display: flex; align-items: center; gap: 1rem; cursor: pointer; transition: 0.2s; }
         .sidebar-btn:hover, .sidebar-btn.active { background: var(--accent); color: white; }
-        /* Modal Style */
         #previewModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1000; padding: 20px; }
     </style>
 </head>
@@ -24,19 +23,20 @@
 
     <div id="previewModal">
         <div class="flex justify-between mb-4 text-white">
-            <h3 id="previewTitle">معاينة الملف</h3>
-            <button onclick="closePreview()" class="text-2xl">&times;</button>
+            <h3 id="previewTitle">معاينة</h3>
+            <button onclick="closePreview()" class="text-2xl text-red-500 font-bold">&times; إغلاق</button>
         </div>
         <iframe id="previewFrame" class="w-full h-[90%] rounded-xl bg-white"></iframe>
     </div>
 
     <div id="authPage" class="fixed inset-0 z-[500] bg-slate-950 flex items-center justify-center p-4">
         <div class="glass p-8 rounded-[2.5rem] w-full max-w-md text-center border-blue-500/30 border shadow-2xl">
-            <h2 class="text-2xl font-bold mb-6 text-blue-500">الخوارزمية - دخول</h2>
+            <h2 id="authTitle" class="text-2xl font-bold mb-6 text-blue-500">الخوارزمية - دخول</h2>
             <div class="space-y-4">
                 <input type="text" id="uName" placeholder="اسم المستخدم" class="w-full p-4 rounded-xl text-center bg-slate-900 border border-white/10 outline-none text-white">
                 <input type="password" id="uPass" placeholder="كلمة السر" class="w-full p-4 rounded-xl text-center bg-slate-900 border border-white/10 outline-none text-white">
-                <button onclick="handleAuth()" class="w-full bg-blue-600 p-4 rounded-xl font-bold hover:bg-blue-700 transition text-white">دخول</button>
+                <button onclick="handleAuth()" id="authMainBtn" class="w-full bg-blue-600 p-4 rounded-xl font-bold hover:bg-blue-700 transition text-white">دخول</button>
+                <button onclick="toggleAuthMode()" id="toggleAuthBtn" class="text-blue-400 text-xs mt-2 underline cursor-pointer">إنشاء حساب جديد</button>
             </div>
         </div>
     </div>
@@ -50,7 +50,7 @@
                 <button onclick="showPage('library')" id="btn-library" class="sidebar-btn"><i class="fas fa-book"></i> المكتبة</button>
                 <button id="adminLink" onclick="showPage('admin')" class="hidden sidebar-btn text-yellow-500"><i class="fas fa-crown"></i> لوحة القائد</button>
             </nav>
-            <button onclick="requestNotify()" class="p-2 mb-2 text-[10px] glass rounded-lg text-blue-400">تفعيل إشعارات التليفون 🔔</button>
+            <button onclick="requestNotify()" class="p-2 mb-2 text-[10px] glass rounded-lg text-blue-400">تفعيل إشعارات الهاتف 🔔</button>
             <button onclick="logout()" class="w-full p-3 bg-red-500/10 text-red-500 rounded-xl font-bold">خروج</button>
         </aside>
 
@@ -66,7 +66,7 @@
             <div id="p-chat" class="page">
                 <div id="chatBox" class="flex-1 glass rounded-2xl p-4 mb-4 overflow-y-auto flex flex-col gap-3"></div>
                 <div class="flex gap-2 p-2 glass rounded-2xl">
-                    <input type="text" id="chatInput" class="flex-1 bg-transparent p-4 outline-none" placeholder="اكتب رسالة...">
+                    <input type="text" id="chatInput" class="flex-1 bg-transparent p-4 outline-none text-white" placeholder="اكتب رسالة...">
                     <button onclick="sendMsg()" class="bg-blue-600 h-12 w-12 rounded-xl"><i class="fas fa-paper-plane"></i></button>
                 </div>
             </div>
@@ -74,20 +74,20 @@
             <div id="p-library" class="page">
                 <div class="flex flex-col md:flex-row justify-between gap-4 mb-6">
                     <h2 class="text-2xl font-bold">المكتبة الرقمية</h2>
-                    <input type="text" id="libSearch" oninput="renderFiles()" placeholder="بحث في الملفات..." class="bg-slate-900 border border-white/10 p-2 rounded-lg outline-none w-full md:w-64">
+                    <input type="text" id="libSearch" oninput="renderFiles()" placeholder="بحث في الملفات..." class="bg-slate-900 border border-white/10 p-2 rounded-lg outline-none w-full md:w-64 text-white">
                     <input type="file" id="libFile" accept="application/pdf" class="hidden" onchange="uploadFile()">
                     <button id="upBtn" onclick="document.getElementById('libFile').click()" class="hidden bg-blue-600 px-6 py-2 rounded-xl font-bold text-sm">رفع ملف جديد</button>
                 </div>
-                <div id="fileList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                <div id="fileList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-white"></div>
             </div>
 
             <div id="p-admin" class="page">
                 <h2 class="text-2xl font-bold text-yellow-500 mb-6">إدارة النظام</h2>
                 <div class="glass p-6 rounded-3xl max-w-md">
-                    <h3 class="font-bold mb-4">إضافة عضو جديد</h3>
-                    <input type="text" id="addU" placeholder="الاسم" class="w-full p-4 mb-2 rounded-xl bg-slate-900 border border-white/10 outline-none">
-                    <input type="password" id="addP" placeholder="الباسورد" class="w-full p-4 mb-4 rounded-xl bg-slate-900 border border-white/10 outline-none">
-                    <button onclick="addUser()" class="w-full bg-blue-600 p-4 rounded-xl font-bold">إضافة</button>
+                    <h3 class="font-bold mb-4">إضافة عضو يدوياً</h3>
+                    <input type="text" id="addU" placeholder="الاسم" class="w-full p-4 mb-2 rounded-xl bg-slate-900 border border-white/10 outline-none text-white">
+                    <input type="password" id="addP" placeholder="الباسورد" class="w-full p-4 mb-4 rounded-xl bg-slate-900 border border-white/10 outline-none text-white">
+                    <button onclick="addUser()" class="w-full bg-blue-600 p-4 rounded-xl font-bold">إضافة للفريق</button>
                 </div>
             </div>
         </main>
@@ -96,20 +96,38 @@
     <script>
         let users = JSON.parse(localStorage.getItem('alg_db_v30') || '[{"name":"belal","pass":"159078@1#","role":"ADMIN"}]');
         let session = JSON.parse(localStorage.getItem('alg_session_v30') || 'null');
-        let msgs = JSON.parse(localStorage.getItem('alg_msgs_v30') || []);
-        let files = JSON.parse(localStorage.getItem('alg_files_v30') || []);
+        let msgs = JSON.parse(localStorage.getItem('alg_msgs_v30') || '[]');
+        let files = JSON.parse(localStorage.getItem('alg_files_v30') || '[]');
+        let isLoginMode = true;
+
+        function toggleAuthMode() {
+            isLoginMode = !isLoginMode;
+            document.getElementById('authTitle').innerText = isLoginMode ? 'الخوارزمية - دخول' : 'الخوارزمية - حساب جديد';
+            document.getElementById('authMainBtn').innerText = isLoginMode ? 'دخول' : 'إنشاء حساب';
+            document.getElementById('toggleAuthBtn').innerText = isLoginMode ? 'إنشاء حساب جديد' : 'لديك حساب؟ دخول';
+        }
 
         function handleAuth() {
             const n = document.getElementById('uName').value.trim().toLowerCase();
             const p = document.getElementById('uPass').value;
-            const u = users.find(x => x.name === n && x.pass === p);
-            if(u) { localStorage.setItem('alg_session_v30', JSON.stringify(u)); location.reload(); }
-            else alert('بيانات خطأ!');
+            if(!n || !p) return alert('أكمل البيانات!');
+
+            if(isLoginMode) {
+                const u = users.find(x => x.name === n && x.pass === p);
+                if(u) { localStorage.setItem('alg_session_v30', JSON.stringify(u)); location.reload(); }
+                else alert('خطأ في الاسم أو كلمة السر!');
+            } else {
+                if(users.find(x => x.name === n)) return alert('الاسم مستخدم بالفعل!');
+                users.push({name: n, pass: p, role: 'USER'});
+                localStorage.setItem('alg_db_v30', JSON.stringify(users));
+                alert('تم إنشاء الحساب بنجاح! سجل دخولك الآن.');
+                toggleAuthMode();
+            }
         }
 
         function updateUI() {
             if(!session) return;
-            document.getElementById('helloUser').innerText = `أهلاً ${session.name === 'belal' ? 'بالقائد Belal' : session.name}`;
+            document.getElementById('helloUser').innerText = `أهلاً ${session.name === 'belal' ? 'بالقائد Belal 👑' : session.name}`;
             document.getElementById('userCount').innerText = users.length;
             document.getElementById('fileCount').innerText = files.length;
             if(session.role === 'ADMIN') {
@@ -119,32 +137,25 @@
             renderChat(); renderFiles();
         }
 
-        // --- 1. الإشعارات ---
         function requestNotify() {
-            Notification.requestPermission().then(p => {
-                if(p === 'granted') alert('تم تفعيل الإشعارات بنجاح!');
-            });
+            Notification.requestPermission().then(p => { if(p === 'granted') alert('🔔 الإشعارات مفعلة!'); });
         }
 
         function sendNotify(title, body) {
-            if(Notification.permission === 'granted') {
-                new Notification(title, { body: body, icon: 'https://cdn-icons-png.flaticon.com/512/5968/5968204.png' });
-            }
+            if(Notification.permission === 'granted') { new Notification(title, { body: body }); }
         }
 
-        // --- 2. البحث والمعاينة ---
         function renderFiles() {
             const term = document.getElementById('libSearch').value.toLowerCase();
             const list = document.getElementById('fileList');
             const filtered = files.filter(f => f.name.toLowerCase().includes(term));
-            
             list.innerHTML = filtered.map(f => `
-                <div class="glass p-4 rounded-xl flex justify-between items-center group">
-                    <div class="cursor-pointer" onclick="previewPDF('${f.url}', '${f.name}')">
-                        <p class="font-bold text-sm truncate w-40">📄 ${f.name}</p>
+                <div class="glass p-4 rounded-xl flex justify-between items-center">
+                    <div class="cursor-pointer flex-1" onclick="previewPDF('${f.url}', '${f.name}')">
+                        <p class="font-bold text-sm truncate">📄 ${f.name}</p>
                         <p class="text-[10px] opacity-40">بواسطة: ${f.sender}</p>
                     </div>
-                    ${session.role === 'ADMIN' ? `<button onclick="delFile(${f.id})" class="text-red-500"><i class="fas fa-trash"></i></button>` : ''}
+                    ${session.role === 'ADMIN' ? `<button onclick="delFile(${f.id})" class="text-red-500 mr-2"><i class="fas fa-trash"></i></button>` : ''}
                 </div>
             `).join('');
         }
@@ -155,20 +166,19 @@
             document.getElementById('previewModal').style.display = 'block';
         }
 
-        function closePreview() { document.getElementById('previewModal').style.display = 'none'; }
+        function closePreview() { document.getElementById('previewModal').style.display = 'none'; document.getElementById('previewFrame').src = ''; }
 
-        // --- 3. الرفع والضغط ---
         function uploadFile() {
             const file = document.getElementById('libFile').files[0];
             if(!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
-                const newFile = { id: Date.now(), name: file.name, url: e.target.result, sender: session.name };
-                files.push(newFile);
-                if(files.length > 20) files.shift(); // نظام ضغط بسيط: حذف أقدم الملفات لو زادت عن 20
+                files.push({ id: Date.now(), name: file.name, url: e.target.result, sender: session.name });
+                if(files.length > 20) files.shift();
                 localStorage.setItem('alg_files_v30', JSON.stringify(files));
-                sendNotify("ملف جديد!", `قام ${session.name} برفع ملف: ${file.name}`);
+                sendNotify("ملف جديد في المكتبة", `قام ${session.name} برفع ${file.name}`);
                 renderFiles();
+                document.getElementById('fileCount').innerText = files.length;
             };
             reader.readAsDataURL(file);
         }
@@ -177,7 +187,7 @@
             const input = document.getElementById('chatInput');
             if(!input.value.trim()) return;
             msgs.push({id: Date.now(), user: session.name, text: input.value});
-            if(msgs.length > 50) msgs.shift(); // الحفاظ على السرعة بمسح الرسايل القديمة جداً
+            if(msgs.length > 50) msgs.shift();
             localStorage.setItem('alg_msgs_v30', JSON.stringify(msgs));
             input.value = ''; renderChat();
         }
@@ -187,10 +197,19 @@
             box.innerHTML = msgs.map(m => `
                 <div class="p-3 glass rounded-xl ${m.user === session.name ? 'mr-auto bg-blue-500/10' : 'ml-auto'} max-w-[80%]">
                     <p class="text-[10px] font-bold text-blue-400">${m.user}</p>
-                    <p class="text-sm">${m.text}</p>
+                    <p class="text-sm text-white">${m.text}</p>
                 </div>
             `).join('');
             box.scrollTop = box.scrollHeight;
+        }
+
+        function delFile(id) {
+            if(confirm('حذف الملف؟')) {
+                files = files.filter(f => f.id !== id);
+                localStorage.setItem('alg_files_v30', JSON.stringify(files));
+                renderFiles();
+                document.getElementById('fileCount').innerText = files.length;
+            }
         }
 
         function showPage(id) {
@@ -203,11 +222,21 @@
         function addUser() {
             const n = document.getElementById('addU').value.trim().toLowerCase();
             const p = document.getElementById('addP').value;
-            if(n && p) { users.push({name:n, pass:p, role:'USER'}); localStorage.setItem('alg_db_v30', JSON.stringify(users)); alert('تم!'); }
+            if(n && p) {
+                users.push({name:n, pass:p, role:'USER'});
+                localStorage.setItem('alg_db_v30', JSON.stringify(users));
+                alert('تم إضافة العضو بنجاح!');
+                document.getElementById('userCount').innerText = users.length;
+            }
         }
 
         function logout() { localStorage.removeItem('alg_session_v30'); location.reload(); }
-        if(session) { document.getElementById('authPage').classList.add('hidden'); document.getElementById('mainApp').classList.remove('hidden'); updateUI(); }
+        
+        if(session) {
+            document.getElementById('authPage').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            updateUI();
+        }
     </script>
 </body>
 </html>
