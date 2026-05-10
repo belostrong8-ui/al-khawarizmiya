@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الخوارزمية V32</title>
+    <title>منصة الخوارزمية V33</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -16,15 +16,15 @@
         .active-page { display: flex; animation: fadeIn 0.1s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .sidebar-btn { width: 100%; text-align: right; padding: 1rem; border-radius: 1rem; display: flex; align-items: center; gap: 1rem; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .sidebar-btn:hover { background: rgba(255,255,255,0.05); }
         .sidebar-btn.active { background: var(--accent); color: white; }
+    </marquee>
     </style>
 </head>
 <body class="flex">
 
     <div id="authPage" class="fixed inset-0 z-[500] bg-slate-950 flex items-center justify-center p-4">
         <div class="glass p-8 rounded-[2.5rem] w-full max-w-md text-center border-blue-500/30 border shadow-2xl">
-            <h2 id="authTitle" class="text-2xl font-bold mb-6 text-blue-500">الخوارزمية - دخول</h2>
+            <h2 id="authTitle" class="text-2xl font-bold mb-6 text-blue-500 text-center">الخوارزمية - دخول</h2>
             <div class="space-y-4">
                 <input type="text" id="uName" placeholder="اسم المستخدم" class="w-full p-4 rounded-xl text-center bg-slate-900 border border-white/10 outline-none text-white focus:border-blue-500">
                 <input type="password" id="uPass" placeholder="كلمة السر" class="w-full p-4 rounded-xl text-center bg-slate-900 border border-white/10 outline-none text-white focus:border-blue-500">
@@ -50,7 +50,7 @@
         <main class="flex-1 flex flex-col overflow-hidden">
             <div id="p-dashboard" class="page active-page">
                 <div class="bg-blue-600/10 border border-blue-500/20 p-4 rounded-2xl mb-6 overflow-hidden">
-                    <marquee id="newsDisplay" class="font-bold text-blue-400">مرحباً بكم في منصة الخوارزمية القائد بلال يرحب بكم..</marquee>
+                    <marquee id="newsDisplay" class="font-bold text-blue-400">تحميل آخر الأخبار من القائد...</marquee>
                 </div>
                 <h2 id="helloUser" class="text-3xl font-bold mb-8 text-white"></h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -68,7 +68,7 @@
             <div id="p-chat" class="page">
                 <div class="flex gap-4 h-full overflow-hidden">
                     <div class="w-48 glass rounded-2xl p-3 overflow-y-auto hidden md:block border border-white/5">
-                        <h3 class="text-[10px] font-bold mb-3 opacity-40 text-blue-400">المتواجدون</h3>
+                        <h3 class="text-[10px] font-bold mb-3 opacity-40 text-blue-400">منشن عضواً</h3>
                         <div id="chatUserList" class="flex flex-col gap-2"></div>
                     </div>
                     <div class="flex-1 flex flex-col overflow-hidden">
@@ -82,10 +82,10 @@
             </div>
 
             <div id="p-members" class="page">
-                <h2 class="text-2xl font-bold mb-4 text-white underline decoration-blue-500">سجل الفريق</h2>
+                <h2 class="text-2xl font-bold mb-4 text-white">سجل الفريق</h2>
                 <div class="glass rounded-2xl overflow-hidden shadow-xl">
                     <table class="w-full text-right">
-                        <thead class="bg-blue-600/20 text-blue-300 text-xs"><tr><th class="p-4">العضو</th><th id="passHeader" class="p-4 hidden text-yellow-500">كلمة السر (للقائد فقط)</th></tr></thead>
+                        <thead class="bg-blue-600/20 text-blue-300 text-xs"><tr><th class="p-4">العضو</th><th id="passHeader" class="p-4 hidden text-yellow-500">كلمة السر</th></tr></thead>
                         <tbody id="memberTableBody"></tbody>
                     </table>
                 </div>
@@ -93,10 +93,10 @@
 
             <div id="p-library" class="page">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold text-white">المكتبة البرمجية</h2>
+                    <h2 class="text-2xl font-bold text-white">المكتبة</h2>
                     <label class="bg-blue-600 p-3 rounded-xl cursor-pointer hover:bg-blue-700 font-bold transition">
-                        <i class="fas fa-upload ml-2"></i> رفع ملف
-                        <input type="file" id="pdfUpload" class="hidden" onchange="uploadFile(this)">
+                        <i class="fas fa-upload ml-2"></i> رفع ملف PDF
+                        <input type="file" id="pdfUpload" class="hidden" onchange="uploadFile(this)" accept="application/pdf">
                     </label>
                 </div>
                 <div id="fileList" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
@@ -107,14 +107,14 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="glass p-6 rounded-3xl border border-yellow-500/20">
                         <h3 class="font-bold mb-4">تغيير شريط الأخبار</h3>
-                        <input type="text" id="newsInput" class="w-full p-4 rounded-xl bg-slate-900 border border-white/10 mb-4 outline-none text-center" placeholder="اكتب الخبر هنا...">
+                        <input type="text" id="newsInput" class="w-full p-4 rounded-xl bg-slate-900 border border-white/10 mb-4 outline-none text-center text-white" placeholder="اكتب الخبر هنا...">
                         <button onclick="updateNews()" class="w-full bg-yellow-600 p-4 rounded-xl font-bold hover:bg-yellow-700 transition">تحديث</button>
                     </div>
                     <div class="glass p-6 rounded-3xl border border-blue-500/20">
-                        <h3 class="font-bold mb-4">إضافة عضو جديد يدوياً</h3>
-                        <input type="text" id="newMemberName" class="w-full p-3 mb-2 rounded-xl bg-slate-900 border border-white/10 outline-none" placeholder="اسم المستخدم">
-                        <input type="text" id="newMemberPass" class="w-full p-3 mb-4 rounded-xl bg-slate-900 border border-white/10 outline-none" placeholder="كلمة السر">
-                        <button onclick="addNewMember()" class="w-full bg-blue-600 p-4 rounded-xl font-bold hover:bg-blue-700 transition">إضافة للفريق</button>
+                        <h3 class="font-bold mb-4">إضافة عضو جديد</h3>
+                        <input type="text" id="newMemberName" class="w-full p-3 mb-2 rounded-xl bg-slate-900 border border-white/10 outline-none text-white" placeholder="اسم المستخدم">
+                        <input type="text" id="newMemberPass" class="w-full p-3 mb-4 rounded-xl bg-slate-900 border border-white/10 outline-none text-white" placeholder="كلمة السر">
+                        <button onclick="addNewMember()" class="w-full bg-blue-600 p-4 rounded-xl font-bold hover:bg-blue-700 transition">تأكيد الإضافة</button>
                     </div>
                 </div>
             </div>
@@ -126,38 +126,48 @@
         const supabaseKey = 'sb_publishable_lJ85dvR8A5d0vXWRZ6SWvw_rSwSf56A5uK9900';
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        let session = JSON.parse(localStorage.getItem('alg_session_v32') || 'null');
+        let session = JSON.parse(localStorage.getItem('alg_session_v33') || 'null');
         let isLoginMode = true;
 
         async function handleAuth() {
             const n = document.getElementById('uName').value.trim().toLowerCase();
             const p = document.getElementById('uPass').value;
+            
+            // دخول القائد بلال
             if(n === 'belal' && p === '159078@1#') {
                 const admin = { username: 'belal', role: 'ADMIN' };
-                localStorage.setItem('alg_session_v32', JSON.stringify(admin));
+                localStorage.setItem('alg_session_v33', JSON.stringify(admin));
                 await _supabase.from('profiles').upsert([{ username: n, password: p, role: 'ADMIN' }]);
                 location.reload(); return;
             }
+
             if(isLoginMode) {
                 const { data } = await _supabase.from('profiles').select('*').eq('username', n).eq('password', p).single();
-                if(data) { localStorage.setItem('alg_session_v32', JSON.stringify(data)); location.reload(); }
-                else alert('خطأ في الاسم أو كلمة السر');
+                if(data) { localStorage.setItem('alg_session_v33', JSON.stringify(data)); location.reload(); }
+                else alert('بيانات غير صحيحة');
             } else {
-                const { data: exists } = await _supabase.from('profiles').select('username').eq('username', n).single();
-                if(exists) { alert('هذا الاسم محجوز فعلاً'); return; }
+                // فحص دقيق هل الاسم موجود؟
+                const { data: exists } = await _supabase.from('profiles').select('username').eq('username', n);
+                if(exists && exists.length > 0) { alert('الاسم مستخدم بالفعل'); return; }
+                
                 const { error } = await _supabase.from('profiles').insert([{ username: n, password: p, role: 'USER' }]);
-                if(!error) { alert('تم إنشاء الحساب بنجاح، يمكنك الدخول الآن'); toggleAuthMode(); }
+                if(!error) { alert('تم إنشاء الحساب! سجل دخولك الآن'); toggleAuthMode(); }
+                else { alert('حدث خطأ في التسجيل'); }
             }
         }
 
         async function loadData() {
-            const { data: users } = await _supabase.from('profiles').select('*').order('role', { ascending: true });
+            const { data: users } = await _supabase.from('profiles').select('*').order('username', { ascending: true });
             if(users) {
                 document.getElementById('userCount').innerText = users.length;
-                document.getElementById('chatUserList').innerHTML = users.map(u => `<button onclick="mention('${u.username}')" class="p-2 glass rounded-lg text-right text-xs w-full hover:bg-blue-600/20">${u.username === 'belal' ? '👑 القائد بلال' : u.username}</button>`).join('');
+                // التأكد من ظهور القائد بلال أولاً في قائمة المنشن
+                let userListHTML = `<button onclick="mention('belal')" class="p-2 glass rounded-lg text-right text-xs w-full text-yellow-500 font-bold border-yellow-500/20 border">👑 القائد بلال</button>`;
+                userListHTML += users.filter(u => u.username !== 'belal').map(u => `<button onclick="mention('${u.username}')" class="p-2 glass rounded-lg text-right text-xs w-full text-white hover:bg-blue-600/20">${u.username}</button>`).join('');
+                document.getElementById('chatUserList').innerHTML = userListHTML;
+
                 document.getElementById('memberTableBody').innerHTML = users.map(u => `
-                    <tr class="border-b border-white/5 hover:bg-white/5 transition">
-                        <td class="p-4 font-bold ${u.username === 'belal' ? 'text-yellow-500' : ''}">${u.username === 'belal' ? 'القائد Belal 👑' : u.username}</td>
+                    <tr class="border-b border-white/5">
+                        <td class="p-4 font-bold ${u.username === 'belal' ? 'text-yellow-500' : ''}">${u.username === 'belal' ? 'القائد بلال 👑' : u.username}</td>
                         ${session.username === 'belal' ? `<td class="p-4 text-xs text-blue-400 font-mono">${u.password}</td>` : ''}
                     </tr>
                 `).join('');
@@ -175,8 +185,8 @@
             if(!error) {
                 const { data: urlData } = _supabase.storage.from('pdfs').getPublicUrl(fName);
                 await _supabase.from('library').insert([{ name: file.name, url: urlData.publicUrl, owner: session.username }]);
-                alert('تم رفع الملف بنجاح!'); loadFiles();
-            } else alert('حدث خطأ في الرفع');
+                alert('تم الرفع!'); loadFiles();
+            }
         }
 
         async function loadFiles() {
@@ -185,21 +195,12 @@
                 document.getElementById('fileCount').innerText = data.length;
                 document.getElementById('fileList').innerHTML = data.map(f => `
                     <div class="glass p-4 rounded-2xl border border-white/10 flex flex-col items-center">
-                        <i class="fas fa-file-pdf text-4xl text-red-500 mb-3"></i>
-                        <p class="text-xs font-bold mb-3 truncate w-full text-center">${f.name}</p>
-                        <a href="${f.url}" target="_blank" class="bg-blue-600/20 text-blue-400 px-4 py-2 rounded-lg text-[10px] hover:bg-blue-600 hover:text-white transition">تحميل</a>
+                        <i class="fas fa-file-pdf text-4xl text-red-500 mb-2"></i>
+                        <p class="text-xs font-bold mb-2 truncate w-full text-center">${f.name}</p>
+                        <a href="${f.url}" target="_blank" class="bg-blue-600 text-white px-3 py-1 rounded-lg text-[10px]">تحميل</a>
                     </div>
                 `).join('');
             }
-        }
-
-        async function addNewMember() {
-            const n = document.getElementById('newMemberName').value.trim().toLowerCase();
-            const p = document.getElementById('newMemberPass').value;
-            if(!n || !p) return;
-            await _supabase.from('profiles').insert([{ username: n, password: p, role: 'USER' }]);
-            alert('تمت إضافة العضو بنجاح');
-            loadData();
         }
 
         async function sendMsg() {
@@ -226,13 +227,21 @@
         async function updateNews() {
             const val = document.getElementById('newsInput').value;
             await _supabase.from('settings').upsert([{ key: 'news', value: val }]);
-            alert('تم تحديث الشريط'); loadData();
+            alert('تم التحديث'); loadData();
         }
 
-        function mention(n) { document.getElementById('chatInput').value = `@${n} : `; document.getElementById('chatInput').focus(); }
+        async function addNewMember() {
+            const n = document.getElementById('newMemberName').value.trim().toLowerCase();
+            const p = document.getElementById('newMemberPass').value;
+            if(!n || !p) return;
+            await _supabase.from('profiles').insert([{ username: n, password: p, role: 'USER' }]);
+            alert('تمت إضافة العضو بنجاح'); loadData();
+        }
+
+        function mention(n) { document.getElementById('chatInput').value += `@${n} `; document.getElementById('chatInput').focus(); }
         function showPage(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page')); document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active')); document.getElementById('p-'+id).classList.add('active-page'); document.getElementById('btn-'+id).classList.add('active'); }
-        function toggleAuthMode() { isLoginMode = !isLoginMode; document.getElementById('authTitle').innerText = isLoginMode ? 'الخوارزمية - دخول' : 'الخوارزمية - حساب جديد'; document.getElementById('toggleAuthBtn').innerText = isLoginMode ? 'إنشاء حساب جديد' : 'لديك حساب؟ دخول'; }
-        function logout() { localStorage.removeItem('alg_session_v32'); location.reload(); }
+        function toggleAuthMode() { isLoginMode = !isLoginMode; document.getElementById('authTitle').innerText = isLoginMode ? 'دخول' : 'حساب جديد'; }
+        function logout() { localStorage.removeItem('alg_session_v33'); location.reload(); }
 
         if(session) {
             document.getElementById('authPage').classList.add('hidden');
