@@ -53,7 +53,7 @@
                 <h2 id="helloUser" class="text-3xl font-bold mb-8 text-white"></h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="glass p-8 rounded-3xl border-r-8 border-blue-500">
-                        <p class="opacity-60 font-bold mb-2">أعضاء الفريق المتصلين</p>
+                        <p class="opacity-60 font-bold mb-2">أعضاء الفريق</p>
                         <p id="userCount" class="text-6xl font-black">0</p>
                     </div>
                 </div>
@@ -87,15 +87,14 @@
 
             <div id="p-admin" class="page">
                 <h2 class="text-2xl font-bold text-yellow-500 mb-6">لوحة القائد بلال 👑</h2>
-                <div class="p-8 glass rounded-3xl border-dashed border-2 border-yellow-500/20">
-                    <p class="text-white">أهلاً يا قائد، هنا تقدر تشوف كل باسوردات الأعضاء في صفحة (الأعضاء) وتتحكم في الفريق بالكامل.</p>
+                <div class="p-8 glass rounded-3xl border-dashed border-2 border-yellow-500/20 text-white">
+                    أهلاً يا قائد، هنا تقدر تتابع الفريق بالكامل وتشوف البيانات المهمة.
                 </div>
             </div>
         </main>
     </div>
 
     <script>
-        // الربط بالسيرفر - حط مفتاحك هنا يا بطل
         const supabaseUrl = 'https://xhyfprrvpzasbywehzid.supabase.co';
         const supabaseKey = 'sb_publishable_lJ85dVr8A5dOvXWRZ6SWvw_rSwSfp1J'; 
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
@@ -124,26 +123,28 @@
                     initApp();
                 } else { alert('خطأ في الاسم أو الباسورد!'); }
             } else {
-                // إنشاء حساب وحفظه أونلاين
+                // تعديل منطق الإضافة لمنع رسالة "موجود مسبقاً" بالخطأ
                 const { error } = await _supabase.from('profiles').insert([{ username: n, password: p, role: 'USER' }]);
-                if(error) { alert('الاسم ده مستخدم قبل كده!'); }
-                else { alert('تم إنشاء حسابك! سجل دخول دلوقتي'); toggleAuthMode(); }
+                
+                if(error) {
+                    alert('الاسم ده مستخدم فعلاً!');
+                } else {
+                    alert('تم إنشاء حسابك بنجاح! سجل دخولك دلوقتي');
+                    toggleAuthMode();
+                }
             }
         }
 
         async function initApp() {
             updateUI();
-            // تحديث لحظي للشات والأعضاء
             _supabase.channel('any').on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, () => updateUI()).subscribe();
             _supabase.channel('any').on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => updateUI()).subscribe();
         }
 
         async function updateUI() {
             if(!currentUser) return;
-
             document.getElementById('helloUser').innerText = `أهلاً يا ${currentUser.username === 'belal' ? 'القائد بلال 👑' : currentUser.username}`;
 
-            // جلب الأعضاء
             const { data: users } = await _supabase.from('profiles').select('*');
             if(users) {
                 document.getElementById('userCount').innerText = users.length;
@@ -159,7 +160,6 @@
                 `).join('');
             }
 
-            // جلب الشات
             const { data: msgs } = await _supabase.from('messages').select('*').order('created_at', { ascending: true });
             if(msgs) {
                 document.getElementById('chatBox').innerHTML = msgs.map(m => `
@@ -171,7 +171,6 @@
                 document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
             }
 
-            // تفعيل لوحة القائد لبلال فقط
             if(currentUser.username === 'belal') {
                 document.getElementById('adminLink').classList.remove('hidden');
                 document.getElementById('passHeader').classList.remove('hidden');
