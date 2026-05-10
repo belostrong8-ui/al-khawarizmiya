@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الخوارزمية - V17.0 Security</title>
+    <title>منصة الخوارزمية - V18.5 Control</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -50,7 +50,7 @@
             <div class="mt-auto pt-4 border-t border-white/10 space-y-2">
                 <button onclick="toggleTheme()" class="sidebar-btn text-xs"><i class="fas fa-adjust"></i> تبديل المود</button>
                 <button onclick="requestNotify()" id="notifBtn" class="sidebar-btn text-xs text-green-400"><i class="fas fa-bell"></i> الإشعارات</button>
-                <button onclick="logout()" class="w-full p-2 bg-red-500/10 text-red-500 rounded-xl font-bold hover:bg-red-500 hover:text-white transition">خروج</button>
+                <button onclick="logout()" class="w-full p-2 bg-red-500/10 text-red-500 rounded-xl font-bold hover:bg-red-500 transition">خروج</button>
             </div>
         </aside>
 
@@ -90,9 +90,17 @@
 
             <div id="p-admin" class="page">
                 <h2 class="text-2xl font-bold text-yellow-500 mb-6 text-center font-black">لوحة القائد 👑</h2>
-                <div class="glass p-6 rounded-2xl border-yellow-500/20 border">
-                    <input type="text" id="newsInput" class="w-full p-4 bg-slate-800 rounded-xl mb-4 outline-none text-white text-center" placeholder="خبر جديد...">
-                    <button onclick="setGlobalNews()" class="w-full bg-yellow-600 p-4 rounded-xl font-bold text-white">تحديث</button>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="glass p-6 rounded-2xl border-yellow-500/20 border">
+                        <h3 class="font-bold mb-4">تحديث الأخبار</h3>
+                        <input type="text" id="newsInput" class="w-full p-4 bg-slate-800 rounded-xl mb-4 outline-none text-white text-center" placeholder="خبر جديد...">
+                        <button onclick="setGlobalNews()" class="w-full bg-yellow-600 p-4 rounded-xl font-bold text-white">تحديث</button>
+                    </div>
+                    <div class="glass p-6 rounded-2xl border-red-500/20 border">
+                        <h3 class="font-bold mb-4 text-red-500">حذف إجباري (ID)</h3>
+                        <input type="number" id="forceDeleteId" class="w-full p-4 bg-slate-800 rounded-xl mb-4 outline-none text-white text-center" placeholder="ادخل ID الملف/الرسالة">
+                        <button onclick="forceDelete()" class="w-full bg-red-600 p-4 rounded-xl font-bold text-white">حذف نهائي</button>
+                    </div>
                 </div>
             </div>
         </main>
@@ -144,7 +152,7 @@
             const { data: users } = await _supabase.from('profiles').select('*');
             if(users) {
                 document.getElementById('userCount').innerText = users.length;
-                document.getElementById('memberTableBody').innerHTML = users.map(u => `<tr class="border-b border-white/5"><td class="p-4 font-bold">${u.username}</td><td class="p-4 text-left">${currentUser.username === 'belal' && u.username !== 'belal' ? `<button onclick="deleteUser(${u.id})" class="text-red-500">طرد</button>` : ''}</td></tr>`).join('');
+                document.getElementById('memberTableBody').innerHTML = users.map(u => `<tr class="border-b border-white/5"><td class="p-4 font-bold">${u.username}</td><td class="p-4 text-left">${currentUser.username === 'belal' && u.username !== 'belal' ? `<button onclick="deleteUser(${u.id})" class="text-red-500 font-bold">طرد</button>` : '<span class="text-green-500 text-xs">متصل</span>'}</td></tr>`).join('');
                 document.getElementById('chatUserList').innerHTML = users.map(u => `<div onclick="mention('${u.username}')" class="user-chip">@${u.username}</div>`).join('');
             }
 
@@ -153,31 +161,36 @@
                 const news = msgs.find(m => m.content.startsWith('SYS_NEWS:'));
                 if(news) document.getElementById('newsScroll').innerText = news.content.replace('SYS_NEWS:', '');
 
-                // الشات - إخفاء أكواد المكتبة + السماح بالحذف للأعضاء
                 document.getElementById('chatBox').innerHTML = msgs
-                    .filter(m => !m.content.startsWith('LIB_FILE:')) 
+                    .filter(m => !m.content.startsWith('LIB_FILE:') && m.content.length < 1000) 
                     .reverse().map(m => {
                         let c = m.content.startsWith('CHAT_FILE:') ? `<div class="p-2 bg-blue-500/10 rounded-lg flex items-center gap-2" onclick="openFile('${m.content.split('|')[1]}')"><i class="fas fa-file-download text-blue-400"></i><span class="text-[10px] truncate">${m.content.split('|')[2]}</span></div>` : `<p class="text-sm">${m.content}</p>`;
                         const isMy = m.username === currentUser.username;
-                        // السماح بالحذف للأعضاء فقط من الشات (لتنظيف المنظر)
                         return `<div class="p-3 glass rounded-xl ${isMy ? 'mr-auto bg-blue-500/20' : 'ml-auto'} max-w-[80%] relative group">
-                            <span class="text-[10px] text-blue-400 font-bold">${m.username}</span>${c}
-                            <button onclick="deleteMsg(${m.id})" class="absolute -top-2 -right-2 bg-red-600 text-white w-5 h-5 rounded-full text-[10px] hidden group-hover:block"><i class="fas fa-times"></i></button>
+                            <span class="text-[9px] text-blue-400 font-bold">${m.username} (ID: ${m.id})</span>${c}
+                            <button onclick="deleteMsg(${m.id})" class="absolute -top-2 -right-2 bg-red-600 text-white w-5 h-5 rounded-full text-[10px] hidden group-hover:block shadow-lg"><i class="fas fa-times"></i></button>
                         </div>`;
                     }).join('');
                 document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
 
-                // المكتبة (أنت فقط من يحذف منها)
                 const libFiles = msgs.filter(m => m.content.startsWith('LIB_FILE:'));
                 document.getElementById('libraryList').innerHTML = libFiles.map(f => {
                     const [mime, url, name] = f.content.replace('LIB_FILE:', '').split('|');
                     return `<div class="glass p-4 rounded-xl border border-white/5 flex flex-col gap-3">
-                        <div class="flex items-center gap-2"><i class="fas fa-file-pdf text-red-500"></i><span class="text-xs font-bold truncate w-32">${name}</span></div>
+                        <div class="flex items-center gap-2"><i class="fas fa-file-pdf text-red-500"></i><span class="text-[10px] font-bold truncate w-32">${name} (ID: ${f.id})</span></div>
                         <div class="flex gap-2"><button onclick="openFile('${url}')" class="flex-1 bg-blue-600 py-2 rounded-lg text-[10px] text-white">فتح</button>
                         ${currentUser.username === 'belal' ? `<button onclick="deleteMsg(${f.id})" class="bg-red-500/20 text-red-500 px-3 rounded-lg"><i class="fas fa-trash"></i></button>` : ''}</div>
                     </div>`;
                 }).join('');
             }
+        }
+
+        async function forceDelete() {
+            const id = document.getElementById('forceDeleteId').value;
+            if(!id) return alert('اكتب الـ ID الأول');
+            await deleteMsg(id);
+            document.getElementById('forceDeleteId').value = '';
+            alert('تم حذف الملف/الرسالة نهائياً بنجاح ✅');
         }
 
         function openFile(b64) { const w = window.open(); w.document.write(`<iframe src="${b64}" frameborder="0" style="width:100%; height:100%;"></iframe>`); }
@@ -190,8 +203,8 @@
             const r = new FileReader(); r.onload = async (e) => { await _supabase.from('messages').insert([{ username: currentUser.username, content: `CHAT_FILE:${f.type}|${e.target.result}|${f.name}` }]); }; r.readAsDataURL(f);
         }
         async function setGlobalNews() { const v = document.getElementById('newsInput').value; if(v) await _supabase.from('messages').insert([{ username: 'SYSTEM', content: `SYS_NEWS:${v}` }]); document.getElementById('newsInput').value = ''; }
-        async function deleteMsg(id) { if(confirm('حذف الرسالة من الشات؟')) await _supabase.from('messages').delete().eq('id', id); }
-        async function deleteUser(id) { if(confirm('طرد؟')) await _supabase.from('profiles').delete().eq('id', id); }
+        async function deleteMsg(id) { if(confirm('متأكد من الحذف؟')) await _supabase.from('messages').delete().eq('id', id); updateUI(); }
+        async function deleteUser(id) { if(confirm('طرد العضو؟')) await _supabase.from('profiles').delete().eq('id', id); }
         async function sendMsg() { const t = document.getElementById('chatInput').value.trim(); if(t) await _supabase.from('messages').insert([{ username: currentUser.username, content: t }]); document.getElementById('chatInput').value = ''; }
         function mention(n) { document.getElementById('chatInput').value += `@${n} `; document.getElementById('chatInput').focus(); }
         function showPage(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page')); document.getElementById('p-'+id).classList.add('active-page'); document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active')); document.getElementById('btn-'+id).classList.add('active'); }
