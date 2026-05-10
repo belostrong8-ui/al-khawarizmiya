@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الخوارزمية </title>
+    <title>منصة الخوارزمية - V30 Ultimate</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -16,8 +16,8 @@
         .page { display: none; height: 100%; flex-direction: column; padding: 1.5rem; overflow-y: auto; }
         .active-page { display: flex; animation: fadeIn 0.2s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .sidebar-btn { width: 100%; text-align: right; padding: 1rem; border-radius: 1rem; display: flex; align-items: center; gap: 1rem; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .sidebar-btn:hover, .sidebar-btn.active { background: var(--accent); color: white; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4); }
+        .sidebar-btn { width: 100%; text-align: right; padding: 1rem; border-radius: 1rem; display: flex; align-items: center; gap: 1rem; font-weight: bold; cursor: pointer; }
+        .sidebar-btn.active { background: var(--accent); color: white; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4); }
         .marquee-box { background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 15px; padding: 10px; overflow: hidden; margin-bottom: 2rem; }
         .marquee-text { display: inline-block; white-space: nowrap; animation: scroll 15s linear infinite; font-weight: bold; color: #60a5fa; }
         @keyframes scroll { 0% { transform: translateX(100%); } 100% { transform: translateX(-150%); } }
@@ -27,12 +27,11 @@
 
     <div id="authPage" class="fixed inset-0 z-[500] bg-slate-950 flex items-center justify-center p-4">
         <div class="glass p-8 rounded-[2.5rem] w-full max-w-md text-center border-blue-500/30 border shadow-2xl">
-            <h2 id="authTitle" class="text-2xl font-bold mb-6 text-blue-500">منصة الخوارزمية - دخول</h2>
+            <h2 class="text-2xl font-bold mb-6 text-blue-500">دخول القائد</h2>
             <div class="space-y-4">
-                <input type="text" id="uName" placeholder="اسم المستخدم" class="w-full p-4 rounded-xl text-center bg-slate-900 border border-white/10 outline-none text-white focus:border-blue-500 transition">
-                <input type="password" id="uPass" placeholder="كلمة السر" class="w-full p-4 rounded-xl text-center bg-slate-900 border border-white/10 outline-none text-white focus:border-blue-500 transition">
-                <button onclick="handleAuth()" id="authMainBtn" class="w-full bg-blue-600 p-4 rounded-xl font-bold hover:bg-blue-700 transition text-white shadow-lg shadow-blue-900/20">دخول</button>
-                <button onclick="toggleAuthMode()" id="toggleAuthBtn" class="text-blue-400 text-xs mt-2 underline">إنشاء حساب جديد</button>
+                <input type="text" id="uName" placeholder="اسم المستخدم" class="w-full p-4 rounded-xl text-center bg-slate-900 border border-white/10 outline-none text-white focus:border-blue-500">
+                <input type="password" id="uPass" placeholder="كلمة السر" class="w-full p-4 rounded-xl text-center bg-slate-900 border border-white/10 outline-none text-white focus:border-blue-500">
+                <button onclick="handleAuth()" class="w-full bg-blue-600 p-4 rounded-xl font-bold hover:bg-blue-700 transition text-white">دخول للمنصة</button>
             </div>
         </div>
     </div>
@@ -41,127 +40,92 @@
         <aside class="w-64 glass flex flex-col p-4 border-l border-white/5">
             <div class="mb-8 px-2 flex items-center gap-3 cursor-pointer" onclick="showPage('dashboard')">
                 <i class="fas fa-terminal text-2xl text-blue-500"></i>
-                <h1 class="font-bold text-xl text-white" id="brandName">الخوارزمية</h1>
+                <h1 class="font-bold text-xl text-white">الخوارزمية</h1>
             </div>
             <nav class="flex-1 space-y-1">
-                <button onclick="showPage('dashboard')" id="btn-dashboard" class="sidebar-btn active"><i class="fas fa-home"></i> <span class="nav-txt" data-ar="الرئيسية" data-en="Dashboard">الرئيسية</span></button>
-                <button onclick="showPage('chat')" id="btn-chat" class="sidebar-btn"><i class="fas fa-comments"></i> <span class="nav-txt" data-ar="المحادثة" data-en="Chat">المحادثة</span></button>
-                <button onclick="showPage('members')" id="btn-members" class="sidebar-btn"><i class="fas fa-users"></i> <span class="nav-txt" data-ar="الأعضاء" data-en="Members">الأعضاء</span></button>
-                <button onclick="showPage('library')" id="btn-library" class="sidebar-btn"><i class="fas fa-book"></i> <span class="nav-txt" data-ar="المكتبة" data-en="Library">المكتبة</span></button>
-                <button id="adminLink" onclick="showPage('admin')" class="hidden sidebar-btn text-yellow-500"><i class="fas fa-crown"></i> <span class="nav-txt" data-ar="لوحة القائد" data-en="Admin Panel">لوحة القائد</span></button>
+                <button onclick="showPage('dashboard')" id="btn-dashboard" class="sidebar-btn active"><i class="fas fa-home"></i> الرئيسية</button>
+                <button onclick="showPage('chat')" id="btn-chat" class="sidebar-btn"><i class="fas fa-comments"></i> المحادثة</button>
+                <button onclick="showPage('members')" id="btn-members" class="sidebar-btn"><i class="fas fa-users"></i> الأعضاء</button>
+                <button id="adminLink" onclick="showPage('admin')" class="hidden sidebar-btn text-yellow-500"><i class="fas fa-crown"></i> لوحة القائد</button>
             </nav>
-            <div class="pt-4 border-t border-white/5 space-y-2">
-                <button onclick="toggleLang()" class="w-full p-3 glass rounded-xl text-xs flex justify-between items-center text-white hover:bg-white/5"><i class="fas fa-language"></i> <span id="langBtnTxt">English</span></button>
-                <button onclick="toggleTheme()" class="w-full p-3 glass rounded-xl text-xs flex justify-between items-center text-white hover:bg-white/5"><i class="fas fa-adjust"></i> <span id="themeBtnTxt">الوضع المضيء</span></button>
-                <button onclick="logout()" class="w-full p-3 bg-red-500/10 text-red-500 rounded-xl font-bold mt-2 hover:bg-red-500 hover:text-white transition">خروج</button>
-            </div>
+            <button onclick="logout()" class="w-full p-3 bg-red-500/10 text-red-500 rounded-xl font-bold mt-2">خروج</button>
         </aside>
 
         <main class="flex-1 flex flex-col overflow-hidden">
             <div id="p-dashboard" class="page active-page">
-                <div class="marquee-box"><div id="newsDisplay" class="marquee-text">جاري تحميل الأخبار...</div></div>
+                <div class="marquee-box"><div id="newsDisplay" class="marquee-text">مرحباً بالقائد بلال في منصة الخوارزمية أونلاين</div></div>
                 <h2 id="helloUser" class="text-3xl font-bold mb-8 text-white"></h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-white">
-                    <div class="glass p-8 rounded-3xl border-r-8 border-red-500 shadow-xl"><p class="opacity-60 font-bold mb-2">الملفات المرفوعة</p><p id="fileCount" class="text-6xl font-black">0</p></div>
-                    <div class="glass p-8 rounded-3xl border-r-8 border-blue-500 shadow-xl"><p class="opacity-60 font-bold mb-2">عدد أعضاء الفريق</p><p id="userCount" class="text-6xl font-black">0</p></div>
+                    <div class="glass p-8 rounded-3xl border-r-8 border-blue-500 shadow-xl"><p class="opacity-60 font-bold mb-2 text-sm">حالة السيرفر</p><p id="serverStatus" class="text-4xl font-black text-green-500">Online</p></div>
+                    <div class="glass p-8 rounded-3xl border-r-8 border-yellow-500 shadow-xl"><p class="opacity-60 font-bold mb-2 text-sm">الرتبة</p><p id="userRole" class="text-4xl font-black">--</p></div>
                 </div>
             </div>
 
             <div id="p-chat" class="page">
-                <div class="flex-1 flex flex-col overflow-hidden">
-                    <div id="chatBox" class="flex-1 glass rounded-2xl p-4 mb-4 overflow-y-auto flex flex-col gap-3"></div>
-                    <div class="flex gap-2 p-2 glass rounded-2xl">
-                        <input type="text" id="chatInput" class="flex-1 bg-transparent p-4 outline-none text-white" placeholder="اكتب رسالتك يا قائد...">
-                        <button onclick="sendMsg()" class="bg-blue-600 h-12 w-12 rounded-xl text-white hover:bg-blue-700 transition shadow-lg"><i class="fas fa-paper-plane"></i></button>
-                    </div>
+                <div id="chatBox" class="flex-1 glass rounded-2xl p-4 mb-4 overflow-y-auto flex flex-col gap-3"></div>
+                <div class="flex gap-2">
+                    <input type="text" id="chatInput" class="flex-1 bg-slate-900 p-4 rounded-xl outline-none text-white border border-white/5" placeholder="اكتب رسالتك...">
+                    <button onclick="sendMsg()" class="bg-blue-600 px-6 rounded-xl text-white hover:bg-blue-700"><i class="fas fa-paper-plane"></i></button>
                 </div>
             </div>
 
             <div id="p-members" class="page">
-                <h2 class="text-2xl font-bold mb-4 text-white">سجل الفريق أونلاين</h2>
-                <div class="glass rounded-2xl overflow-hidden shadow-2xl">
-                    <table class="w-full text-right text-white">
-                        <thead><tr class="bg-white/5 text-xs opacity-50"><th class="p-4">العضو</th><th id="passHeader" class="p-4 hidden">كلمة السر</th><th class="p-4 text-left">الحالة</th></tr></thead>
-                        <tbody id="memberTableBody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div id="p-library" class="page">
-                <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-                    <h2 class="text-2xl font-bold text-white">المكتبة الرقمية</h2>
-                    <input type="text" id="libSearch" oninput="renderFiles()" placeholder="بحث في الملفات..." class="bg-slate-900 border border-white/10 p-3 rounded-xl outline-none text-white w-full md:w-64 text-center text-sm">
-                </div>
-                <div id="fileList" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+                <h2 class="text-2xl font-bold mb-4 text-white">أعضاء الفريق أونلاين</h2>
+                <div id="membersList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </div>
 
             <div id="p-admin" class="page">
                 <h2 class="text-2xl font-bold text-yellow-500 mb-6">غرفة القيادة 👑</h2>
-                <div class="glass p-6 rounded-3xl max-w-md border border-yellow-500/20 shadow-2xl">
-                    <h3 class="font-bold mb-4 text-white">تحديث شريط الأخبار لكل الأعضاء</h3>
-                    <input type="text" id="newsInput" class="w-full p-4 rounded-xl bg-slate-900 border border-white/10 mb-4 outline-none text-white text-center" placeholder="اكتب الخبر الجديد هنا...">
-                    <button onclick="updateNews()" class="w-full bg-yellow-600 p-4 rounded-xl font-bold text-slate-950 hover:bg-yellow-500 transition">تحديث المنصة</button>
+                <div class="glass p-6 rounded-3xl max-w-md border border-yellow-500/20">
+                    <h3 class="font-bold mb-4 text-white">تغيير الخبر العاجل</h3>
+                    <input type="text" id="newsInput" class="w-full p-4 rounded-xl bg-slate-900 border border-white/10 mb-4 text-white text-center" placeholder="...">
+                    <button onclick="updateNews()" class="w-full bg-yellow-600 p-4 rounded-xl font-bold text-slate-950 hover:bg-yellow-500">تحديث</button>
                 </div>
             </div>
         </main>
     </div>
 
     <script>
-        // مفاتيح الربط الأصلية
+        // إعدادات السيرفر
         const supabaseUrl = 'https://xhyfprrvpzasbywehzid.supabase.co';
         const supabaseKey = 'sb_publishable_lJ85dvR8A5d0vXWRZ6SWvw_rSwSf56A5uK9900';
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        let session = JSON.parse(localStorage.getItem('alg_session_online') || 'null');
-        let currentLang = localStorage.getItem('alg_lang') || 'ar';
-        let isLoginMode = true;
+        let session = JSON.parse(localStorage.getItem('alg_session_v30') || 'null');
 
-        function toggleAuthMode() {
-            isLoginMode = !isLoginMode;
-            document.getElementById('authTitle').innerText = isLoginMode ? 'الخوارزمية - دخول' : 'الخوارزمية - حساب جديد';
-            document.getElementById('authMainBtn').innerText = isLoginMode ? 'دخول' : 'إنشاء حساب';
-        }
-
+        // --- نظام التحقق المدمج ببياناتك يا بلال ---
         async function handleAuth() {
             const n = document.getElementById('uName').value.trim().toLowerCase();
             const p = document.getElementById('uPass').value;
-            if(!n || !p) return alert('أكمل البيانات!');
 
-            if(isLoginMode) {
-                const { data, error } = await _supabase.from('profiles').select('*').eq('username', n).eq('password', p).single();
-                if(data) {
-                    localStorage.setItem('alg_session_online', JSON.stringify({name: n, role: data.role}));
-                    location.reload();
-                } else alert('خطأ في البيانات! تأكد من الاسم والباسورد');
-            } else {
-                const role = (n === 'belal') ? 'ADMIN' : 'USER';
-                const { error } = await _supabase.from('profiles').insert([{ username: n, password: p, role: role }]);
-                if(!error) { alert('تم إنشاء حسابك أونلاين! سجل دخولك الآن'); toggleAuthMode(); }
-                else alert('الاسم موجود فعلاً في السيرفر!');
+            // التأكد من بيانات القائد بلال (أوفلاين وأونلاين)
+            if (n === 'belal' && p === '159078@1#') {
+                saveSession('belal', 'ADMIN');
+                return;
             }
+
+            // محاولة الدخول لباقي الأعضاء من السيرفر
+            const { data, error } = await _supabase.from('profiles').select('*').eq('username', n).eq('password', p).single();
+            if (data) {
+                saveSession(n, data.role);
+            } else {
+                alert('خطأ في البيانات! تأكد من الاسم والباسورد');
+            }
+        }
+
+        function saveSession(name, role) {
+            localStorage.setItem('alg_session_v30', JSON.stringify({name, role}));
+            location.reload();
         }
 
         async function loadData() {
             if(!session) return;
             
-            // تحميل الأعضاء
-            const { data: users } = await _supabase.from('profiles').select('*');
-            if(users) {
-                document.getElementById('userCount').innerText = users.length;
-                document.getElementById('memberTableBody').innerHTML = users.map(u => `
-                    <tr class="border-b border-white/5">
-                        <td class="p-4 font-bold">${u.username === 'belal' ? 'القائد بلال 👑' : u.username}</td>
-                        ${session.name === 'belal' ? `<td class="p-4 text-xs text-blue-400 font-mono">${u.password}</td>` : ''}
-                        <td class="p-4 text-left"><span class="bg-green-500/20 text-green-500 px-2 py-1 rounded text-[10px]">متصل</span></td>
-                    </tr>
-                `).join('');
-            }
-
             // تحميل الرسائل
             const { data: msgs } = await _supabase.from('messages').select('*').order('created_at', { ascending: true });
             if(msgs) {
                 document.getElementById('chatBox').innerHTML = msgs.map(m => `
-                    <div class="p-3 glass rounded-xl ${m.username === session.name ? 'mr-auto bg-blue-500/10 border-blue-500/20' : 'ml-auto'} max-w-[80%]">
+                    <div class="p-3 glass rounded-xl ${m.username === session.name ? 'mr-auto bg-blue-500/10' : 'ml-auto'} max-w-[80%]">
                         <span class="text-[10px] font-bold text-blue-400">${m.username === 'belal' ? 'القائد بلال 👑' : m.username}</span>
                         <p class="text-sm text-white mt-1">${m.content}</p>
                     </div>
@@ -169,6 +133,17 @@
                 document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
             }
 
+            // تحميل الأعضاء
+            const { data: users } = await _supabase.from('profiles').select('username, role');
+            if(users) {
+                document.getElementById('membersList').innerHTML = users.map(u => `
+                    <div class="glass p-4 rounded-xl flex justify-between items-center border-r-4 ${u.username === 'belal' ? 'border-yellow-500' : 'border-blue-500'}">
+                        <span class="font-bold text-white">${u.username === 'belal' ? 'القائد بلال 👑' : u.username}</span>
+                        <span class="text-[10px] opacity-50">${u.role}</span>
+                    </div>
+                `).join('');
+            }
+            
             // تحميل الأخبار
             const { data: news } = await _supabase.from('settings').select('value').eq('key', 'news').single();
             if(news) document.getElementById('newsDisplay').innerText = news.value;
@@ -183,11 +158,9 @@
         }
 
         async function updateNews() {
-            if(session.role !== 'ADMIN') return;
             const val = document.getElementById('newsInput').value;
             await _supabase.from('settings').upsert([{ key: 'news', value: val }]);
-            alert('تم تحديث الأخبار لجميع الأعضاء!');
-            loadData();
+            alert('تم التحديث!'); loadData();
         }
 
         function showPage(id) {
@@ -197,26 +170,17 @@
             document.getElementById('btn-'+id).classList.add('active');
         }
 
-        function logout() { localStorage.removeItem('alg_session_online'); location.reload(); }
-        function toggleTheme() { document.body.classList.toggle('light-mode'); }
-        function toggleLang() { currentLang = currentLang === 'ar' ? 'en' : 'ar'; applyLang(); }
-        
-        function applyLang() {
-            const isAr = currentLang === 'ar';
-            document.documentElement.dir = isAr ? 'rtl' : 'ltr';
-            document.getElementById('langBtnTxt').innerText = isAr ? 'English' : 'العربية';
-            document.getElementById('brandName').innerText = isAr ? 'الخوارزمية' : 'ALGORITHM';
-        }
+        function logout() { localStorage.removeItem('alg_session_v30'); location.reload(); }
 
         if(session) {
             document.getElementById('authPage').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
-            document.getElementById('helloUser').innerText = `أهلاً يا ${session.name === 'belal' ? 'القائد بلال 👑' : session.name}`;
+            document.getElementById('helloUser').innerText = `أهلاً يا ${session.name === 'belal' ? 'بلال' : session.name}`;
+            document.getElementById('userRole').innerText = session.role;
             if(session.role === 'ADMIN') document.getElementById('adminLink').classList.remove('hidden');
-            if(session.name === 'belal') document.getElementById('passHeader').classList.remove('hidden');
             loadData();
-            // تحديث لحظي للرسايل
-            _supabase.channel('messages').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, () => loadData()).subscribe();
+            // تحديث لحظي
+            _supabase.channel('any').on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, () => loadData()).subscribe();
         }
     </script>
 </body>
