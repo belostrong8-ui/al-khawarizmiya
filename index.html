@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الخوارزمية - V30.1 Ultimate</title>
+    <title>منصة الخوارزمية - V30 Online</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
@@ -30,7 +31,7 @@
             <div class="space-y-4">
                 <input type="text" id="uName" placeholder="اسم المستخدم" class="w-full p-4 rounded-xl text-center bg-slate-900 border border-white/10 outline-none text-white">
                 <input type="password" id="uPass" placeholder="كلمة السر" class="w-full p-4 rounded-xl text-center bg-slate-900 border border-white/10 outline-none text-white">
-                <button onclick="handleAuth()" id="authMainBtn" class="w-full bg-blue-600 p-4 rounded-xl font-bold hover:bg-blue-700 transition text-white">دخول</button>
+                <button onclick="handleAuth()" id="authMainBtn" class="w-full bg-blue-600 p-4 rounded-xl font-bold hover:bg-blue-700 transition text-white text-lg">دخول</button>
                 <button onclick="toggleAuthMode()" id="toggleAuthBtn" class="text-blue-400 text-xs mt-2 underline">إنشاء حساب جديد</button>
             </div>
         </div>
@@ -62,22 +63,20 @@
                 <div class="marquee-box"><div id="newsDisplay" class="marquee-text"></div></div>
                 <h2 id="helloUser" class="text-3xl font-bold mb-8 text-white"></h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="glass p-8 rounded-3xl border-r-8 border-red-500"><p class="opacity-60 font-bold mb-2 nav-txt" data-ar="الملفات المرفوعة" data-en="Uploaded Files">الملفات المرفوعة</p><p id="fileCount" class="text-6xl font-black">0</p></div>
-                    <div class="glass p-8 rounded-3xl border-r-8 border-blue-500"><p class="opacity-60 font-bold mb-2 nav-txt" data-ar="عدد أعضاء الفريق" data-en="Team Count">عدد أعضاء الفريق</p><p id="userCount" class="text-6xl font-black">0</p></div>
+                    <div class="glass p-8 rounded-3xl border-r-8 border-red-500 text-white"><p class="opacity-60 font-bold mb-2 nav-txt" data-ar="الملفات المرفوعة" data-en="Uploaded Files">الملفات المرفوعة</p><p id="fileCount" class="text-6xl font-black">0</p></div>
+                    <div class="glass p-8 rounded-3xl border-r-8 border-blue-500 text-white"><p class="opacity-60 font-bold mb-2 nav-txt" data-ar="عدد أعضاء الفريق" data-en="Team Count">عدد أعضاء الفريق</p><p id="userCount" class="text-6xl font-black">0</p></div>
                 </div>
             </div>
 
             <div id="p-chat" class="page">
                 <div class="flex gap-4 h-full overflow-hidden">
                     <div class="w-48 glass rounded-2xl p-3 overflow-y-auto hidden md:block">
-                        <h3 class="text-[10px] font-bold mb-3 opacity-40 uppercase text-white">اختر عضواً</h3>
+                        <h3 class="text-[10px] font-bold mb-3 opacity-40 uppercase text-white">الأعضاء</h3>
                         <div id="chatUserList" class="flex flex-col gap-2"></div>
                     </div>
                     <div class="flex-1 flex flex-col overflow-hidden">
                         <div id="chatBox" class="flex-1 glass rounded-2xl p-4 mb-4 overflow-y-auto flex flex-col gap-3"></div>
                         <div class="flex gap-2 p-2 glass rounded-2xl">
-                            <input type="file" id="chatFile" accept="application/pdf" class="hidden" onchange="uploadAction()">
-                            <button id="chatMediaBtn" onclick="document.getElementById('chatFile').click()" class="hidden bg-slate-700 h-12 w-12 rounded-xl text-white"><i class="fas fa-paperclip"></i></button>
                             <input type="text" id="chatInput" class="flex-1 bg-transparent p-4 outline-none text-white" placeholder="اكتب رسالتك...">
                             <button onclick="sendMsg()" class="bg-blue-600 h-12 w-12 rounded-xl text-white"><i class="fas fa-paper-plane"></i></button>
                         </div>
@@ -89,7 +88,7 @@
                 <h2 class="text-2xl font-bold mb-4 text-white nav-txt" data-ar="سجل الفريق" data-en="Team Registry">سجل الفريق</h2>
                 <div class="glass rounded-2xl overflow-hidden shadow-xl">
                     <table class="w-full text-right text-white">
-                        <thead><tr class="bg-white/5 text-xs opacity-50"><th class="p-4">العضو</th><th id="passHeader" class="p-4 hidden">كلمة السر</th><th class="p-4 text-left">الإجراء</th></tr></thead>
+                        <thead><tr class="bg-white/5 text-xs opacity-50"><th class="p-4">العضو</th><th id="passHeader" class="p-4 hidden text-yellow-500">كلمة السر</th></tr></thead>
                         <tbody id="memberTableBody"></tbody>
                     </table>
                 </div>
@@ -97,28 +96,17 @@
 
             <div id="p-admin" class="page">
                 <h2 class="text-2xl font-bold text-yellow-500 mb-6 nav-txt" data-ar="لوحة القائد 👑" data-en="Leader Panel 👑">لوحة القائد 👑</h2>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="glass p-6 rounded-3xl text-white">
-                        <h3 class="font-bold mb-4 nav-txt" data-ar="إضافة عضو يدوياً" data-en="Add Member">إضافة عضو يدوياً</h3>
-                        <div class="space-y-3">
-                            <input type="text" id="addUName" placeholder="اسم المستخدم" class="w-full p-4 rounded-xl bg-slate-900 border border-white/10 outline-none text-center">
-                            <input type="password" id="addUPass" placeholder="كلمة السر" class="w-full p-4 rounded-xl bg-slate-900 border border-white/10 outline-none text-center">
-                            <button onclick="manualAdd()" class="w-full bg-blue-600 p-4 rounded-xl font-bold nav-txt" data-ar="إضافة للفريق" data-en="Add to Team">إضافة للفريق</button>
-                        </div>
-                    </div>
-                    <div class="glass p-6 rounded-3xl text-white">
-                        <h3 class="font-bold mb-4 nav-txt" data-ar="تحديث شريط الأخبار" data-en="Update News">تحديث شريط الأخبار</h3>
-                        <input type="text" id="newsInput" class="w-full p-4 rounded-xl bg-slate-900 border border-white/10 mb-4 outline-none text-center" placeholder="...">
-                        <button onclick="updateNews()" class="w-full bg-yellow-600 p-4 rounded-xl font-bold text-slate-950 nav-txt" data-ar="تحديث" data-en="Update">تحديث</button>
-                    </div>
+                <div class="glass p-6 rounded-3xl text-white max-w-md">
+                    <h3 class="font-bold mb-4 nav-txt" data-ar="تحديث شريط الأخبار" data-en="Update News">تحديث شريط الأخبار</h3>
+                    <input type="text" id="newsInput" class="w-full p-4 rounded-xl bg-slate-900 border border-white/10 mb-4 outline-none text-center" placeholder="...">
+                    <button onclick="updateNews()" class="w-full bg-yellow-600 p-4 rounded-xl font-bold text-slate-950">تحديث</button>
                 </div>
             </div>
 
             <div id="p-library" class="page">
                 <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
                     <h2 class="text-2xl font-bold text-white nav-txt" data-ar="المكتبة" data-en="Library">المكتبة</h2>
-                    <input type="text" id="libSearch" oninput="renderFiles()" placeholder="بحث في المكتبة..." class="bg-slate-900 border border-white/10 p-3 rounded-xl outline-none text-white w-full md:w-64 text-sm">
-                    <button id="libUploadBtn" onclick="document.getElementById('chatFile').click()" class="hidden bg-blue-600 px-6 py-2 rounded-xl font-bold text-white">رفع PDF</button>
+                    <input type="text" id="libSearch" oninput="loadData()" placeholder="بحث في المكتبة..." class="bg-slate-900 border border-white/10 p-3 rounded-xl outline-none text-white w-full md:w-64 text-sm text-center">
                 </div>
                 <div id="fileList" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
             </div>
@@ -126,127 +114,94 @@
     </div>
 
     <script>
-        // الداتا
-        let users = JSON.parse(localStorage.getItem('alg_db_v30') || '[{"name":"belal","pass":"159078@1#","role":"ADMIN"}]');
-        let session = JSON.parse(localStorage.getItem('alg_session_v30') || 'null');
-        let msgs = JSON.parse(localStorage.getItem('alg_msgs_v30') || '[]');
-        let files = JSON.parse(localStorage.getItem('alg_files_v30') || '[]');
-        let newsText = localStorage.getItem('alg_news_v30') || "مرحباً بكم في منصة الخوارزمية.. القائد بلال يرحب بكم";
+        // إعدادات Supabase من صورك يا بلال
+        const supabaseUrl = 'https://xhyfprrvpzasbywehzid.supabase.co';
+        const supabaseKey = 'sb_publishable_lJ85dvR8A5d0vXWRZ6SWvw_rSwSf56A5uK9900';
+        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        let session = JSON.parse(localStorage.getItem('alg_session_online') || 'null');
         let currentLang = localStorage.getItem('alg_lang') || 'ar';
         let isLoginMode = true;
 
-        function toggleAuthMode() {
-            isLoginMode = !isLoginMode;
-            document.getElementById('authTitle').innerText = isLoginMode ? 'دخول' : 'حساب جديد';
-            document.getElementById('authMainBtn').innerText = isLoginMode ? 'دخول' : 'إنشاء حساب';
-        }
-
-        function handleAuth() {
+        async function handleAuth() {
             const n = document.getElementById('uName').value.trim().toLowerCase();
             const p = document.getElementById('uPass').value;
             if(!n || !p) return alert('أكمل البيانات!');
+
             if(isLoginMode) {
-                const u = users.find(x => x.name === n && x.pass === p);
-                if(u) { localStorage.setItem('alg_session_v30', JSON.stringify(u)); location.reload(); }
-                else alert('خطأ في البيانات!');
+                const { data, error } = await _supabase.from('profiles').select('*').eq('username', n).eq('password', p).single();
+                if(data) {
+                    localStorage.setItem('alg_session_online', JSON.stringify({name: n, role: data.role}));
+                    location.reload();
+                } else alert('اسم المستخدم أو كلمة السر غلط!');
             } else {
-                if(users.find(x => x.name === n)) return alert('الاسم موجود فعلاً!');
-                users.push({name: n, pass: p, role: 'USER'});
-                localStorage.setItem('alg_db_v30', JSON.stringify(users));
-                alert('تم إنشاء الحساب! سجل دخولك');
-                toggleAuthMode();
+                const { error } = await _supabase.from('profiles').insert([{ username: n, password: p, role: 'USER' }]);
+                if(!error) { alert('تم إنشاء الحساب أونلاين! سجل دخولك'); toggleAuthMode(); }
+                else alert('الاسم ده محجوز قبل كدة!');
             }
+        }
+
+        async function loadData() {
+            const { data: users } = await _supabase.from('profiles').select('*');
+            const { data: msgs } = await _supabase.from('messages').select('*').order('created_at', { ascending: true });
+            const { data: news } = await _supabase.from('settings').select('value').eq('key', 'news').single();
+            const { data: files } = await _supabase.from('library').select('*');
+
+            if(users) {
+                document.getElementById('userCount').innerText = users.length;
+                document.getElementById('memberTableBody').innerHTML = users.map(u => `
+                    <tr class="border-b border-white/5">
+                        <td class="p-4 font-bold text-sm">${u.username === 'belal' ? 'القائد Belal 👑' : u.username}</td>
+                        ${session.name === 'belal' ? `<td class="p-4 text-xs text-blue-400 font-mono">${u.password}</td>` : ''}
+                    </tr>
+                `).join('');
+                document.getElementById('chatUserList').innerHTML = users.map(u => `<button onclick="mention('${u.username}')" class="p-2 glass rounded-lg text-right truncate text-xs font-bold w-full text-white hover:bg-blue-600/20">${u.username}</button>`).join('');
+            }
+
+            if(msgs) {
+                document.getElementById('chatBox').innerHTML = msgs.map(m => `
+                    <div class="p-3 glass rounded-xl ${m.username === session.name ? 'mr-auto bg-blue-500/10' : 'ml-auto'} max-w-[80%]">
+                        <span class="text-[10px] font-bold text-blue-400">${m.username === 'belal' ? 'القائد Belal 👑' : m.username}</span>
+                        <p class="text-sm text-white mt-1">${m.content}</p>
+                    </div>
+                `).join('');
+                document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
+            }
+
+            if(news) document.getElementById('newsDisplay').innerText = news.value;
+
+            if(files) {
+                const term = document.getElementById('libSearch').value.toLowerCase();
+                const filtered = files.filter(f => f.name.toLowerCase().includes(term));
+                document.getElementById('fileCount').innerText = files.length;
+                document.getElementById('fileList').innerHTML = filtered.map(f => `
+                    <div class="glass p-4 rounded-xl border-r-4 border-red-500 text-white flex justify-between items-center">
+                        <div class="flex flex-col truncate flex-1">
+                            <span class="truncate font-bold text-sm">📄 ${f.name}</span>
+                            <span class="text-[8px] opacity-40">بواسطة: ${f.owner}</span>
+                        </div>
+                        <a href="${f.url}" target="_blank" class="text-blue-400 p-2"><i class="fas fa-download"></i></a>
+                    </div>
+                `).join('');
+            }
+        }
+
+        async function sendMsg() {
+            const t = document.getElementById('chatInput').value.trim();
+            if(!t) return;
+            await _supabase.from('messages').insert([{ username: session.name, content: t }]);
+            document.getElementById('chatInput').value = '';
+            loadData();
+        }
+
+        async function updateNews() {
+            const val = document.getElementById('newsInput').value;
+            await _supabase.from('settings').upsert([{ key: 'news', value: val }]);
+            alert('تم تحديث شريط الأخبار أونلاين!'); loadData();
         }
 
         function requestNotify() {
-            Notification.requestPermission().then(p => { if(p === 'granted') alert('تم تفعيل الإشعارات بنجاح! 🔔'); });
-        }
-
-        function sendNotify(title, body) {
-            if(Notification.permission === 'granted') { new Notification(title, { body: body }); }
-        }
-
-        function updateUI() {
-            if(!session) return;
-            document.getElementById('helloUser').innerText = currentLang === 'ar' ? `أهلاً يا ${session.name === 'belal' ? 'القائد Belal 👑' : session.name}` : `Welcome ${session.name === 'belal' ? 'Leader Belal 👑' : session.name}`;
-            document.getElementById('newsDisplay').innerText = newsText;
-            document.getElementById('fileCount').innerText = files.length;
-            document.getElementById('userCount').innerText = users.length;
-            
-            if(session.role === 'ADMIN') {
-                document.getElementById('adminLink').classList.remove('hidden');
-                document.getElementById('chatMediaBtn').classList.remove('hidden');
-                document.getElementById('libUploadBtn').classList.remove('hidden');
-            }
-            if(session.name === 'belal') document.getElementById('passHeader').classList.remove('hidden');
-            
-            renderChat(); renderMembers(); renderFiles(); renderChatUsers(); applyLang();
-        }
-
-        function renderMembers() {
-            const isBelal = session.name === 'belal';
-            document.getElementById('memberTableBody').innerHTML = users.map(u => `
-                <tr class="border-b border-white/5">
-                    <td class="p-4 font-bold text-sm text-white">${u.name==='belal'?'القائد Belal 👑':u.name}</td>
-                    ${isBelal ? `<td class="p-4 text-xs text-blue-400 font-mono">${u.pass}</td>` : ''}
-                    <td class="p-4 text-left">${(isBelal && u.name !== 'belal') ? `<button onclick="delU('${u.name}')" class="text-red-500 font-bold">مسح</button>` : ''}</td>
-                </tr>
-            `).join('');
-        }
-
-        function delU(n) {
-            users = users.filter(x => x.name !== n);
-            localStorage.setItem('alg_db_v30', JSON.stringify(users));
-            updateUI();
-        }
-
-        function renderChat() {
-            const box = document.getElementById('chatBox');
-            box.innerHTML = msgs.map(m => `
-                <div class="p-3 glass rounded-xl ${m.user === session.name ? 'mr-auto bg-blue-500/10' : 'ml-auto'} max-w-[80%] group">
-                    <span class="text-[10px] font-bold text-blue-400">${m.user === 'belal' ? 'القائد Belal 👑' : m.user}</span>
-                    <p class="text-sm text-white mt-1">${m.text}</p>
-                </div>
-            `).join('');
-            box.scrollTop = box.scrollHeight;
-        }
-
-        function renderFiles() {
-            const term = document.getElementById('libSearch').value.toLowerCase();
-            const filtered = files.filter(f => f.name.toLowerCase().includes(term));
-            document.getElementById('fileList').innerHTML = filtered.map(f => `
-                <div class="glass p-4 rounded-xl border-r-4 border-red-500 text-white flex justify-between items-center">
-                    <div class="flex flex-col truncate flex-1">
-                        <span class="truncate font-bold text-sm">📄 ${f.name}</span>
-                        <span class="text-[8px] opacity-40">بواسطة: ${f.sender}</span>
-                    </div>
-                    <a href="${f.url}" download="${f.name}" class="text-blue-400 p-2"><i class="fas fa-download"></i></a>
-                </div>
-            `).join('');
-        }
-
-        function uploadAction() {
-            const fileInput = document.getElementById('chatFile');
-            if (fileInput.files.length > 0) {
-                const file = fileInput.files[0];
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    files.push({ id: Date.now(), name: file.name, url: e.target.result, sender: session.name });
-                    localStorage.setItem('alg_files_v30', JSON.stringify(files));
-                    msgs.push({ id: Date.now(), user: session.name, text: `رفع ملف: ${file.name}` });
-                    localStorage.setItem('alg_msgs_v30', JSON.stringify(msgs));
-                    updateUI(); alert('تم الرفع!');
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function sendMsg() {
-            const t = document.getElementById('chatInput').value.trim();
-            if(!t) return;
-            msgs.push({id: Date.now(), user: session.name, text: t});
-            localStorage.setItem('alg_msgs_v30', JSON.stringify(msgs));
-            document.getElementById('chatInput').value = ''; renderChat();
+            Notification.requestPermission().then(p => { if(p === 'granted') alert('الإشعارات شغالة يا بطل! 🔔'); });
         }
 
         function showPage(id) {
@@ -256,25 +211,28 @@
             document.getElementById('btn-'+id).classList.add('active');
         }
 
+        function toggleAuthMode() { isLoginMode = !isLoginMode; document.getElementById('authTitle').innerText = isLoginMode ? 'دخول' : 'حساب جديد'; }
         function toggleLang() { currentLang = currentLang === 'ar' ? 'en' : 'ar'; localStorage.setItem('alg_lang', currentLang); applyLang(); }
-        function applyLang() {
+        function applyLang() { 
             const isAr = currentLang === 'ar'; document.documentElement.dir = isAr ? 'rtl' : 'ltr';
             document.querySelectorAll('.nav-txt').forEach(el => { el.innerText = el.getAttribute(`data-${currentLang}`); });
             document.getElementById('langBtnTxt').innerText = isAr ? 'English' : 'العربية';
             document.getElementById('brandName').innerText = isAr ? 'الخوارزمية' : 'ALGORITHM';
         }
         function toggleTheme() { document.body.classList.toggle('light-mode'); }
-        function manualAdd() { 
-            const n = document.getElementById('addUName').value.trim().toLowerCase(); 
-            const p = document.getElementById('addUPass').value; 
-            if(n && p) { users.push({name: n, pass: p, role: 'USER'}); localStorage.setItem('alg_db_v30', JSON.stringify(users)); updateUI(); alert('تمت الإضافة'); } 
-        }
-        function updateNews() { newsText = document.getElementById('newsInput').value; localStorage.setItem('alg_news_v30', newsText); updateUI(); alert('تم التحديث'); }
-        function logout() { localStorage.removeItem('alg_session_v30'); location.reload(); }
-        function renderChatUsers() { document.getElementById('chatUserList').innerHTML = users.map(u => `<button onclick="mention('${u.name}')" class="p-2 glass rounded-lg text-right truncate text-xs font-bold w-full text-white hover:bg-blue-600/20">${u.name}</button>`).join(''); }
         function mention(n) { document.getElementById('chatInput').value = `@${n} : `; document.getElementById('chatInput').focus(); }
-        
-        if(session) { document.getElementById('authPage').classList.add('hidden'); document.getElementById('mainApp').classList.remove('hidden'); updateUI(); }
+        function logout() { localStorage.removeItem('alg_session_online'); location.reload(); }
+
+        if(session) {
+            document.getElementById('authPage').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            document.getElementById('helloUser').innerText = `أهلاً يا ${session.name === 'belal' ? 'القائد Belal 👑' : session.name}`;
+            if(session.role === 'ADMIN') document.getElementById('adminLink').classList.remove('hidden');
+            if(session.name === 'belal') document.getElementById('passHeader').classList.remove('hidden');
+            loadData(); applyLang();
+            // تحديث لحظي للرسائل
+            _supabase.channel('any').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, () => loadData()).subscribe();
+        }
     </script>
 </body>
 </html>
