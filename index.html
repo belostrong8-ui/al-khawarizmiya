@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الخوارزمية - V18.5 Control</title>
+    <title>منصة الخوارزمية - V19.0 Master Control</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -84,8 +84,18 @@
             </div>
 
             <div id="p-members" class="page">
-                <h2 class="text-2xl font-bold mb-4">الأعضاء</h2>
-                <div class="glass rounded-2xl overflow-hidden shadow-2xl"><table class="w-full text-right"><tbody id="memberTableBody"></tbody></table></div>
+                <h2 class="text-2xl font-bold mb-4">إدارة الأعضاء</h2>
+                <div class="glass rounded-2xl overflow-hidden shadow-2xl">
+                    <table class="w-full text-right">
+                        <thead>
+                            <tr class="bg-slate-800/50 text-xs opacity-60">
+                                <th class="p-4">العضو</th>
+                                <th class="p-4">التحكم</th>
+                            </tr>
+                        </thead>
+                        <tbody id="memberTableBody"></tbody>
+                    </table>
+                </div>
             </div>
 
             <div id="p-admin" class="page">
@@ -125,7 +135,7 @@
             const p = document.getElementById('uPass').value;
             if(isLoginMode) {
                 const { data } = await _supabase.from('profiles').select('*').eq('username', n).eq('password', p).single();
-                if(data) { currentUser = data; localStorage.setItem('algo_user', JSON.stringify(data)); loginSuccess(); } else alert('خطأ!');
+                if(data) { currentUser = data; localStorage.setItem('algo_user', JSON.stringify(data)); loginSuccess(); } else alert('خطأ في البيانات!');
             } else {
                 await _supabase.from('profiles').insert([{ username: n, password: p, role: 'USER' }]);
                 alert('تم إنشاء الحساب!'); isLoginMode = true; toggleAuthMode();
@@ -152,7 +162,21 @@
             const { data: users } = await _supabase.from('profiles').select('*');
             if(users) {
                 document.getElementById('userCount').innerText = users.length;
-                document.getElementById('memberTableBody').innerHTML = users.map(u => `<tr class="border-b border-white/5"><td class="p-4 font-bold">${u.username}</td><td class="p-4 text-left">${currentUser.username === 'belal' && u.username !== 'belal' ? `<button onclick="deleteUser(${u.id})" class="text-red-500 font-bold">طرد</button>` : '<span class="text-green-500 text-xs">متصل</span>'}</td></tr>`).join('');
+                document.getElementById('memberTableBody').innerHTML = users.map(u => {
+                    const isAdmin = currentUser.username === 'belal';
+                    return `<tr class="border-b border-white/5">
+                        <td class="p-4">
+                            <div class="font-bold">${u.username}</div>
+                            ${isAdmin ? `<div class="text-[10px] text-yellow-500 hidden" id="pass-${u.id}">كلمة السر: ${u.password}</div>` : ''}
+                        </td>
+                        <td class="p-4 text-left flex gap-2 justify-end">
+                            ${isAdmin && u.username !== 'belal' ? `
+                                <button onclick="togglePass(${u.id})" class="bg-blue-500/10 text-blue-400 px-3 py-1 rounded text-xs">كشف</button>
+                                <button onclick="deleteUser(${u.id})" class="bg-red-500 text-white px-3 py-1 rounded text-xs">طرد</button>
+                            ` : '<span class="text-green-500 text-[10px]">نشط</span>'}
+                        </td>
+                    </tr>`;
+                }).join('');
                 document.getElementById('chatUserList').innerHTML = users.map(u => `<div onclick="mention('${u.username}')" class="user-chip">@${u.username}</div>`).join('');
             }
 
@@ -185,12 +209,17 @@
             }
         }
 
+        function togglePass(id) {
+            const el = document.getElementById(`pass-${id}`);
+            el.classList.toggle('hidden');
+        }
+
         async function forceDelete() {
             const id = document.getElementById('forceDeleteId').value;
             if(!id) return alert('اكتب الـ ID الأول');
             await deleteMsg(id);
             document.getElementById('forceDeleteId').value = '';
-            alert('تم حذف الملف/الرسالة نهائياً بنجاح ✅');
+            alert('تم الحذف بنجاح ✅');
         }
 
         function openFile(b64) { const w = window.open(); w.document.write(`<iframe src="${b64}" frameborder="0" style="width:100%; height:100%;"></iframe>`); }
@@ -203,8 +232,8 @@
             const r = new FileReader(); r.onload = async (e) => { await _supabase.from('messages').insert([{ username: currentUser.username, content: `CHAT_FILE:${f.type}|${e.target.result}|${f.name}` }]); }; r.readAsDataURL(f);
         }
         async function setGlobalNews() { const v = document.getElementById('newsInput').value; if(v) await _supabase.from('messages').insert([{ username: 'SYSTEM', content: `SYS_NEWS:${v}` }]); document.getElementById('newsInput').value = ''; }
-        async function deleteMsg(id) { if(confirm('متأكد من الحذف؟')) await _supabase.from('messages').delete().eq('id', id); updateUI(); }
-        async function deleteUser(id) { if(confirm('طرد العضو؟')) await _supabase.from('profiles').delete().eq('id', id); }
+        async function deleteMsg(id) { if(confirm('حذف نهائي؟')) { await _supabase.from('messages').delete().eq('id', id); updateUI(); } }
+        async function deleteUser(id) { if(confirm('طرد العضو نهائياً؟')) await _supabase.from('profiles').delete().eq('id', id); }
         async function sendMsg() { const t = document.getElementById('chatInput').value.trim(); if(t) await _supabase.from('messages').insert([{ username: currentUser.username, content: t }]); document.getElementById('chatInput').value = ''; }
         function mention(n) { document.getElementById('chatInput').value += `@${n} `; document.getElementById('chatInput').focus(); }
         function showPage(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page')); document.getElementById('p-'+id).classList.add('active-page'); document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active')); document.getElementById('btn-'+id).classList.add('active'); }
