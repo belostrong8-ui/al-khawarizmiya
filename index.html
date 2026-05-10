@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الخوارزمية - V21.0 Real-time Kick</title>
+    <title>منصة الخوارزمية - V21.1 Real-time Kick</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -158,8 +158,10 @@
 
         async function checkIfStillExists() {
             if (!currentUser) return;
-            const { data, error } = await _supabase.from('profiles').select('id').eq('id', currentUser.id).single();
-            if (error || !data) { logout(); }
+            const { data, error } = await _supabase.from('profiles').select('id').eq('id', currentUser.id);
+            if (error || !data || data.length === 0) {
+                logout(); 
+            }
         }
 
         function loginSuccess() {
@@ -179,11 +181,12 @@
             // مراقبة الرسائل والأخبار
             _supabase.channel('room').on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, () => updateUI()).subscribe();
 
-            // نظام الطرد الحقيقي (مراقبة حذف الأعضاء)
+            // نظام الطرد الحقيقي (مراقبة حذف الأعضاء لحظياً)
             _supabase.channel('kick_system')
                 .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'profiles' }, (payload) => {
-                    if (currentUser && payload.old.id === currentUser.id) {
-                        alert('تم طردك من المنصة من قبل المسؤول!');
+                    // التعديل: استخدام payload.old.id لضمان لقط إشارة الحذف
+                    if (currentUser && payload.old && payload.old.id === currentUser.id) {
+                        alert('تم طردك من المنصة من قبل القائد بلال!');
                         logout();
                     }
                     updateUI();
@@ -191,8 +194,8 @@
                 .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'profiles' }, () => updateUI())
                 .subscribe();
 
-            // فحص أمان كل دقيقة
-            setInterval(checkIfStillExists, 60000);
+            // رادار فحص أمان (كل 3 ثواني بدلاً من دقيقة لضمان الطرد)
+            setInterval(checkIfStillExists, 3000);
         }
 
         function filterLibrary() {
