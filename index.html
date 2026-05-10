@@ -3,184 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الخوارزمية - V30 Ultimate</title>
+    <title>ALGORITHM V30 | ULTIMATE TERMINAL</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
-        :root { --bg: #020617; --card: #0f172a; --text: #f8fafc; --accent: #3b82f6; }
-        .light-mode { --bg: #f1f5f9; --card: #ffffff; --text: #0f172a; --accent: #2563eb; }
-        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: var(--text); height: 100vh; overflow: hidden; margin: 0; transition: 0.3s; }
-        .glass { background: var(--card); border: 1px solid rgba(255,255,255,0.05); }
-        .page { display: none; height: 100%; flex-direction: column; padding: 1.5rem; overflow-y: auto; }
-        .active-page { display: flex; animation: fadeIn 0.2s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .sidebar-btn { width: 100%; text-align: right; padding: 1rem; border-radius: 1rem; display: flex; align-items: center; gap: 1rem; font-weight: bold; cursor: pointer; }
-        .sidebar-btn.active { background: var(--accent); color: white; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4); }
-        .marquee-box { background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 15px; padding: 10px; overflow: hidden; margin-bottom: 2rem; }
-        .marquee-text { display: inline-block; white-space: nowrap; animation: scroll 15s linear infinite; font-weight: bold; color: #60a5fa; }
-        @keyframes scroll { 0% { transform: translateX(100%); } 100% { transform: translateX(-150%); } }
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Tajawal:wght@300;500;800&display=swap');
+        :root { --main-blue: #3b82f6; --dark-bg: #050b1a; --card-bg: #0d1526; }
+        body { font-family: 'Tajawal', sans-serif; background: var(--dark-bg); color: #e2e8f0; margin: 0; height: 100vh; overflow: hidden; }
+        .cyber-card { background: var(--card-bg); border: 1px solid rgba(59, 130, 246, 0.2); box-shadow: 0 0 20px rgba(0,0,0,0.5); position: relative; overflow: hidden; }
+        .cyber-card::before { content: ''; position: absolute; top: 0; right: 0; width: 4px; height: 100%; background: var(--main-blue); }
+        .sidebar-item { transition: 0.3s; border-radius: 12px; margin-bottom: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 12px 20px; color: #94a3b8; }
+        .sidebar-item:hover, .sidebar-item.active { background: rgba(59, 130, 246, 0.15); color: #fff; box-shadow: inset 4px 0 0 var(--main-blue); }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        .glass-input { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
+        .glass-input:focus { border-color: var(--main-blue); box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: var(--main-blue); border-radius: 10px; }
     </style>
 </head>
 <body class="flex">
 
-    <div id="authPage" class="fixed inset-0 z-[500] bg-slate-950 flex items-center justify-center p-4">
-        <div class="glass p-8 rounded-[2.5rem] w-full max-w-md text-center border-blue-500/30 border shadow-2xl">
-            <h2 class="text-2xl font-bold mb-6 text-blue-500">دخول القائد</h2>
+    <div id="authShield" class="fixed inset-0 z-[9999] bg-[#020617] flex items-center justify-center">
+        <div class="w-full max-w-md p-10 bg-[#0a1120] border border-blue-500/20 rounded-[2rem] shadow-[0_0_50px_rgba(0,0,0,0.8)] text-center">
+            <div class="mb-6 inline-block p-5 bg-blue-500/10 rounded-full border border-blue-500/20">
+                <i class="fas fa-shield-halved text-5xl text-blue-500"></i>
+            </div>
+            <h2 style="font-family: 'Orbitron';" class="text-2xl font-bold tracking-widest text-white mb-2">TERMINAL ACCESS</h2>
+            <p class="text-slate-500 text-sm mb-8">أدخل بروتوكول القيادة للتحقق</p>
             <div class="space-y-4">
-                <input type="text" id="uName" placeholder="اسم المستخدم" class="w-full p-4 rounded-xl text-center bg-slate-900 border border-white/10 outline-none text-white focus:border-blue-500">
-                <input type="password" id="uPass" placeholder="كلمة السر" class="w-full p-4 rounded-xl text-center bg-slate-900 border border-white/10 outline-none text-white focus:border-blue-500">
-                <button onclick="handleAuth()" class="w-full bg-blue-600 p-4 rounded-xl font-bold hover:bg-blue-700 transition text-white">دخول للمنصة</button>
+                <input type="text" id="u" placeholder="ID" class="w-full p-4 rounded-xl glass-input text-center text-white outline-none">
+                <input type="password" id="p" placeholder="ACCESS KEY" class="w-full p-4 rounded-xl glass-input text-center text-white outline-none">
+                <button onclick="verifyProtocol()" class="w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-xl font-black text-white shadow-lg shadow-blue-900/40 transition-all active:scale-95">دخول القائد</button>
             </div>
         </div>
     </div>
 
-    <div id="mainApp" class="hidden flex w-full h-full">
-        <aside class="w-64 glass flex flex-col p-4 border-l border-white/5">
-            <div class="mb-8 px-2 flex items-center gap-3 cursor-pointer" onclick="showPage('dashboard')">
-                <i class="fas fa-terminal text-2xl text-blue-500"></i>
-                <h1 class="font-bold text-xl text-white">الخوارزمية</h1>
+    <div id="mainOS" class="hidden flex w-full h-full">
+        <aside class="w-72 bg-[#080e1d] border-l border-white/5 p-6 flex flex-col">
+            <div class="flex items-center gap-3 mb-12">
+                <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/20">
+                    <i class="fas fa-code text-white"></i>
+                </div>
+                <span style="font-family: 'Orbitron';" class="font-bold text-xl tracking-tighter text-white">V30 ULTIMATE</span>
             </div>
-            <nav class="flex-1 space-y-1">
-                <button onclick="showPage('dashboard')" id="btn-dashboard" class="sidebar-btn active"><i class="fas fa-home"></i> الرئيسية</button>
-                <button onclick="showPage('chat')" id="btn-chat" class="sidebar-btn"><i class="fas fa-comments"></i> المحادثة</button>
-                <button onclick="showPage('members')" id="btn-members" class="sidebar-btn"><i class="fas fa-users"></i> الأعضاء</button>
-                <button id="adminLink" onclick="showPage('admin')" class="hidden sidebar-btn text-yellow-500"><i class="fas fa-crown"></i> لوحة القائد</button>
+            
+            <nav class="flex-1">
+                <div onclick="switchTab('dash')" id="tab-dash" class="sidebar-item active"><i class="fas fa-chart-pie"></i> الرئيسية</div>
+                <div onclick="switchTab('chat')" id="tab-chat" class="sidebar-item"><i class="fas fa-headset"></i> مركز العمليات</div>
+                <div onclick="switchTab('team')" id="tab-team" class="sidebar-item"><i class="fas fa-user-gear"></i> إدارة الفريق</div>
+                <div onclick="switchTab('leader')" id="tab-leader" class="sidebar-item text-blue-400"><i class="fas fa-crown"></i> غرفة القيادة</div>
             </nav>
-            <button onclick="logout()" class="w-full p-3 bg-red-500/10 text-red-500 rounded-xl font-bold mt-2">خروج</button>
+
+            <div class="mt-auto p-4 bg-slate-900/50 rounded-2xl border border-white/5">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="status-dot bg-green-500"></div>
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Server: Online</span>
+                </div>
+                <button onclick="location.reload()" class="w-full text-red-500 text-xs font-bold hover:underline">تسجيل الخروج</button>
+            </div>
         </aside>
 
-        <main class="flex-1 flex flex-col overflow-hidden">
-            <div id="p-dashboard" class="page active-page">
-                <div class="marquee-box"><div id="newsDisplay" class="marquee-text">مرحباً بالقائد بلال في منصة الخوارزمية أونلاين</div></div>
-                <h2 id="helloUser" class="text-3xl font-bold mb-8 text-white"></h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-white">
-                    <div class="glass p-8 rounded-3xl border-r-8 border-blue-500 shadow-xl"><p class="opacity-60 font-bold mb-2 text-sm">حالة السيرفر</p><p id="serverStatus" class="text-4xl font-black text-green-500">Online</p></div>
-                    <div class="glass p-8 rounded-3xl border-r-8 border-yellow-500 shadow-xl"><p class="opacity-60 font-bold mb-2 text-sm">الرتبة</p><p id="userRole" class="text-4xl font-black">--</p></div>
+        <main class="flex-1 overflow-y-auto p-10 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-blue-900/10 via-transparent to-transparent">
+            
+            <div id="sec-dash" class="tab-content">
+                <div class="flex justify-between items-center mb-10">
+                    <div>
+                        <h1 class="text-4xl font-black text-white mb-2">مرحباً، القائد بلال 👑</h1>
+                        <p class="text-slate-400">نظام الخوارزمية يعمل بالكامل تحت إشرافك.</p>
+                    </div>
+                    <div class="text-left bg-blue-500/10 border border-blue-500/20 p-4 rounded-2xl">
+                        <p class="text-[10px] uppercase font-bold text-blue-400">Current Session</p>
+                        <p id="clock" class="text-xl font-mono text-white">00:00:00</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                    <div class="cyber-card p-6 rounded-2xl">
+                        <i class="fas fa-microchip text-blue-500 mb-4"></i>
+                        <p class="text-slate-500 text-sm font-bold">رتبة المستخدم</p>
+                        <p class="text-2xl font-black text-white">System Admin</p>
+                    </div>
+                    <div class="cyber-card p-6 rounded-2xl" style="--main-blue: #22c55e;">
+                        <i class="fas fa-database text-green-500 mb-4"></i>
+                        <p class="text-slate-500 text-sm font-bold">قاعدة البيانات</p>
+                        <p class="text-2xl font-black text-white text-green-500">Connected</p>
+                    </div>
+                    <div class="cyber-card p-6 rounded-2xl" style="--main-blue: #eab308;">
+                        <i class="fas fa-bolt text-yellow-500 mb-4"></i>
+                        <p class="text-slate-500 text-sm font-bold">سرعة الاستجابة</p>
+                        <p class="text-2xl font-black text-white">12ms</p>
+                    </div>
                 </div>
             </div>
 
-            <div id="p-chat" class="page">
-                <div id="chatBox" class="flex-1 glass rounded-2xl p-4 mb-4 overflow-y-auto flex flex-col gap-3"></div>
-                <div class="flex gap-2">
-                    <input type="text" id="chatInput" class="flex-1 bg-slate-900 p-4 rounded-xl outline-none text-white border border-white/5" placeholder="اكتب رسالتك...">
-                    <button onclick="sendMsg()" class="bg-blue-600 px-6 rounded-xl text-white hover:bg-blue-700"><i class="fas fa-paper-plane"></i></button>
+            <div id="sec-chat" class="tab-content hidden">
+                <h2 class="text-2xl font-bold mb-6">غرفة العمليات المشتركة</h2>
+                <div class="h-[500px] cyber-card rounded-3xl flex flex-col p-6">
+                    <div id="chatBox" class="flex-1 overflow-y-auto space-y-4 mb-4 pr-2">
+                        <div class="text-center text-slate-600 text-xs py-10">جاري تأمين قناة الاتصال...</div>
+                    </div>
+                    <div class="flex gap-4">
+                        <input type="text" id="mInput" class="flex-1 glass-input p-4 rounded-xl text-white outline-none" placeholder="أدخل الأمر أو الرسالة...">
+                        <button onclick="send()" class="bg-blue-600 px-8 rounded-xl hover:bg-blue-500 transition"><i class="fas fa-paper-plane text-white"></i></button>
+                    </div>
                 </div>
             </div>
 
-            <div id="p-members" class="page">
-                <h2 class="text-2xl font-bold mb-4 text-white">أعضاء الفريق أونلاين</h2>
-                <div id="membersList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-            </div>
-
-            <div id="p-admin" class="page">
-                <h2 class="text-2xl font-bold text-yellow-500 mb-6">غرفة القيادة 👑</h2>
-                <div class="glass p-6 rounded-3xl max-w-md border border-yellow-500/20">
-                    <h3 class="font-bold mb-4 text-white">تغيير الخبر العاجل</h3>
-                    <input type="text" id="newsInput" class="w-full p-4 rounded-xl bg-slate-900 border border-white/10 mb-4 text-white text-center" placeholder="...">
-                    <button onclick="updateNews()" class="w-full bg-yellow-600 p-4 rounded-xl font-bold text-slate-950 hover:bg-yellow-500">تحديث</button>
+            <div id="sec-team" class="tab-content hidden">
+                <h2 class="text-2xl font-bold mb-6">سجل الأعضاء النشطين</h2>
+                <div class="cyber-card rounded-3xl overflow-hidden">
+                    <table class="w-full text-right">
+                        <thead class="bg-blue-500/5 text-slate-500 text-xs uppercase tracking-tighter">
+                            <tr><th class="p-5">العضو</th><th class="p-5">الصلاحية</th><th class="p-5">تاريخ الانضمام</th></tr>
+                        </thead>
+                        <tbody id="userTable">
+                            </tbody>
+                    </table>
                 </div>
             </div>
+
         </main>
     </div>
 
     <script>
-        // إعدادات السيرفر
+        // بروتوكول Supabase
         const supabaseUrl = 'https://xhyfprrvpzasbywehzid.supabase.co';
         const supabaseKey = 'sb_publishable_lJ85dvR8A5d0vXWRZ6SWvw_rSwSf56A5uK9900';
-        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        const _client = supabase.createClient(supabaseUrl, supabaseKey);
 
-        let session = JSON.parse(localStorage.getItem('alg_session_v30') || 'null');
+        // التحقق من الجلسة
+        function verifyProtocol() {
+            const user = document.getElementById('u').value.trim();
+            const pass = document.getElementById('p').value;
 
-        // --- نظام التحقق المدمج ببياناتك يا بلال ---
-        async function handleAuth() {
-            const n = document.getElementById('uName').value.trim().toLowerCase();
-            const p = document.getElementById('uPass').value;
-
-            // التأكد من بيانات القائد بلال (أوفلاين وأونلاين)
-            if (n === 'belal' && p === '159078@1#') {
-                saveSession('belal', 'ADMIN');
-                return;
-            }
-
-            // محاولة الدخول لباقي الأعضاء من السيرفر
-            const { data, error } = await _supabase.from('profiles').select('*').eq('username', n).eq('password', p).single();
-            if (data) {
-                saveSession(n, data.role);
+            // كود القائد بلال مدمج
+            if(user === 'belal' && pass === '159078@1#') {
+                document.getElementById('authShield').classList.add('hidden');
+                document.getElementById('mainOS').classList.remove('hidden');
+                initTerminal();
             } else {
-                alert('خطأ في البيانات! تأكد من الاسم والباسورد');
+                alert("ACCESS DENIED: بيانات غير مصرح بها");
             }
         }
 
-        function saveSession(name, role) {
-            localStorage.setItem('alg_session_v30', JSON.stringify({name, role}));
-            location.reload();
+        function initTerminal() {
+            updateClock();
+            setInterval(updateClock, 1000);
+            fetchData();
+            // ربط لحظي
+            _client.channel('any').on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, () => fetchData()).subscribe();
         }
 
-        async function loadData() {
-            if(!session) return;
-            
+        function updateClock() {
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString('en-GB');
+        }
+
+        async function fetchData() {
             // تحميل الرسائل
-            const { data: msgs } = await _supabase.from('messages').select('*').order('created_at', { ascending: true });
+            const { data: msgs } = await _client.from('messages').select('*').order('created_at', { ascending: true });
             if(msgs) {
                 document.getElementById('chatBox').innerHTML = msgs.map(m => `
-                    <div class="p-3 glass rounded-xl ${m.username === session.name ? 'mr-auto bg-blue-500/10' : 'ml-auto'} max-w-[80%]">
-                        <span class="text-[10px] font-bold text-blue-400">${m.username === 'belal' ? 'القائد بلال 👑' : m.username}</span>
-                        <p class="text-sm text-white mt-1">${m.content}</p>
+                    <div class="flex flex-col ${m.username === 'belal' ? 'items-start' : 'items-end'}">
+                        <div class="px-4 py-2 rounded-2xl max-w-[70%] ${m.username === 'belal' ? 'bg-blue-600/20 border border-blue-500/30' : 'bg-slate-800'}">
+                            <p class="text-[10px] font-bold text-blue-400 mb-1">${m.username === 'belal' ? 'LEADER 👑' : m.username}</p>
+                            <p class="text-sm">${m.content}</p>
+                        </div>
                     </div>
                 `).join('');
                 document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
             }
 
             // تحميل الأعضاء
-            const { data: users } = await _supabase.from('profiles').select('username, role');
+            const { data: users } = await _client.from('profiles').select('*');
             if(users) {
-                document.getElementById('membersList').innerHTML = users.map(u => `
-                    <div class="glass p-4 rounded-xl flex justify-between items-center border-r-4 ${u.username === 'belal' ? 'border-yellow-500' : 'border-blue-500'}">
-                        <span class="font-bold text-white">${u.username === 'belal' ? 'القائد بلال 👑' : u.username}</span>
-                        <span class="text-[10px] opacity-50">${u.role}</span>
-                    </div>
+                document.getElementById('userTable').innerHTML = users.map(u => `
+                    <tr class="border-b border-white/5 hover:bg-white/5">
+                        <td class="p-5 font-bold">${u.username === 'belal' ? 'بلال (القائد)' : u.username}</td>
+                        <td class="p-5 text-xs"><span class="px-2 py-1 bg-blue-500/10 rounded">${u.role}</span></td>
+                        <td class="p-5 text-slate-500 text-xs">${new Date(u.created_at).toLocaleDateString()}</td>
+                    </tr>
                 `).join('');
             }
-            
-            // تحميل الأخبار
-            const { data: news } = await _supabase.from('settings').select('value').eq('key', 'news').single();
-            if(news) document.getElementById('newsDisplay').innerText = news.value;
         }
 
-        async function sendMsg() {
-            const t = document.getElementById('chatInput').value.trim();
-            if(!t) return;
-            await _supabase.from('messages').insert([{ username: session.name, content: t }]);
-            document.getElementById('chatInput').value = '';
-            loadData();
+        async function send() {
+            const val = document.getElementById('mInput').value;
+            if(!val) return;
+            await _client.from('messages').insert([{ username: 'belal', content: val }]);
+            document.getElementById('mInput').value = '';
+            fetchData();
         }
 
-        async function updateNews() {
-            const val = document.getElementById('newsInput').value;
-            await _supabase.from('settings').upsert([{ key: 'news', value: val }]);
-            alert('تم التحديث!'); loadData();
-        }
-
-        function showPage(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-            document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('p-'+id).classList.add('active-page');
-            document.getElementById('btn-'+id).classList.add('active');
-        }
-
-        function logout() { localStorage.removeItem('alg_session_v30'); location.reload(); }
-
-        if(session) {
-            document.getElementById('authPage').classList.add('hidden');
-            document.getElementById('mainApp').classList.remove('hidden');
-            document.getElementById('helloUser').innerText = `أهلاً يا ${session.name === 'belal' ? 'بلال' : session.name}`;
-            document.getElementById('userRole').innerText = session.role;
-            if(session.role === 'ADMIN') document.getElementById('adminLink').classList.remove('hidden');
-            loadData();
-            // تحديث لحظي
-            _supabase.channel('any').on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, () => loadData()).subscribe();
+        function switchTab(id) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+            document.getElementById('sec-'+id).classList.remove('hidden');
+            document.getElementById('tab-'+id).classList.add('active');
         }
     </script>
 </body>
