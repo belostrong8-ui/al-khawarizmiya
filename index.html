@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الخوارزمية - نظام الخصوصية</title>
+    <title>منصة الخوارزمية - V7.0 Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -20,26 +20,26 @@
         .news-banner { background: linear-gradient(90deg, #1e3a8a, #3b82f6); padding: 10px; border-radius: 15px; margin-bottom: 20px; overflow: hidden; }
         .news-scroll { display: inline-block; white-space: nowrap; animation: scrollText 15s linear infinite; width: 100%; }
         @keyframes scrollText { 0% { transform: translateX(100%); } 100% { transform: translateX(-150%); } }
-        .media-preview { max-width: 250px; border-radius: 10px; margin-top: 10px; border: 1px solid rgba(255,255,255,0.1); }
+        .media-preview { max-width: 250px; border-radius: 10px; margin-top: 5px; }
     </style>
 </head>
 <body class="flex">
 
     <div id="authPage" class="fixed inset-0 z-[500] bg-slate-950 flex items-center justify-center p-4">
         <div class="glass p-8 rounded-[2rem] w-full max-w-md text-center border-blue-500/50 border shadow-2xl">
-            <h2 id="authTitle" class="text-2xl font-bold mb-6 text-blue-500">الخوارزمية - دخول</h2>
+            <h2 id="authTitle" class="text-2xl font-bold mb-6 text-blue-500">دخول الخوارزمية</h2>
             <div class="space-y-4">
                 <input type="text" id="uName" placeholder="اسم المستخدم" class="w-full p-4 rounded-xl text-center bg-slate-900 border border-white/10 outline-none text-white">
                 <input type="password" id="uPass" placeholder="كلمة السر" class="w-full p-4 rounded-xl text-center bg-slate-900 border border-white/10 outline-none text-white">
                 <button onclick="handleAuth()" class="w-full bg-blue-600 p-4 rounded-xl font-bold hover:bg-blue-700">دخول</button>
-                <button onclick="toggleAuthMode()" class="text-blue-400 text-xs mt-2 underline">إنشاء حساب جديد</button>
+                <button onclick="toggleAuthMode()" class="text-blue-400 text-xs mt-2 underline block mx-auto">إنشاء حساب جديد</button>
             </div>
         </div>
     </div>
 
     <div id="mainApp" class="hidden flex w-full h-full">
         <aside class="w-64 glass flex flex-col p-4 border-l border-white/10">
-            <div class="mb-8 px-2 flex items-center gap-3"><i class="fas fa-terminal text-2xl text-blue-500"></i><h1 class="font-bold text-xl text-center">الخوارزمية</h1></div>
+            <div class="mb-8 px-2 flex items-center gap-3"><i class="fas fa-terminal text-2xl text-blue-500"></i><h1 class="font-bold text-xl">الخوارزمية</h1></div>
             <nav class="flex-1 space-y-1">
                 <button onclick="showPage('dashboard')" id="btn-dashboard" class="sidebar-btn active"><i class="fas fa-home"></i> الرئيسية</button>
                 <button onclick="showPage('chat')" id="btn-chat" class="sidebar-btn"><i class="fas fa-comments"></i> المحادثة</button>
@@ -47,33 +47,38 @@
                 <button onclick="showPage('members')" id="btn-members" class="sidebar-btn"><i class="fas fa-users"></i> الأعضاء</button>
                 <button id="adminLink" onclick="showPage('admin')" class="hidden sidebar-btn text-yellow-500"><i class="fas fa-crown"></i> لوحة القائد</button>
             </nav>
-            <div class="mt-auto space-y-2 pt-4 border-t border-white/10">
+            <div class="mt-auto space-y-2 pt-4 border-t border-white/10 text-center">
                 <button onclick="toggleTheme()" class="sidebar-btn text-xs"><i class="fas fa-adjust"></i> تبديل المود</button>
-                <button onclick="logout()" class="w-full p-2 bg-red-500/10 text-red-500 rounded-xl font-bold">خروج</button>
+                <button onclick="requestNotify()" id="notifBtn" class="sidebar-btn text-xs text-green-400"><i class="fas fa-bell"></i> تفعيل الإشعارات</button>
+                <button onclick="logout()" class="w-full p-2 bg-red-500/10 text-red-500 rounded-xl font-bold mt-2">خروج</button>
             </div>
         </aside>
 
         <main class="flex-1 flex flex-col overflow-hidden">
             <div id="p-dashboard" class="page active-page">
-                <div class="news-banner"><div id="newsScroll" class="news-scroll text-white font-bold">مرحباً بك.. الخصوصية هي الأولوية هنا.</div></div>
+                <div class="news-banner"><div id="newsScroll" class="news-scroll text-white font-bold">مرحباً بك يا قائد.. جاري تحميل آخر الأخبار..</div></div>
                 <h2 id="helloUser" class="text-3xl font-bold mb-8"></h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="glass p-8 rounded-3xl border-r-8 border-blue-500 shadow-lg">
-                        <p class="opacity-60 mb-2 font-bold uppercase">أعضاء الفريق</p>
+                        <p class="opacity-60 mb-2 font-bold uppercase">الأعضاء</p>
                         <p id="userCount" class="text-6xl font-black">0</p>
                     </div>
                 </div>
             </div>
 
-            <div id="p-chat" class="page">
-                <div class="flex gap-4 h-full">
-                    <div class="flex-1 flex flex-col h-full">
+            <div id="p-chat" class="page h-full">
+                <div class="flex gap-4 h-full overflow-hidden">
+                    <div class="w-48 glass rounded-2xl p-3 overflow-y-auto hidden md:block">
+                        <p class="text-[10px] opacity-40 mb-2 text-center font-bold text-blue-400">اضغط للمنشن</p>
+                        <div id="chatUserList" class="space-y-2"></div>
+                    </div>
+                    <div class="flex-1 flex flex-col h-full overflow-hidden">
                         <div id="chatBox" class="flex-1 glass rounded-2xl p-4 mb-4 overflow-y-auto flex flex-col gap-3"></div>
-                        <div class="flex gap-2 bg-slate-900/50 p-2 rounded-2xl">
+                        <div class="flex gap-2 p-2 bg-slate-900/50 rounded-2xl border border-white/5">
                             <input type="file" id="mediaInput" class="hidden" accept="image/*,video/*" onchange="sendMedia()">
-                            <button onclick="document.getElementById('mediaInput').click()" class="text-blue-400 px-3 hover:text-white"><i class="fas fa-paperclip"></i></button>
-                            <input type="text" id="chatInput" class="flex-1 bg-transparent p-2 outline-none text-white" placeholder="اكتب رسالة...">
-                            <button onclick="sendMsg()" class="bg-blue-600 px-6 py-2 rounded-xl text-white"><i class="fas fa-paper-plane"></i></button>
+                            <button onclick="document.getElementById('mediaInput').click()" class="text-blue-400 px-3 hover:text-white transition"><i class="fas fa-camera"></i></button>
+                            <input type="text" id="chatInput" class="flex-1 bg-transparent p-2 outline-none text-white text-sm" placeholder="اكتب رسالتك هنا...">
+                            <button onclick="sendMsg()" class="bg-blue-600 px-6 py-2 rounded-xl text-white hover:bg-blue-700 transition"><i class="fas fa-paper-plane"></i></button>
                         </div>
                     </div>
                 </div>
@@ -82,25 +87,22 @@
             <div id="p-library" class="page">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl font-bold">مكتبة الملفات</h2>
-                    <div id="adminLib" class="hidden">
-                        <input type="file" id="fileInput" class="hidden" onchange="uploadFile()">
-                        <button onclick="document.getElementById('fileInput').click()" class="bg-blue-600 px-4 py-2 rounded-lg text-sm font-bold">رفع ملف</button>
-                    </div>
+                    <div id="adminLib" class="hidden"><input type="file" id="fileInput" class="hidden" onchange="uploadFile()"><button onclick="document.getElementById('fileInput').click()" class="bg-blue-600 px-4 py-2 rounded-lg text-sm font-bold">رفع ملف</button></div>
                 </div>
                 <div id="libraryList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </div>
 
             <div id="p-members" class="page">
-                <h2 class="text-2xl font-bold mb-4">أعضاء المنصة</h2>
+                <h2 class="text-2xl font-bold mb-4">أعضاء الفريق</h2>
                 <div class="glass rounded-2xl overflow-hidden shadow-xl"><table class="w-full text-right"><tbody id="memberTableBody"></tbody></table></div>
             </div>
 
             <div id="p-admin" class="page">
-                <h2 class="text-2xl font-bold text-yellow-500 mb-6 font-black text-center">لوحة تحكم القائد بلال 👑</h2>
+                <h2 class="text-2xl font-bold text-yellow-500 mb-6 font-black">لوحة التحكم</h2>
                 <div class="glass p-6 rounded-2xl border-yellow-500/20 border">
-                    <h3 class="font-bold mb-2">تحديث الأخبار العاجلة:</h3>
+                    <h3 class="font-bold mb-2">تحديث الأخبار:</h3>
                     <input type="text" id="newsInput" class="w-full p-4 bg-slate-800 rounded-xl mb-4 outline-none border border-white/5" placeholder="اكتب الخبر الجديد...">
-                    <button onclick="setGlobalNews()" class="bg-yellow-600 px-8 py-3 rounded-xl font-bold">نشر الخبر</button>
+                    <button onclick="setGlobalNews()" class="bg-yellow-600 px-8 py-3 rounded-xl font-bold hover:bg-yellow-700">تحديث</button>
                 </div>
             </div>
         </main>
@@ -110,12 +112,18 @@
         const supabaseUrl = 'https://xhyfprrvpzasbywehzid.supabase.co';
         const supabaseKey = 'sb_publishable_lJ85dVr8A5dOvXWRZ6SWvw_rSwSfp1J';
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        let currentUser = null; let isLoginMode = true;
 
-        let currentUser = null;
-        let isLoginMode = true;
+        async function requestNotify() {
+            const permission = await Notification.requestPermission();
+            if(permission === 'granted') {
+                new Notification("الخوارزمية", { body: "تم تفعيل الإشعارات بنجاح يا بطل!" });
+                document.getElementById('notifBtn').classList.add('hidden');
+            }
+        }
 
         function toggleTheme() { document.body.classList.toggle('light-mode'); }
-        function toggleAuthMode() { isLoginMode = !isLoginMode; document.getElementById('authTitle').innerText = isLoginMode ? 'الخوارزمية - دخول' : 'إنشاء حساب جديد'; }
+        function toggleAuthMode() { isLoginMode = !isLoginMode; document.getElementById('authTitle').innerText = isLoginMode ? 'دخول الخوارزمية' : 'إنشاء حساب جديد'; }
 
         async function handleAuth() {
             const n = document.getElementById('uName').value.trim().toLowerCase();
@@ -137,8 +145,15 @@
 
         async function initApp() {
             updateUI();
-            _supabase.channel('any').on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, () => updateUI()).subscribe();
-            _supabase.channel('any').on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => updateUI()).subscribe();
+            _supabase.channel('any').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
+                if(payload.new.username !== currentUser.username && !payload.new.content.startsWith('SYS_NEWS:')) {
+                    if(Notification.permission === 'granted') {
+                        new Notification(`رسالة جديدة من ${payload.new.username}`, { body: payload.new.content.startsWith('MEDIA:') ? 'أرسل وسائط' : payload.new.content });
+                    }
+                }
+                updateUI();
+            }).on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, () => updateUI())
+              .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => updateUI()).subscribe();
         }
 
         async function updateUI() {
@@ -149,25 +164,22 @@
             if(users) {
                 document.getElementById('userCount').innerText = users.length;
                 document.getElementById('memberTableBody').innerHTML = users.map(u => `<tr class="border-b border-white/5"><td class="p-4 font-bold">${u.username}</td><td class="p-4 text-left">${currentUser.username === 'belal' && u.username !== 'belal' ? `<button onclick="deleteUser(${u.id})" class="text-red-500">حذف</button>` : ''}</td></tr>`).join('');
+                document.getElementById('chatUserList').innerHTML = users.map(u => `<button onclick="mention('${u.username}')" class="w-full text-right p-2 glass rounded-lg text-xs hover:bg-blue-600 transition truncate border border-white/5 font-bold">${u.username}</button>`).join('');
             }
 
             const { data: msgs } = await _supabase.from('messages').select('*').order('created_at', { ascending: false });
             if(msgs) {
-                const newsMsg = msgs.find(m => m.content.startsWith('SYS_NEWS:'));
-                if(newsMsg) document.getElementById('newsScroll').innerText = newsMsg.content.replace('SYS_NEWS:', '');
+                const news = msgs.find(m => m.content.startsWith('SYS_NEWS:'));
+                if(news) document.getElementById('newsScroll').innerText = news.content.replace('SYS_NEWS:', '');
 
                 document.getElementById('chatBox').innerHTML = msgs.filter(m => !m.content.startsWith('SYS_NEWS:') && !m.content.startsWith('FILE:')).reverse().map(m => {
                     const isMedia = m.content.startsWith('MEDIA:');
-                    let contentHTML = isMedia ? (m.content.includes('video') ? `<video src="${m.content.split('|')[1]}" controls class="media-preview"></video>` : `<img src="${m.content.split('|')[1]}" class="media-preview">`) : `<p class="text-sm mt-1">${m.content}</p>`;
-                    
-                    // منطق الخصوصية الجديد: زر الحذف يظهر فقط لصاحب الرسالة
-                    const isMyMessage = m.username === currentUser.username;
-                    const deleteBtn = isMyMessage ? `<button onclick="deleteMsg(${m.id})" class="absolute -top-2 -right-2 bg-red-600 text-white w-5 h-5 rounded-full text-[10px] hidden group-hover:block transition shadow-lg"><i class="fas fa-times"></i></button>` : '';
-
-                    return `<div class="p-3 glass rounded-xl ${isMyMessage ? 'mr-auto bg-blue-500/20' : 'ml-auto'} max-w-[80%] relative group shadow-sm border border-white/5">
+                    let contentHTML = isMedia ? (m.content.includes('video') ? `<video src="${m.content.split('|')[1]}" controls class="media-preview"></video>` : `<img src="${m.content.split('|')[1]}" class="media-preview" onclick="window.open(this.src)">`) : `<p class="text-sm mt-1">${m.content}</p>`;
+                    const isMyMsg = m.username === currentUser.username;
+                    return `<div class="p-3 glass rounded-xl ${isMyMsg ? 'mr-auto bg-blue-500/20' : 'ml-auto'} max-w-[80%] relative group shadow-sm">
                         <span class="text-[10px] text-blue-400 font-bold">${m.username}</span>
                         ${contentHTML}
-                        ${deleteBtn}
+                        ${isMyMsg ? `<button onclick="deleteMsg(${m.id})" class="absolute -top-2 -right-2 bg-red-600 text-white w-5 h-5 rounded-full text-[10px] hidden group-hover:block"><i class="fas fa-times"></i></button>` : ''}
                     </div>`;
                 }).join('');
                 document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
@@ -175,15 +187,15 @@
                 const files = msgs.filter(m => m.content.startsWith('FILE:'));
                 document.getElementById('libraryList').innerHTML = files.map(f => {
                     const [url, name] = f.content.replace('FILE:', '').split('|');
-                    return `<div class="glass p-4 rounded-xl flex justify-between items-center border border-white/5">
-                        <span class="text-sm truncate"><i class="fas fa-file-pdf text-red-500 ml-2"></i> ${name}</span>
-                        <div class="flex gap-2">
-                            <button onclick="window.open('${url}', '_blank')" class="bg-blue-600/30 text-blue-400 px-3 py-1 rounded text-xs font-bold">فتح</button>
-                            ${currentUser.username === 'belal' ? `<button onclick="deleteMsg(${f.id})" class="text-red-500"><i class="fas fa-trash"></i></button>` : ''}
-                        </div>
-                    </div>`;
+                    return `<div class="glass p-4 rounded-xl flex justify-between items-center border border-white/5"><span class="text-sm truncate"><i class="fas fa-file-pdf text-red-500 ml-2"></i> ${name}</span><div class="flex gap-2"><button onclick="window.open('${url}', '_blank')" class="bg-blue-600/30 text-blue-400 px-3 py-1 rounded text-xs font-bold">فتح</button>${currentUser.username === 'belal' ? `<button onclick="deleteMsg(${f.id})" class="text-red-500"><i class="fas fa-trash"></i></button>` : ''}</div></div>`;
                 }).join('');
             }
+        }
+
+        function mention(name) {
+            const input = document.getElementById('chatInput');
+            input.value = `@${name} ` + input.value;
+            input.focus();
         }
 
         async function sendMedia() {
@@ -210,9 +222,10 @@
         async function setGlobalNews() {
             const val = document.getElementById('newsInput').value;
             if(val) await _supabase.from('messages').insert([{ username: 'SYSTEM', content: `SYS_NEWS:${val}` }]);
+            alert('تم التحديث!');
         }
 
-        async function deleteMsg(id) { if(confirm('هل تريد مسح رسالتك؟')) await _supabase.from('messages').delete().eq('id', id); }
+        async function deleteMsg(id) { if(confirm('مسح رسالتك؟')) await _supabase.from('messages').delete().eq('id', id); }
         async function deleteUser(id) { if(confirm('طرد العضو؟')) await _supabase.from('profiles').delete().eq('id', id); }
         async function sendMsg() {
             const t = document.getElementById('chatInput').value.trim();
