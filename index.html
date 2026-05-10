@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الخوارزمية - نظام التحكم الكامل</title>
+    <title>منصة الخوارزمية - النسخة الشاملة</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -21,84 +21,69 @@
         .news-scroll { display: inline-block; white-space: nowrap; animation: scrollText 15s linear infinite; }
         @keyframes scrollText { 0% { transform: translateX(100%); } 100% { transform: translateX(-150%); } }
         .badge { background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-right: auto; }
-        .user-chip { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer; background: rgba(128,128,128,0.1); border: 1px solid rgba(128,128,128,0.2); white-space: nowrap; }
+        [dir="ltr"] .sidebar-btn { text-align: left; }
     </style>
 </head>
 <body class="flex">
 
     <div id="authPage" class="fixed inset-0 z-[500] bg-slate-950 flex items-center justify-center p-4">
         <div class="glass p-8 rounded-[2rem] w-full max-w-md text-center border-blue-500/50 border shadow-2xl">
-            <h2 id="authTitle" class="text-2xl font-bold mb-6 text-blue-500">دخول الخوارزمية</h2>
+            <h2 id="authTitle" data-lang="auth_title" class="text-2xl font-bold mb-6 text-blue-500">دخول الخوارزمية</h2>
             <div class="space-y-4">
-                <input type="text" id="uName" placeholder="اسم المستخدم" class="w-full p-4 rounded-xl text-center bg-slate-900 text-white outline-none border border-white/5">
-                <input type="password" id="uPass" placeholder="كلمة السر" class="w-full p-4 rounded-xl text-center bg-slate-900 text-white outline-none border border-white/5">
-                <button onclick="handleAuth()" class="w-full bg-blue-600 p-4 rounded-xl font-bold hover:bg-blue-700 transition text-white">دخول</button>
-                <button onclick="toggleAuthMode()" id="authModeBtn" class="text-blue-400 text-xs mt-2 underline block mx-auto">إنشاء حساب جديد</button>
+                <input type="text" id="uName" data-lang-placeholder="user_placeholder" placeholder="اسم المستخدم" class="w-full p-4 rounded-xl text-center bg-slate-900 text-white outline-none border border-white/5">
+                <input type="password" id="uPass" data-lang-placeholder="pass_placeholder" placeholder="كلمة السر" class="w-full p-4 rounded-xl text-center bg-slate-900 text-white outline-none border border-white/5">
+                <button onclick="handleAuth()" data-lang="login_btn" class="w-full bg-blue-600 p-4 rounded-xl font-bold hover:bg-blue-700 transition text-white">دخول</button>
             </div>
         </div>
     </div>
 
     <div id="mainApp" class="hidden flex w-full h-full">
         <aside class="w-64 glass flex flex-col p-4 border-l border-white/10">
-            <div class="mb-8 px-2 flex items-center gap-3"><i class="fas fa-terminal text-blue-500 text-2xl"></i><h1 class="font-bold text-xl">الخوارزمية</h1></div>
+            <div class="mb-8 px-2 flex items-center gap-3"><i class="fas fa-terminal text-blue-500 text-2xl"></i><h1 data-lang="brand_name" class="font-bold text-xl">الخوارزمية</h1></div>
             <nav class="flex-1 space-y-1">
-                <button onclick="showPage('dashboard')" id="btn-dashboard" class="sidebar-btn active"><i class="fas fa-home"></i> الرئيسية</button>
-                <button onclick="showPage('chat')" id="btn-chat" class="sidebar-btn"><i class="fas fa-comments"></i> المحادثة</button>
-                <button onclick="showPage('library')" id="btn-library" class="sidebar-btn"><i class="fas fa-book"></i> المكتبة <span id="libCountBadge" class="badge">0</span></button>
-                <button onclick="showPage('members')" id="btn-members" class="sidebar-btn"><i class="fas fa-users"></i> الأعضاء <span id="userCountBadge" class="badge bg-blue-500">0</span></button>
-                <button id="adminLink" onclick="showPage('admin')" class="hidden sidebar-btn text-yellow-500"><i class="fas fa-crown"></i> لوحة القائد</button>
+                <button onclick="showPage('dashboard')" id="btn-dashboard" class="sidebar-btn active"><i class="fas fa-home"></i> <span data-lang="nav_home">الرئيسية</span></button>
+                <button onclick="showPage('chat')" id="btn-chat" class="sidebar-btn"><i class="fas fa-comments"></i> <span data-lang="nav_chat">المحادثة</span></button>
+                <button onclick="showPage('library')" id="btn-library" class="sidebar-btn"><i class="fas fa-book"></i> <span data-lang="nav_lib">المكتبة</span> <span id="libCountBadge" class="badge">0</span></button>
+                <button onclick="showPage('members')" id="btn-members" class="sidebar-btn"><i class="fas fa-users"></i> <span data-lang="nav_members">الأعضاء</span> <span id="userCountBadge" class="badge bg-blue-500">0</span></button>
+                <button id="adminLink" onclick="showPage('admin')" class="hidden sidebar-btn text-yellow-500"><i class="fas fa-crown"></i> <span data-lang="nav_admin">لوحة القائد</span></button>
             </nav>
             <div class="mt-auto pt-4 border-t border-white/10 space-y-2">
-                <button onclick="toggleTheme()" class="sidebar-btn text-xs"><i class="fas fa-adjust"></i> تبديل المود</button>
-                <button onclick="logout()" class="w-full p-2 bg-red-500/10 text-red-500 rounded-xl font-bold hover:bg-red-500 transition">خروج</button>
+                <button onclick="toggleLang()" class="sidebar-btn text-xs text-blue-400"><i class="fas fa-language"></i> <span id="langBtnText">English</span></button>
+                <button onclick="toggleTheme()" class="sidebar-btn text-xs"><i class="fas fa-adjust"></i> <span data-lang="theme_btn">تبديل المود</span></button>
+                <button onclick="logout()" class="w-full p-2 bg-red-500/10 text-red-500 rounded-xl font-bold hover:bg-red-500 transition" data-lang="logout_btn">خروج</button>
             </div>
         </aside>
 
         <main class="flex-1 flex flex-col overflow-hidden">
             <div id="p-dashboard" class="page active-page">
-                <div class="news-banner"><div id="newsScroll" class="news-scroll text-white font-bold">مرحباً بلال وقادة الخوارزمية..</div></div>
+                <div class="news-banner"><div id="newsScroll" class="news-scroll text-white font-bold">...</div></div>
                 <h2 id="helloUser" class="text-3xl font-bold mb-8"></h2>
                 <div class="glass p-8 rounded-3xl border-r-8 border-blue-500 w-fit shadow-xl">
-                    <p class="opacity-60 text-xs font-bold uppercase">قوة الفريق</p>
+                    <p data-lang="team_power" class="opacity-60 text-xs font-bold uppercase">قوة الفريق</p>
                     <p id="userCount" class="text-6xl font-black">0</p>
                 </div>
             </div>
 
+            <div id="p-chat" class="page">
+                <div id="chatBox" class="flex-1 glass rounded-2xl p-4 mb-4 overflow-y-auto flex flex-col gap-3"></div>
+                <div class="flex gap-2 bg-slate-900/50 p-2 rounded-2xl border border-white/5">
+                    <input type="text" id="chatInput" class="flex-1 bg-transparent p-2 outline-none text-white text-sm" data-lang-placeholder="chat_placeholder" placeholder="اكتب رسالة...">
+                    <button onclick="sendMsg()" class="bg-blue-600 px-6 py-2 rounded-xl text-white"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+
             <div id="p-members" class="page">
-                <h2 class="text-2xl font-bold mb-4">إدارة الأعضاء</h2>
+                <h2 class="text-2xl font-bold mb-4" data-lang="nav_members">إدارة الأعضاء</h2>
                 <div class="glass rounded-2xl overflow-hidden shadow-2xl">
                     <table class="w-full text-right">
                         <thead>
                             <tr class="bg-slate-800/50 text-xs opacity-60">
-                                <th class="p-4">العضو</th>
-                                <th class="p-4 text-left">التحكم</th>
+                                <th class="p-4" data-lang="table_user">العضو</th>
+                                <th class="p-4" data-lang="table_action">التحكم</th>
                             </tr>
                         </thead>
                         <tbody id="memberTableBody"></tbody>
                     </table>
-                </div>
-            </div>
-
-            <div id="p-chat" class="page">
-                 <div id="chatUserList" class="flex gap-2 p-2 overflow-x-auto mb-2 border-b border-white/5 scrollbar-hide"></div>
-                 <div id="chatBox" class="flex-1 glass rounded-2xl p-4 mb-4 overflow-y-auto flex flex-col gap-3"></div>
-                 <div class="flex gap-2 bg-slate-900/50 p-2 rounded-2xl border border-white/5">
-                    <input type="text" id="chatInput" class="flex-1 bg-transparent p-2 outline-none text-white text-sm" placeholder="اكتب رسالة الفريق...">
-                    <button onclick="sendMsg()" class="bg-blue-600 px-6 py-2 rounded-xl text-white hover:bg-blue-700 transition"><i class="fas fa-paper-plane"></i></button>
-                 </div>
-            </div>
-            
-            <div id="p-library" class="page">
-                <h2 class="text-2xl font-bold mb-4 text-center">المكتبة 📚</h2>
-                <div id="libraryList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-            </div>
-
-            <div id="p-admin" class="page">
-                <h2 class="text-2xl font-bold text-yellow-500 mb-6 text-center font-black">لوحة القائد 👑</h2>
-                <div class="glass p-6 rounded-2xl border-yellow-500/20 border text-center">
-                    <h3 class="font-bold mb-4">تحديث شريط الأخبار</h3>
-                    <input type="text" id="newsInput" class="w-full p-4 bg-slate-800 rounded-xl mb-4 outline-none text-white text-center" placeholder="اكتب الخبر هنا...">
-                    <button onclick="setGlobalNews()" class="w-full bg-yellow-600 p-4 rounded-xl font-bold text-white">نشر الخبر</button>
                 </div>
             </div>
         </main>
@@ -110,121 +95,95 @@
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
         
         let currentUser = null;
-        let isLoginMode = true;
+        let currentLang = localStorage.getItem('algo_lang') || 'ar';
+
+        const i18n = {
+            ar: {
+                auth_title: "دخول الخوارزمية", user_placeholder: "اسم المستخدم", pass_placeholder: "كلمة السر",
+                login_btn: "دخول", brand_name: "الخوارزمية", nav_home: "الرئيسية", nav_chat: "المحادثة", 
+                nav_lib: "المكتبة", nav_members: "الأعضاء", nav_admin: "لوحة القائد", theme_btn: "تبديل المود", 
+                logout_btn: "خروج", team_power: "قوة الفريق", chat_placeholder: "اكتب رسالة...",
+                table_user: "العضو", table_action: "التحكم", kick_btn: "طرد", kick_confirm: "طرد نهائي؟"
+            },
+            en: {
+                auth_title: "Algorithm Login", user_placeholder: "Username", pass_placeholder: "Password",
+                login_btn: "Login", brand_name: "Algorithm", nav_home: "Home", nav_chat: "Chat", 
+                nav_lib: "Library", nav_members: "Members", nav_admin: "Admin", theme_btn: "Theme", 
+                logout_btn: "Logout", team_power: "Team Power", chat_placeholder: "Type message...",
+                table_user: "Member", table_action: "Action", kick_btn: "Kick", kick_confirm: "Kick forever?"
+            }
+        };
 
         window.onload = () => {
+            applyLang();
             const saved = localStorage.getItem('algo_user');
             if(saved) { currentUser = JSON.parse(saved); loginSuccess(); }
             if(localStorage.getItem('algo_theme') === 'light') document.body.classList.add('light-mode');
         };
 
-        function toggleAuthMode() { 
-            isLoginMode = !isLoginMode; 
-            document.getElementById('authTitle').innerText = isLoginMode ? 'دخول الخوارزمية' : 'حساب جديد';
-            document.getElementById('authModeBtn').innerText = isLoginMode ? 'إنشاء حساب جديد' : 'لديك حساب؟ سجل دخولك';
+        function toggleLang() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            localStorage.setItem('algo_lang', currentLang);
+            applyLang();
+            updateUI();
+        }
+
+        function applyLang() {
+            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            document.getElementById('langBtnText').innerText = currentLang === 'ar' ? 'English' : 'العربية';
+            document.querySelectorAll('[data-lang]').forEach(el => el.innerText = i18n[currentLang][el.getAttribute('data-lang')]);
+            document.querySelectorAll('[data-lang-placeholder]').forEach(el => el.placeholder = i18n[currentLang][el.getAttribute('data-lang-placeholder')]);
         }
 
         async function handleAuth() {
             const n = document.getElementById('uName').value.trim().toLowerCase();
             const p = document.getElementById('uPass').value;
-            if(!n || !p) return alert('املأ البيانات!');
-            
-            if(isLoginMode) {
-                const { data } = await _supabase.from('profiles').select('*').eq('username', n).eq('password', p).single();
-                if(data) { currentUser = data; localStorage.setItem('algo_user', JSON.stringify(data)); loginSuccess(); } else alert('خطأ في البيانات!');
-            } else {
-                await _supabase.from('profiles').insert([{ username: n, password: p, role: 'USER' }]);
-                alert('تم إنشاء الحساب بنجاح!'); isLoginMode = true; toggleAuthMode();
-            }
+            const { data } = await _supabase.from('profiles').select('*').eq('username', n).eq('password', p).single();
+            if(data) { currentUser = data; localStorage.setItem('algo_user', JSON.stringify(data)); loginSuccess(); } else alert('Error!');
         }
 
         function loginSuccess() {
             document.getElementById('authPage').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
-            if(currentUser.username === 'belal') { 
-                document.getElementById('adminLink').classList.remove('hidden'); 
-            }
+            if(currentUser.username === 'belal') document.getElementById('adminLink').classList.remove('hidden');
             initApp();
         }
 
         function initApp() {
             updateUI();
-            // الاستماع للتغييرات اللحظية
-            _supabase.channel('room').on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, () => updateUI())
-                                    .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => updateUI()).subscribe();
+            _supabase.channel('room').on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => updateUI()).subscribe();
         }
 
         async function updateUI() {
             if(!currentUser) return;
-            document.getElementById('helloUser').innerText = `أهلاً ${currentUser.username === 'belal' ? 'بالقائد بلال 👑' : currentUser.username}`;
+            document.getElementById('helloUser').innerText = (currentLang === 'ar' ? 'أهلاً ' : 'Welcome ') + (currentUser.username === 'belal' ? 'بلال 👑' : currentUser.username);
             
-            // تحديث قائمة الأعضاء
             const { data: users } = await _supabase.from('profiles').select('*');
             if(users) {
                 document.getElementById('userCount').innerText = users.length;
                 document.getElementById('userCountBadge').innerText = users.length;
-                
                 document.getElementById('memberTableBody').innerHTML = users.map(u => {
-                    const isAdmin = currentUser.username === 'belal';
+                    const isOwner = currentUser.username === 'belal';
                     return `<tr class="border-b border-white/5">
-                        <td class="p-4">
-                            <div class="font-bold">${u.username}</div>
-                            ${isAdmin ? `<div class="text-[10px] text-yellow-500 hidden" id="pass-${u.id}">باسورد: ${u.password}</div>` : ''}
-                        </td>
+                        <td class="p-4 font-bold">${u.username}</td>
                         <td class="p-4 text-left">
-                            <div class="flex gap-2 justify-end">
-                                ${isAdmin && u.username !== 'belal' ? `
-                                    <button onclick="togglePass(${u.id})" class="bg-blue-500/10 text-blue-400 px-3 py-1 rounded-lg text-xs hover:bg-blue-500 hover:text-white transition">كشف</button>
-                                    <button onclick="deleteUser(${u.id})" class="bg-red-500 text-white px-3 py-1 rounded-lg text-xs hover:bg-red-700 transition">طرد</button>
-                                ` : '<span class="text-green-500 text-[10px] font-bold">أنت</span>'}
-                            </div>
+                            ${isOwner && u.username !== 'belal' ? `<button onclick="deleteUser(${u.id})" class="bg-red-500 text-white px-3 py-1 rounded-lg text-xs">${i18n[currentLang].kick_btn}</button>` : ''}
                         </td>
                     </tr>`;
                 }).join('');
             }
         }
 
-        // --- ميزات التحكم بالقائد ---
-        
         async function deleteUser(id) {
-            if(confirm('هل أنت متأكد من طرد هذا العضو نهائياً من النظام؟')) {
-                const { error } = await _supabase.from('profiles').delete().eq('id', id);
-                if(!error) {
-                    alert('تم طرد العضو بنجاح ✅');
-                    updateUI(); // تحديث القائمة فوراً
-                } else {
-                    alert('حدث خطأ أثناء الحذف');
-                }
+            if(confirm(i18n[currentLang].kick_confirm)) {
+                await _supabase.from('profiles').delete().eq('id', id);
+                updateUI(); // تحديث فوري
             }
         }
 
-        function togglePass(id) {
-            const el = document.getElementById(`pass-${id}`);
-            el.classList.toggle('hidden');
-        }
-
-        async function setGlobalNews() {
-            const v = document.getElementById('newsInput').value;
-            if(v) {
-                await _supabase.from('messages').insert([{ username: 'SYSTEM', content: `SYS_NEWS:${v}` }]);
-                document.getElementById('newsInput').value = '';
-                alert('تم تحديث الخبر');
-            }
-        }
-
-        // وظائف أساسية
-        function showPage(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-            document.getElementById('p-'+id).classList.add('active-page');
-            document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('btn-'+id).classList.add('active');
-        }
-
+        function toggleTheme() { document.body.classList.toggle('light-mode'); localStorage.setItem('algo_theme', document.body.classList.contains('light-mode') ? 'light' : 'dark'); }
+        function showPage(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page')); document.getElementById('p-'+id).classList.add('active-page'); document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active')); document.getElementById('btn-'+id).classList.add('active'); }
         function logout() { localStorage.removeItem('algo_user'); location.reload(); }
-        function toggleTheme() { 
-            document.body.classList.toggle('light-mode'); 
-            localStorage.setItem('algo_theme', document.body.classList.contains('light-mode') ? 'light' : 'dark'); 
-        }
     </script>
 </body>
 </html>
