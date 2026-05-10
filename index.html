@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الخوارزمية - V30 Online</title>
+    <title>منصة الخوارزمية - V30 Ultimate Online</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -31,7 +31,7 @@
             <div class="space-y-4">
                 <input type="text" id="uName" placeholder="اسم المستخدم" class="w-full p-4 rounded-xl text-center bg-slate-900 border border-white/10 outline-none text-white">
                 <input type="password" id="uPass" placeholder="كلمة السر" class="w-full p-4 rounded-xl text-center bg-slate-900 border border-white/10 outline-none text-white">
-                <button onclick="handleAuth()" id="authMainBtn" class="w-full bg-blue-600 p-4 rounded-xl font-bold hover:bg-blue-700 transition text-white text-lg">دخول</button>
+                <button onclick="handleAuth()" id="authMainBtn" class="w-full bg-blue-600 p-4 rounded-xl font-bold hover:bg-blue-700 transition text-white">دخول</button>
                 <button onclick="toggleAuthMode()" id="toggleAuthBtn" class="text-blue-400 text-xs mt-2 underline">إنشاء حساب جديد</button>
             </div>
         </div>
@@ -62,9 +62,9 @@
             <div id="p-dashboard" class="page active-page">
                 <div class="marquee-box"><div id="newsDisplay" class="marquee-text"></div></div>
                 <h2 id="helloUser" class="text-3xl font-bold mb-8 text-white"></h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="glass p-8 rounded-3xl border-r-8 border-red-500 text-white"><p class="opacity-60 font-bold mb-2 nav-txt" data-ar="الملفات المرفوعة" data-en="Uploaded Files">الملفات المرفوعة</p><p id="fileCount" class="text-6xl font-black">0</p></div>
-                    <div class="glass p-8 rounded-3xl border-r-8 border-blue-500 text-white"><p class="opacity-60 font-bold mb-2 nav-txt" data-ar="عدد أعضاء الفريق" data-en="Team Count">عدد أعضاء الفريق</p><p id="userCount" class="text-6xl font-black">0</p></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-white">
+                    <div class="glass p-8 rounded-3xl border-r-8 border-red-500"><p class="opacity-60 font-bold mb-2 nav-txt" data-ar="الملفات المرفوعة" data-en="Uploaded Files">الملفات المرفوعة</p><p id="fileCount" class="text-6xl font-black">0</p></div>
+                    <div class="glass p-8 rounded-3xl border-r-8 border-blue-500"><p class="opacity-60 font-bold mb-2 nav-txt" data-ar="عدد أعضاء الفريق" data-en="Team Count">عدد أعضاء الفريق</p><p id="userCount" class="text-6xl font-black">0</p></div>
                 </div>
             </div>
 
@@ -84,19 +84,19 @@
                 </div>
             </div>
 
-            <div id="p-members" class="page">
-                <h2 class="text-2xl font-bold mb-4 text-white nav-txt" data-ar="سجل الفريق" data-en="Team Registry">سجل الفريق</h2>
+            <div id="p-members" class="page text-white">
+                <h2 class="text-2xl font-bold mb-4 nav-txt" data-ar="سجل الفريق" data-en="Team Registry">سجل الفريق</h2>
                 <div class="glass rounded-2xl overflow-hidden shadow-xl">
-                    <table class="w-full text-right text-white">
+                    <table class="w-full text-right">
                         <thead><tr class="bg-white/5 text-xs opacity-50"><th class="p-4">العضو</th><th id="passHeader" class="p-4 hidden text-yellow-500">كلمة السر</th></tr></thead>
                         <tbody id="memberTableBody"></tbody>
                     </table>
                 </div>
             </div>
 
-            <div id="p-admin" class="page">
+            <div id="p-admin" class="page text-white">
                 <h2 class="text-2xl font-bold text-yellow-500 mb-6 nav-txt" data-ar="لوحة القائد 👑" data-en="Leader Panel 👑">لوحة القائد 👑</h2>
-                <div class="glass p-6 rounded-3xl text-white max-w-md">
+                <div class="glass p-6 rounded-3xl max-w-md">
                     <h3 class="font-bold mb-4 nav-txt" data-ar="تحديث شريط الأخبار" data-en="Update News">تحديث شريط الأخبار</h3>
                     <input type="text" id="newsInput" class="w-full p-4 rounded-xl bg-slate-900 border border-white/10 mb-4 outline-none text-center" placeholder="...">
                     <button onclick="updateNews()" class="w-full bg-yellow-600 p-4 rounded-xl font-bold text-slate-950">تحديث</button>
@@ -114,14 +114,20 @@
     </div>
 
     <script>
-        // إعدادات Supabase من صورك يا بلال
+        // إعدادات السيرفر (Supabase)
         const supabaseUrl = 'https://xhyfprrvpzasbywehzid.supabase.co';
         const supabaseKey = 'sb_publishable_lJ85dvR8A5d0vXWRZ6SWvw_rSwSf56A5uK9900';
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        let session = JSON.parse(localStorage.getItem('alg_session_online') || 'null');
+        let session = JSON.parse(localStorage.getItem('alg_session_v30_online') || 'null');
         let currentLang = localStorage.getItem('alg_lang') || 'ar';
         let isLoginMode = true;
+
+        function toggleAuthMode() {
+            isLoginMode = !isLoginMode;
+            document.getElementById('authTitle').innerText = isLoginMode ? 'دخول' : 'حساب جديد';
+            document.getElementById('authMainBtn').innerText = isLoginMode ? 'دخول' : 'إنشاء حساب';
+        }
 
         async function handleAuth() {
             const n = document.getElementById('uName').value.trim().toLowerCase();
@@ -131,13 +137,15 @@
             if(isLoginMode) {
                 const { data, error } = await _supabase.from('profiles').select('*').eq('username', n).eq('password', p).single();
                 if(data) {
-                    localStorage.setItem('alg_session_online', JSON.stringify({name: n, role: data.role}));
+                    localStorage.setItem('alg_session_v30_online', JSON.stringify({name: n, role: data.role}));
                     location.reload();
-                } else alert('اسم المستخدم أو كلمة السر غلط!');
+                } else alert('غلط في البيانات أو الحساب مش موجود أونلاين!');
             } else {
-                const { error } = await _supabase.from('profiles').insert([{ username: n, password: p, role: 'USER' }]);
-                if(!error) { alert('تم إنشاء الحساب أونلاين! سجل دخولك'); toggleAuthMode(); }
-                else alert('الاسم ده محجوز قبل كدة!');
+                // ثغرة استرجاع القائد: لو سجلت بـ belal يخليك ADMIN أوتوماتيك أونلاين
+                const role = (n === 'belal') ? 'ADMIN' : 'USER';
+                const { error } = await _supabase.from('profiles').insert([{ username: n, password: p, role: role }]);
+                if(!error) { alert('تم التسجيل أونلاين! سجل دخولك دلوقتي'); toggleAuthMode(); }
+                else alert('الاسم ده محجوز فعلاً!');
             }
         }
 
@@ -180,7 +188,7 @@
                             <span class="truncate font-bold text-sm">📄 ${f.name}</span>
                             <span class="text-[8px] opacity-40">بواسطة: ${f.owner}</span>
                         </div>
-                        <a href="${f.url}" target="_blank" class="text-blue-400 p-2"><i class="fas fa-download"></i></a>
+                        <a href="${f.url}" target="_blank" class="text-blue-400 p-2"><i class="fas fa-external-link-alt"></i></a>
                     </div>
                 `).join('');
             }
@@ -197,11 +205,11 @@
         async function updateNews() {
             const val = document.getElementById('newsInput').value;
             await _supabase.from('settings').upsert([{ key: 'news', value: val }]);
-            alert('تم تحديث شريط الأخبار أونلاين!'); loadData();
+            alert('تم التحديث أونلاين!'); loadData();
         }
 
         function requestNotify() {
-            Notification.requestPermission().then(p => { if(p === 'granted') alert('الإشعارات شغالة يا بطل! 🔔'); });
+            Notification.requestPermission().then(p => { if(p === 'granted') alert('تم تفعيل الإشعارات! 🔔'); });
         }
 
         function showPage(id) {
@@ -211,7 +219,6 @@
             document.getElementById('btn-'+id).classList.add('active');
         }
 
-        function toggleAuthMode() { isLoginMode = !isLoginMode; document.getElementById('authTitle').innerText = isLoginMode ? 'دخول' : 'حساب جديد'; }
         function toggleLang() { currentLang = currentLang === 'ar' ? 'en' : 'ar'; localStorage.setItem('alg_lang', currentLang); applyLang(); }
         function applyLang() { 
             const isAr = currentLang === 'ar'; document.documentElement.dir = isAr ? 'rtl' : 'ltr';
@@ -221,7 +228,7 @@
         }
         function toggleTheme() { document.body.classList.toggle('light-mode'); }
         function mention(n) { document.getElementById('chatInput').value = `@${n} : `; document.getElementById('chatInput').focus(); }
-        function logout() { localStorage.removeItem('alg_session_online'); location.reload(); }
+        function logout() { localStorage.removeItem('alg_session_v30_online'); location.reload(); }
 
         if(session) {
             document.getElementById('authPage').classList.add('hidden');
@@ -230,8 +237,8 @@
             if(session.role === 'ADMIN') document.getElementById('adminLink').classList.remove('hidden');
             if(session.name === 'belal') document.getElementById('passHeader').classList.remove('hidden');
             loadData(); applyLang();
-            // تحديث لحظي للرسائل
-            _supabase.channel('any').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, () => loadData()).subscribe();
+            // تحديث لحظي
+            _supabase.channel('any').on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, () => loadData()).subscribe();
         }
     </script>
 </body>
