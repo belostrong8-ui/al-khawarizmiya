@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الخوارزمية V31</title>
+    <title>منصة الخوارزمية</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -18,16 +18,13 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .sidebar-btn { width: 100%; text-align: right; padding: 1rem; border-radius: 1rem; display: flex; align-items: center; gap: 1rem; font-weight: bold; cursor: pointer; }
         .sidebar-btn:hover, .sidebar-btn.active { background: var(--accent); color: white; }
-        .marquee-box { background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 15px; padding: 10px; overflow: hidden; margin-bottom: 2rem; }
-        .marquee-text { display: inline-block; white-space: nowrap; animation: scroll 15s linear infinite; font-weight: bold; color: #60a5fa; }
-        @keyframes scroll { 0% { transform: translateX(100%); } 100% { transform: translateX(-150%); } }
     </style>
 </head>
 <body class="flex">
 
     <div id="authPage" class="fixed inset-0 z-[500] bg-slate-950 flex items-center justify-center p-4">
         <div class="glass p-8 rounded-[2.5rem] w-full max-w-md text-center border-blue-500/30 border shadow-2xl">
-            <h2 id="authTitle" class="text-2xl font-bold mb-6 text-blue-500">الخوارزمية - مرحبا بك في الفريق  </h2>
+            <h2 id="authTitle" class="text-2xl font-bold mb-6 text-blue-500">الخوارزمية - دخول</h2>
             <div class="space-y-4">
                 <input type="text" id="uName" placeholder="اسم المستخدم" class="w-full p-4 rounded-xl text-center bg-slate-900 border border-white/10 outline-none text-white">
                 <input type="password" id="uPass" placeholder="كلمة السر" class="w-full p-4 rounded-xl text-center bg-slate-900 border border-white/10 outline-none text-white">
@@ -41,47 +38,43 @@
         <aside class="w-64 glass flex flex-col p-4 border-l border-white/5">
             <div class="mb-8 px-2 flex items-center gap-3 cursor-pointer" onclick="showPage('dashboard')">
                 <i class="fas fa-terminal text-2xl text-blue-500"></i>
-                <h1 class="font-bold text-xl text-white" id="brandName">الخوارزمية</h1>
+                <h1 class="font-bold text-xl text-white">الخوارزمية</h1>
             </div>
             <nav class="flex-1 space-y-1">
-                <button onclick="showPage('dashboard')" id="btn-dashboard" class="sidebar-btn active"><i class="fas fa-home"></i> <span class="nav-txt" data-ar="الرئيسية" data-en="Dashboard">الرئيسية</span></button>
-                <button onclick="showPage('chat')" id="btn-chat" class="sidebar-btn"><i class="fas fa-comments"></i> <span class="nav-txt" data-ar="المحادثة" data-en="Chat">المحادثة</span></button>
-                <button onclick="showPage('members')" id="btn-members" class="sidebar-btn"><i class="fas fa-users"></i> <span class="nav-txt" data-ar="الأعضاء" data-en="Members">الأعضاء</span></button>
-                <button id="adminLink" onclick="showPage('admin')" class="hidden sidebar-btn text-yellow-500"><i class="fas fa-crown"></i> <span class="nav-txt" data-ar="لوحة القائد" data-en="Admin Panel">لوحة القائد</span></button>
+                <button onclick="showPage('dashboard')" id="btn-dashboard" class="sidebar-btn active"><i class="fas fa-home"></i> الرئيسية</button>
+                <button onclick="showPage('chat')" id="btn-chat" class="sidebar-btn"><i class="fas fa-comments"></i> المحادثة</button>
+                <button onclick="showPage('members')" id="btn-members" class="sidebar-btn"><i class="fas fa-users"></i> الأعضاء</button>
             </nav>
-            <div class="pt-4 border-t border-white/5 space-y-2">
-                <button onclick="logout()" class="w-full p-3 bg-red-500/10 text-red-500 rounded-xl font-bold mt-2">خروج</button>
+            <div class="pt-4 border-t border-white/5">
+                <button onclick="logout()" class="w-full p-3 bg-red-500/10 text-red-500 rounded-xl font-bold">خروج</button>
             </div>
         </aside>
 
         <main class="flex-1 flex flex-col overflow-hidden">
             <div id="p-dashboard" class="page active-page">
-                <div class="marquee-box"><div id="newsDisplay" class="marquee-text">جاري الاتصال بالسحاب...</div></div>
                 <h2 id="helloUser" class="text-3xl font-bold mb-8 text-white"></h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="glass p-8 rounded-3xl border-r-8 border-blue-500"><p class="opacity-60 font-bold mb-2">عدد المتصلين</p><p id="userCount" class="text-6xl font-black">0</p></div>
+                <div class="glass p-8 rounded-3xl border-r-8 border-blue-500">
+                    <p class="opacity-60 font-bold mb-2">حالة النظام</p>
+                    <p id="statusTxt" class="text-2xl font-black">متصل أونلاين ✅</p>
                 </div>
             </div>
 
             <div id="p-chat" class="page">
-                <div class="flex flex-col h-full overflow-hidden">
-                    <div id="chatBox" class="flex-1 glass rounded-2xl p-4 mb-4 overflow-y-auto flex flex-col gap-3"></div>
-                    <div class="flex gap-2 p-2 glass rounded-2xl">
-                        <input type="text" id="chatInput" class="flex-1 bg-transparent p-4 outline-none text-white" placeholder="اكتب رسالتك السحابية...">
-                        <button onclick="sendMsg()" class="bg-blue-600 h-12 w-12 rounded-xl text-white"><i class="fas fa-paper-plane"></i></button>
-                    </div>
+                <div id="chatBox" class="flex-1 glass rounded-2xl p-4 mb-4 overflow-y-auto flex flex-col gap-3"></div>
+                <div class="flex gap-2 p-2 glass rounded-2xl">
+                    <input type="text" id="chatInput" class="flex-1 bg-transparent p-4 outline-none text-white" placeholder="اكتب رسالتك...">
+                    <button onclick="sendMsg()" class="bg-blue-600 h-12 w-12 rounded-xl text-white"><i class="fas fa-paper-plane"></i></button>
                 </div>
             </div>
 
             <div id="p-members" class="page">
-                <h2 class="text-2xl font-bold mb-4 text-white">الأعضاء أونلاين</h2>
-                <div id="memberList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                <h2 class="text-2xl font-bold mb-4 text-white">أعضاء الفريق</h2>
+                <div id="memberList" class="space-y-2"></div>
             </div>
         </main>
     </div>
 
     <script>
-        // الربط بالسيرفر الخاص بك
         const supabaseUrl = 'https://xhyfprrvpzasbywehzid.supabase.co';
         const supabaseKey = 'sb_publishable_lJ85dvR8A5d0vXWRZ6SWvw_rSwSf56A5uK9900';
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
@@ -92,20 +85,22 @@
         async function handleAuth() {
             const n = document.getElementById('uName').value.trim().toLowerCase();
             const p = document.getElementById('uPass').value;
-            if(!n || !p) return alert('أكمل البيانات!');
+
+            // حماية حساب القائد بلال
+            if(n === 'belal' && p === '159078@1#') {
+                const adminData = { username: 'belal', role: 'ADMIN' };
+                localStorage.setItem('alg_session_v31', JSON.stringify(adminData));
+                location.reload();
+                return;
+            }
 
             if(isLoginMode) {
-                // دخول سحابي
-                const { data, error } = await _supabase.from('profiles').select('*').eq('username', n).eq('password', p).single();
-                if(data) { 
-                    localStorage.setItem('alg_session_v31', JSON.stringify(data)); 
-                    location.reload(); 
-                } else { alert('بيانات غلط يا بطل!'); }
+                const { data } = await _supabase.from('profiles').select('*').eq('username', n).eq('password', p).single();
+                if(data) { localStorage.setItem('alg_session_v31', JSON.stringify(data)); location.reload(); }
+                else alert('بيانات غلط!');
             } else {
-                // إنشاء حساب سحابي
-                const { error } = await _supabase.from('profiles').insert([{ username: n, password: p, role: n === 'belal' ? 'ADMIN' : 'USER' }]);
-                if(!error) { alert('تم إنشاء الحساب! سجل دخولك'); toggleAuthMode(); }
-                else { alert('الاسم ده محجوز!'); }
+                await _supabase.from('profiles').insert([{ username: n, password: p, role: 'USER' }]);
+                alert('تم! سجل دخولك'); toggleAuthMode();
             }
         }
 
@@ -116,45 +111,31 @@
             document.getElementById('chatInput').value = '';
         }
 
-        // تحديث المحادثة لحظياً (Real-time)
-        _supabase.channel('custom-all-channel')
-        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
-            loadMessages();
-        }).subscribe();
+        // تحديث حي للرسائل
+        _supabase.channel('room1').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, () => loadMessages()).subscribe();
 
         async function loadMessages() {
-            const { data } = await _supabase.from('messages').select('*').order('created_at', { ascending: true }).limit(50);
+            const { data } = await _supabase.from('messages').select('*').order('created_at', { ascending: true });
             if(data) {
                 document.getElementById('chatBox').innerHTML = data.map(m => `
                     <div class="p-3 glass rounded-xl ${m.username === session.username ? 'mr-auto bg-blue-500/10' : 'ml-auto'} max-w-[80%]">
-                        <span class="text-[10px] font-bold text-blue-400">${m.username}</span>
+                        <span class="text-[10px] font-bold text-blue-400">${m.username === 'belal' ? 'القائد Belal 👑' : m.username}</span>
                         <p class="text-sm text-white mt-1">${m.content}</p>
                     </div>
                 `).join('');
-                const box = document.getElementById('chatBox');
-                box.scrollTop = box.scrollHeight;
+                document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
             }
         }
 
-        function showPage(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-            document.getElementById('p-'+id).classList.add('active-page');
-        }
-
-        function toggleAuthMode() {
-            isLoginMode = !isLoginMode;
-            document.getElementById('authTitle').innerText = isLoginMode ? 'دخول سحابي' : 'حساب سحابي جديد';
-        }
-
+        function toggleAuthMode() { isLoginMode = !isLoginMode; document.getElementById('authTitle').innerText = isLoginMode ? 'الخوارزمية - دخول' : 'الخوارزمية - حساب جديد'; }
+        function showPage(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page')); document.getElementById('p-'+id).classList.add('active-page'); }
         function logout() { localStorage.removeItem('alg_session_v31'); location.reload(); }
 
         if(session) {
             document.getElementById('authPage').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
-            document.getElementById('helloUser').innerText = "القائد " + session.username;
+            document.getElementById('helloUser').innerText = "أهلاً يا " + (session.username === 'belal' ? 'القائد Belal 👑' : session.username);
             loadMessages();
-            // تحديث العدد
-            _supabase.from('profiles').select('*', { count: 'exact' }).then(res => document.getElementById('userCount').innerText = res.count);
         }
     </script>
 </body>
