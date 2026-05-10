@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الخوارزمية - V20.0 Search Engine</title>
+    <title>منصة الخوارزمية - V21.0 Real-time Kick</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -134,7 +134,7 @@
         const supabaseKey = 'sb_publishable_lJ85dVr8A5dOvXWRZ6SWvw_rSwSfp1J';
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
         let currentUser = null; let isLoginMode = true;
-        let allLibFiles = []; // لتخزين الملفات لعملية البحث
+        let allLibFiles = [];
 
         window.onload = () => {
             const saved = localStorage.getItem('algo_user');
@@ -156,20 +156,45 @@
             }
         }
 
+        async function checkIfStillExists() {
+            if (!currentUser) return;
+            const { data, error } = await _supabase.from('profiles').select('id').eq('id', currentUser.id).single();
+            if (error || !data) { logout(); }
+        }
+
         function loginSuccess() {
             document.getElementById('authPage').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
-            if(currentUser.username === 'belal') { document.getElementById('adminLink').classList.remove('hidden'); document.getElementById('adminLib').classList.remove('hidden'); }
+            if(currentUser.username === 'belal') { 
+                document.getElementById('adminLink').classList.remove('hidden'); 
+                document.getElementById('adminLib').classList.remove('hidden'); 
+            }
+            checkIfStillExists();
             initApp();
         }
 
         function initApp() {
             updateUI();
-            _supabase.channel('room').on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, () => updateUI())
-                                    .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => updateUI()).subscribe();
+            
+            // مراقبة الرسائل والأخبار
+            _supabase.channel('room').on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, () => updateUI()).subscribe();
+
+            // نظام الطرد الحقيقي (مراقبة حذف الأعضاء)
+            _supabase.channel('kick_system')
+                .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'profiles' }, (payload) => {
+                    if (currentUser && payload.old.id === currentUser.id) {
+                        alert('تم طردك من المنصة من قبل المسؤول!');
+                        logout();
+                    }
+                    updateUI();
+                })
+                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'profiles' }, () => updateUI())
+                .subscribe();
+
+            // فحص أمان كل دقيقة
+            setInterval(checkIfStillExists, 60000);
         }
 
-        // دالة فلترة المكتبة
         function filterLibrary() {
             const term = document.getElementById('libSearch').value.toLowerCase();
             const filtered = allLibFiles.filter(f => {
@@ -227,7 +252,6 @@
                 const news = msgs.find(m => m.content.startsWith('SYS_NEWS:'));
                 if(news) document.getElementById('newsScroll').innerText = news.content.replace('SYS_NEWS:', '');
 
-                // تحديث المحادثة
                 document.getElementById('chatBox').innerHTML = msgs
                     .filter(m => !m.content.startsWith('LIB_FILE:') && !m.content.startsWith('SYS_NEWS:') && m.content.length < 1000) 
                     .reverse().map(m => {
@@ -235,15 +259,14 @@
                         const isMy = m.username === currentUser.username;
                         return `<div class="p-3 glass rounded-xl ${isMy ? 'mr-auto bg-blue-500/20' : 'ml-auto'} max-w-[80%] relative group">
                             <span class="text-[9px] text-blue-400 font-bold">${m.username}</span>${c}
-                            <button onclick="deleteMsg(${m.id})" class="absolute -top-2 -right-2 bg-red-600 text-white w-5 h-5 rounded-full text-[10px] hidden group-hover:block shadow-lg"><i class="fas fa-times"></i></button>
+                            ${(isMy || currentUser.username === 'belal') ? `<button onclick="deleteMsg(${m.id})" class="absolute -top-2 -right-2 bg-red-600 text-white w-5 h-5 rounded-full text-[10px] hidden group-hover:block shadow-lg"><i class="fas fa-times"></i></button>` : ''}
                         </div>`;
                     }).join('');
                 document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
 
-                // تحديث المكتبة
                 allLibFiles = msgs.filter(m => m.content.startsWith('LIB_FILE:'));
                 document.getElementById('libCountBadge').innerText = allLibFiles.length;
-                filterLibrary(); // تطبيق البحث الحالي على النتائج الجديدة
+                filterLibrary();
             }
         }
 
@@ -253,7 +276,6 @@
             if(!id) return alert('اكتب الـ ID الأول');
             await deleteMsg(id);
             document.getElementById('forceDeleteId').value = '';
-            alert('تم الحذف بنجاح ✅');
         }
 
         function openFile(b64) { const w = window.open(); w.document.write(`<iframe src="${b64}" frameborder="0" style="width:100%; height:100%;"></iframe>`); }
@@ -267,7 +289,7 @@
         }
         async function setGlobalNews() { const v = document.getElementById('newsInput').value; if(v) await _supabase.from('messages').insert([{ username: 'SYSTEM', content: `SYS_NEWS:${v}` }]); document.getElementById('newsInput').value = ''; }
         async function deleteMsg(id) { if(confirm('حذف نهائي؟')) { await _supabase.from('messages').delete().eq('id', id); updateUI(); } }
-        async function deleteUser(id) { if(confirm('طرد العضو نهائياً؟')) await _supabase.from('profiles').delete().eq('id', id); }
+        async function deleteUser(id) { if(confirm('طرد العضو نهائياً؟')) { await _supabase.from('profiles').delete().eq('id', id); } }
         async function sendMsg() { const t = document.getElementById('chatInput').value.trim(); if(t) await _supabase.from('messages').insert([{ username: currentUser.username, content: t }]); document.getElementById('chatInput').value = ''; }
         function mention(n) { document.getElementById('chatInput').value += `@${n} `; document.getElementById('chatInput').focus(); }
         function showPage(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page')); document.getElementById('p-'+id).classList.add('active-page'); document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active')); document.getElementById('btn-'+id).classList.add('active'); }
