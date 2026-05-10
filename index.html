@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الخوارزمية - V16.0 Stable</title>
+    <title>منصة الخوارزمية - V17.0 Security</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -15,7 +15,7 @@
         .glass { background: var(--card); border: 1px solid rgba(128,128,128,0.2); }
         .page { display: none; height: 100%; flex-direction: column; padding: 1.5rem; overflow-y: auto; }
         .active-page { display: flex; }
-        .sidebar-btn { width: 100%; text-align: right; padding: 0.8rem; border-radius: 0.8rem; display: flex; align-items: center; gap: 0.8rem; font-weight: bold; cursor: pointer; }
+        .sidebar-btn { width: 100%; text-align: right; padding: 0.8rem; border-radius: 0.8rem; display: flex; align-items: center; gap: 0.8rem; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .sidebar-btn:hover, .sidebar-btn.active { background: var(--accent); color: white; }
         .news-banner { background: linear-gradient(90deg, #1e3a8a, #3b82f6); padding: 10px; border-radius: 15px; margin-bottom: 20px; overflow: hidden; height: 45px; }
         .news-scroll { display: inline-block; white-space: nowrap; animation: scrollText 15s linear infinite; }
@@ -49,16 +49,16 @@
             </nav>
             <div class="mt-auto pt-4 border-t border-white/10 space-y-2">
                 <button onclick="toggleTheme()" class="sidebar-btn text-xs"><i class="fas fa-adjust"></i> تبديل المود</button>
-                <button onclick="requestNotify()" id="notifBtn" class="sidebar-btn text-xs text-green-400"><i class="fas fa-bell"></i> تفعيل الإشعارات</button>
+                <button onclick="requestNotify()" id="notifBtn" class="sidebar-btn text-xs text-green-400"><i class="fas fa-bell"></i> الإشعارات</button>
                 <button onclick="logout()" class="w-full p-2 bg-red-500/10 text-red-500 rounded-xl font-bold hover:bg-red-500 hover:text-white transition">خروج</button>
             </div>
         </aside>
 
         <main class="flex-1 flex flex-col overflow-hidden">
             <div id="p-dashboard" class="page active-page">
-                <div class="news-banner"><div id="newsScroll" class="news-scroll text-white font-bold">جاري تحميل أحدث أخبار الخوارزمية...</div></div>
+                <div class="news-banner"><div id="newsScroll" class="news-scroll text-white font-bold">مرحباً بلال وقادة الخوارزمية..</div></div>
                 <h2 id="helloUser" class="text-3xl font-bold mb-8"></h2>
-                <div class="glass p-8 rounded-3xl border-r-8 border-blue-500 w-fit shadow-xl"><p class="opacity-60 text-xs font-bold uppercase">عدد الفريق</p><p id="userCount" class="text-6xl font-black">0</p></div>
+                <div class="glass p-8 rounded-3xl border-r-8 border-blue-500 w-fit shadow-xl"><p class="opacity-60 text-xs font-bold uppercase">قوة الفريق</p><p id="userCount" class="text-6xl font-black">0</p></div>
             </div>
 
             <div id="p-chat" class="page">
@@ -67,33 +67,32 @@
                 <div class="flex gap-2 bg-slate-900/50 p-2 rounded-2xl border border-white/5">
                     <input type="file" id="chatFileInput" class="hidden" onchange="sendChatFile()">
                     <button onclick="document.getElementById('chatFileInput').click()" class="text-blue-400 px-3"><i class="fas fa-paperclip text-xl"></i></button>
-                    <input type="text" id="chatInput" class="flex-1 bg-transparent p-2 outline-none text-white text-sm" placeholder="اكتب رسالتك هنا...">
+                    <input type="text" id="chatInput" class="flex-1 bg-transparent p-2 outline-none text-white text-sm" placeholder="اكتب رسالة الفريق...">
                     <button onclick="sendMsg()" class="bg-blue-600 px-6 py-2 rounded-xl text-white hover:bg-blue-700 transition"><i class="fas fa-paper-plane"></i></button>
                 </div>
             </div>
 
             <div id="p-library" class="page">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold">مكتبة ملفات الفريق</h2>
+                    <h2 class="text-2xl font-bold">المكتبة (خاصة بالقائد)</h2>
                     <div id="adminLib" class="hidden">
                         <input type="file" id="libFileInput" class="hidden" onchange="uploadToLibrary()">
-                        <button onclick="document.getElementById('libFileInput').click()" class="bg-blue-600 px-4 py-2 rounded-lg font-bold hover:bg-blue-700 transition">رفع ملف جديد</button>
+                        <button onclick="document.getElementById('libFileInput').click()" class="bg-blue-600 px-4 py-2 rounded-lg font-bold">رفع ملف آمن</button>
                     </div>
                 </div>
                 <div id="libraryList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
             </div>
 
             <div id="p-members" class="page">
-                <h2 class="text-2xl font-bold mb-4 text-blue-500">أعضاء الفريق المتصلين</h2>
+                <h2 class="text-2xl font-bold mb-4">الأعضاء</h2>
                 <div class="glass rounded-2xl overflow-hidden shadow-2xl"><table class="w-full text-right"><tbody id="memberTableBody"></tbody></table></div>
             </div>
 
             <div id="p-admin" class="page">
-                <h2 class="text-2xl font-bold text-yellow-500 mb-6 text-center font-black">لوحة التحكم للقائد بلال 👑</h2>
+                <h2 class="text-2xl font-bold text-yellow-500 mb-6 text-center font-black">لوحة القائد 👑</h2>
                 <div class="glass p-6 rounded-2xl border-yellow-500/20 border">
-                    <h3 class="font-bold mb-4 text-sm opacity-70">تحديث شريط الأخبار:</h3>
-                    <input type="text" id="newsInput" class="w-full p-4 bg-slate-800 rounded-xl mb-4 outline-none text-white text-center border border-white/5" placeholder="اكتب الخبر العاجل هنا...">
-                    <button onclick="setGlobalNews()" class="w-full bg-yellow-600 p-4 rounded-xl font-bold text-white hover:bg-yellow-700 transition">نشر الخبر فوراً</button>
+                    <input type="text" id="newsInput" class="w-full p-4 bg-slate-800 rounded-xl mb-4 outline-none text-white text-center" placeholder="خبر جديد...">
+                    <button onclick="setGlobalNews()" class="w-full bg-yellow-600 p-4 rounded-xl font-bold text-white">تحديث</button>
                 </div>
             </div>
         </main>
@@ -111,21 +110,17 @@
             if(localStorage.getItem('algo_theme') === 'light') document.body.classList.add('light-mode');
         };
 
-        function toggleAuthMode() {
-            isLoginMode = !isLoginMode;
-            document.getElementById('authTitle').innerText = isLoginMode ? 'دخول الخوارزمية' : 'حساب جديد';
-            document.getElementById('authModeBtn').innerText = isLoginMode ? 'إنشاء حساب جديد' : 'لديك حساب؟ سجل دخول';
-        }
+        function toggleAuthMode() { isLoginMode = !isLoginMode; document.getElementById('authTitle').innerText = isLoginMode ? 'دخول الخوارزمية' : 'حساب جديد'; }
 
         async function handleAuth() {
             const n = document.getElementById('uName').value.trim().toLowerCase();
             const p = document.getElementById('uPass').value;
             if(isLoginMode) {
                 const { data } = await _supabase.from('profiles').select('*').eq('username', n).eq('password', p).single();
-                if(data) { currentUser = data; localStorage.setItem('algo_user', JSON.stringify(data)); loginSuccess(); } else alert('البيانات غير صحيحة!');
+                if(data) { currentUser = data; localStorage.setItem('algo_user', JSON.stringify(data)); loginSuccess(); } else alert('خطأ!');
             } else {
                 await _supabase.from('profiles').insert([{ username: n, password: p, role: 'USER' }]);
-                alert('تم إنشاء الحساب بنجاح! يمكنك الدخول الآن.'); isLoginMode = true; toggleAuthMode();
+                alert('تم إنشاء الحساب!'); isLoginMode = true; toggleAuthMode();
             }
         }
 
@@ -149,37 +144,37 @@
             const { data: users } = await _supabase.from('profiles').select('*');
             if(users) {
                 document.getElementById('userCount').innerText = users.length;
-                document.getElementById('memberTableBody').innerHTML = users.map(u => `<tr class="border-b border-white/5"><td class="p-4 font-bold text-white">${u.username}</td><td class="p-4 text-left">${currentUser.username === 'belal' && u.username !== 'belal' ? `<button onclick="deleteUser(${u.id})" class="text-red-500 font-bold">طرد</button>` : '<span class="text-green-500 text-xs">نشط</span>'}</td></tr>`).join('');
+                document.getElementById('memberTableBody').innerHTML = users.map(u => `<tr class="border-b border-white/5"><td class="p-4 font-bold">${u.username}</td><td class="p-4 text-left">${currentUser.username === 'belal' && u.username !== 'belal' ? `<button onclick="deleteUser(${u.id})" class="text-red-500">طرد</button>` : ''}</td></tr>`).join('');
                 document.getElementById('chatUserList').innerHTML = users.map(u => `<div onclick="mention('${u.username}')" class="user-chip">@${u.username}</div>`).join('');
             }
 
             const { data: msgs } = await _supabase.from('messages').select('*').order('created_at', { ascending: false });
             if(msgs) {
-                // شريط الأخبار
                 const news = msgs.find(m => m.content.startsWith('SYS_NEWS:'));
                 if(news) document.getElementById('newsScroll').innerText = news.content.replace('SYS_NEWS:', '');
 
-                // الشات - إخفاء أكواد المكتبة تماماً من هنا
+                // الشات - إخفاء أكواد المكتبة + السماح بالحذف للأعضاء
                 document.getElementById('chatBox').innerHTML = msgs
-                    .filter(m => !m.content.startsWith('LIB_FILE:') && m.content.length < 500) // حماية: أي رسالة أطول من 500 حرف (كود) تختفي من الشات
+                    .filter(m => !m.content.startsWith('LIB_FILE:')) 
                     .reverse().map(m => {
-                        let c = m.content.startsWith('CHAT_FILE:') ? `<div class="p-2 bg-blue-500/10 rounded-lg border border-blue-500/20 flex items-center gap-2" onclick="openFile('${m.content.split('|')[1]}')"><i class="fas fa-file-download text-blue-400"></i><span class="text-xs truncate">${m.content.split('|')[2]}</span></div>` : `<p class="text-sm">${m.content.startsWith('SYS_NEWS:') ? '📢 ' + m.content.replace('SYS_NEWS:','') : m.content}</p>`;
+                        let c = m.content.startsWith('CHAT_FILE:') ? `<div class="p-2 bg-blue-500/10 rounded-lg flex items-center gap-2" onclick="openFile('${m.content.split('|')[1]}')"><i class="fas fa-file-download text-blue-400"></i><span class="text-[10px] truncate">${m.content.split('|')[2]}</span></div>` : `<p class="text-sm">${m.content}</p>`;
                         const isMy = m.username === currentUser.username;
-                        return `<div class="p-3 glass rounded-xl ${isMy ? 'mr-auto bg-blue-500/20 border-blue-500/30' : 'ml-auto border-white/5'} max-w-[80%] relative group shadow-sm">
+                        // السماح بالحذف للأعضاء فقط من الشات (لتنظيف المنظر)
+                        return `<div class="p-3 glass rounded-xl ${isMy ? 'mr-auto bg-blue-500/20' : 'ml-auto'} max-w-[80%] relative group">
                             <span class="text-[10px] text-blue-400 font-bold">${m.username}</span>${c}
-                            ${isMy || currentUser.username === 'belal' ? `<button onclick="deleteMsg(${m.id})" class="absolute -top-2 -right-2 bg-red-600 text-white w-5 h-5 rounded-full text-[10px] hidden group-hover:block shadow-lg"><i class="fas fa-times"></i></button>` : ''}
+                            <button onclick="deleteMsg(${m.id})" class="absolute -top-2 -right-2 bg-red-600 text-white w-5 h-5 rounded-full text-[10px] hidden group-hover:block"><i class="fas fa-times"></i></button>
                         </div>`;
                     }).join('');
                 document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
 
-                // المكتبة
+                // المكتبة (أنت فقط من يحذف منها)
                 const libFiles = msgs.filter(m => m.content.startsWith('LIB_FILE:'));
                 document.getElementById('libraryList').innerHTML = libFiles.map(f => {
                     const [mime, url, name] = f.content.replace('LIB_FILE:', '').split('|');
-                    return `<div class="glass p-4 rounded-xl border border-white/5 flex flex-col gap-3 shadow-lg hover:border-blue-500/50 transition">
-                        <div class="flex items-center gap-3"><i class="fas fa-file-pdf text-red-500 text-2xl"></i><span class="text-xs font-bold truncate w-40">${name}</span></div>
-                        <div class="flex gap-2"><button onclick="openFile('${url}')" class="flex-1 bg-blue-600 py-2 rounded-lg text-xs font-bold text-white hover:bg-blue-700 transition">عرض الملف</button>
-                        ${currentUser.username === 'belal' ? `<button onclick="deleteMsg(${f.id})" class="bg-red-500/20 text-red-500 px-3 rounded-lg hover:bg-red-500 hover:text-white transition"><i class="fas fa-trash"></i></button>` : ''}</div>
+                    return `<div class="glass p-4 rounded-xl border border-white/5 flex flex-col gap-3">
+                        <div class="flex items-center gap-2"><i class="fas fa-file-pdf text-red-500"></i><span class="text-xs font-bold truncate w-32">${name}</span></div>
+                        <div class="flex gap-2"><button onclick="openFile('${url}')" class="flex-1 bg-blue-600 py-2 rounded-lg text-[10px] text-white">فتح</button>
+                        ${currentUser.username === 'belal' ? `<button onclick="deleteMsg(${f.id})" class="bg-red-500/20 text-red-500 px-3 rounded-lg"><i class="fas fa-trash"></i></button>` : ''}</div>
                     </div>`;
                 }).join('');
             }
@@ -195,14 +190,14 @@
             const r = new FileReader(); r.onload = async (e) => { await _supabase.from('messages').insert([{ username: currentUser.username, content: `CHAT_FILE:${f.type}|${e.target.result}|${f.name}` }]); }; r.readAsDataURL(f);
         }
         async function setGlobalNews() { const v = document.getElementById('newsInput').value; if(v) await _supabase.from('messages').insert([{ username: 'SYSTEM', content: `SYS_NEWS:${v}` }]); document.getElementById('newsInput').value = ''; }
-        async function deleteMsg(id) { if(confirm('هل تريد حذف هذه الرسالة/الملف؟')) await _supabase.from('messages').delete().eq('id', id); }
-        async function deleteUser(id) { if(confirm('طرد العضو؟')) await _supabase.from('profiles').delete().eq('id', id); }
+        async function deleteMsg(id) { if(confirm('حذف الرسالة من الشات؟')) await _supabase.from('messages').delete().eq('id', id); }
+        async function deleteUser(id) { if(confirm('طرد؟')) await _supabase.from('profiles').delete().eq('id', id); }
         async function sendMsg() { const t = document.getElementById('chatInput').value.trim(); if(t) await _supabase.from('messages').insert([{ username: currentUser.username, content: t }]); document.getElementById('chatInput').value = ''; }
         function mention(n) { document.getElementById('chatInput').value += `@${n} `; document.getElementById('chatInput').focus(); }
         function showPage(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page')); document.getElementById('p-'+id).classList.add('active-page'); document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active')); document.getElementById('btn-'+id).classList.add('active'); }
         function logout() { localStorage.removeItem('algo_user'); location.reload(); }
         function toggleTheme() { document.body.classList.toggle('light-mode'); localStorage.setItem('algo_theme', document.body.classList.contains('light-mode') ? 'light' : 'dark'); }
-        function requestNotify() { Notification.requestPermission().then(p => { if(p === 'granted') { new Notification("الخوارزمية", { body: "تم تفعيل الإشعارات بنجاح ✅" }); document.getElementById('notifBtn').innerText = "مفعلة ✅"; } }); }
+        function requestNotify() { Notification.requestPermission().then(p => { if(p === 'granted') document.getElementById('notifBtn').innerText = "مفعلة ✅"; }); }
     </script>
 </body>
 </html>
