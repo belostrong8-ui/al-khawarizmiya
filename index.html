@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الخوارزمية - النسخة الشاملة</title>
+    <title>منصة الخوارزمية - الطرد النهائي</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -17,18 +17,15 @@
         .active-page { display: flex; }
         .sidebar-btn { width: 100%; text-align: right; padding: 0.8rem; border-radius: 0.8rem; display: flex; align-items: center; gap: 0.8rem; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .sidebar-btn:hover, .sidebar-btn.active { background: var(--accent); color: white; }
-        .news-banner { background: linear-gradient(90deg, #1e3a8a, #3b82f6); padding: 10px; border-radius: 15px; margin-bottom: 20px; overflow: hidden; height: 45px; }
-        .news-scroll { display: inline-block; white-space: nowrap; animation: scrollText 15s linear infinite; }
-        @keyframes scrollText { 0% { transform: translateX(100%); } 100% { transform: translateX(-150%); } }
-        .badge { background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-right: auto; }
         [dir="ltr"] .sidebar-btn { text-align: left; }
+        .badge { background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-right: auto; }
     </style>
 </head>
 <body class="flex">
 
     <div id="authPage" class="fixed inset-0 z-[500] bg-slate-950 flex items-center justify-center p-4">
         <div class="glass p-8 rounded-[2rem] w-full max-w-md text-center border-blue-500/50 border shadow-2xl">
-            <h2 id="authTitle" data-lang="auth_title" class="text-2xl font-bold mb-6 text-blue-500">دخول الخوارزمية</h2>
+            <h2 id="authTitle" data-lang="auth_title" class="text-2xl font-bold mb-6 text-blue-500 text-white">دخول الخوارزمية</h2>
             <div class="space-y-4">
                 <input type="text" id="uName" data-lang-placeholder="user_placeholder" placeholder="اسم المستخدم" class="w-full p-4 rounded-xl text-center bg-slate-900 text-white outline-none border border-white/5">
                 <input type="password" id="uPass" data-lang-placeholder="pass_placeholder" placeholder="كلمة السر" class="w-full p-4 rounded-xl text-center bg-slate-900 text-white outline-none border border-white/5">
@@ -43,22 +40,20 @@
             <nav class="flex-1 space-y-1">
                 <button onclick="showPage('dashboard')" id="btn-dashboard" class="sidebar-btn active"><i class="fas fa-home"></i> <span data-lang="nav_home">الرئيسية</span></button>
                 <button onclick="showPage('chat')" id="btn-chat" class="sidebar-btn"><i class="fas fa-comments"></i> <span data-lang="nav_chat">المحادثة</span></button>
-                <button onclick="showPage('library')" id="btn-library" class="sidebar-btn"><i class="fas fa-book"></i> <span data-lang="nav_lib">المكتبة</span> <span id="libCountBadge" class="badge">0</span></button>
-                <button onclick="showPage('members')" id="btn-members" class="sidebar-btn"><i class="fas fa-users"></i> <span data-lang="nav_members">الأعضاء</span> <span id="userCountBadge" class="badge bg-blue-500">0</span></button>
+                <button onclick="showPage('members')" id="btn-members" class="sidebar-btn"><i class="fas fa-users"></i> <span data-lang="nav_members">الأعضاء</span> <span id="userCountBadge" class="badge">0</span></button>
                 <button id="adminLink" onclick="showPage('admin')" class="hidden sidebar-btn text-yellow-500"><i class="fas fa-crown"></i> <span data-lang="nav_admin">لوحة القائد</span></button>
             </nav>
             <div class="mt-auto pt-4 border-t border-white/10 space-y-2">
                 <button onclick="toggleLang()" class="sidebar-btn text-xs text-blue-400"><i class="fas fa-language"></i> <span id="langBtnText">English</span></button>
                 <button onclick="toggleTheme()" class="sidebar-btn text-xs"><i class="fas fa-adjust"></i> <span data-lang="theme_btn">تبديل المود</span></button>
-                <button onclick="logout()" class="w-full p-2 bg-red-500/10 text-red-500 rounded-xl font-bold hover:bg-red-500 transition" data-lang="logout_btn">خروج</button>
+                <button onclick="logout()" class="w-full p-2 bg-red-500/10 text-red-500 rounded-xl font-bold" data-lang="logout_btn">خروج</button>
             </div>
         </aside>
 
         <main class="flex-1 flex flex-col overflow-hidden">
             <div id="p-dashboard" class="page active-page">
-                <div class="news-banner"><div id="newsScroll" class="news-scroll text-white font-bold">...</div></div>
                 <h2 id="helloUser" class="text-3xl font-bold mb-8"></h2>
-                <div class="glass p-8 rounded-3xl border-r-8 border-blue-500 w-fit shadow-xl">
+                <div class="glass p-8 rounded-3xl border-r-8 border-blue-500 w-fit">
                     <p data-lang="team_power" class="opacity-60 text-xs font-bold uppercase">قوة الفريق</p>
                     <p id="userCount" class="text-6xl font-black">0</p>
                 </div>
@@ -66,22 +61,17 @@
 
             <div id="p-chat" class="page">
                 <div id="chatBox" class="flex-1 glass rounded-2xl p-4 mb-4 overflow-y-auto flex flex-col gap-3"></div>
-                <div class="flex gap-2 bg-slate-900/50 p-2 rounded-2xl border border-white/5">
-                    <input type="text" id="chatInput" class="flex-1 bg-transparent p-2 outline-none text-white text-sm" data-lang-placeholder="chat_placeholder" placeholder="اكتب رسالة...">
-                    <button onclick="sendMsg()" class="bg-blue-600 px-6 py-2 rounded-xl text-white"><i class="fas fa-paper-plane"></i></button>
+                <div class="flex gap-2">
+                    <input type="text" id="chatInput" class="flex-1 bg-slate-900 p-3 rounded-xl outline-none text-white" placeholder="...">
+                    <button onclick="sendMsg()" class="bg-blue-600 px-6 rounded-xl text-white"><i class="fas fa-paper-plane"></i></button>
                 </div>
             </div>
 
             <div id="p-members" class="page">
                 <h2 class="text-2xl font-bold mb-4" data-lang="nav_members">إدارة الأعضاء</h2>
-                <div class="glass rounded-2xl overflow-hidden shadow-2xl">
+                <div class="glass rounded-2xl overflow-hidden">
                     <table class="w-full text-right">
-                        <thead>
-                            <tr class="bg-slate-800/50 text-xs opacity-60">
-                                <th class="p-4" data-lang="table_user">العضو</th>
-                                <th class="p-4" data-lang="table_action">التحكم</th>
-                            </tr>
-                        </thead>
+                        <thead><tr class="bg-slate-800/50 text-xs opacity-60"><th class="p-4" data-lang="table_user">العضو</th><th class="p-4" data-lang="table_action">التحكم</th></tr></thead>
                         <tbody id="memberTableBody"></tbody>
                     </table>
                 </div>
@@ -101,16 +91,16 @@
             ar: {
                 auth_title: "دخول الخوارزمية", user_placeholder: "اسم المستخدم", pass_placeholder: "كلمة السر",
                 login_btn: "دخول", brand_name: "الخوارزمية", nav_home: "الرئيسية", nav_chat: "المحادثة", 
-                nav_lib: "المكتبة", nav_members: "الأعضاء", nav_admin: "لوحة القائد", theme_btn: "تبديل المود", 
-                logout_btn: "خروج", team_power: "قوة الفريق", chat_placeholder: "اكتب رسالة...",
-                table_user: "العضو", table_action: "التحكم", kick_btn: "طرد", kick_confirm: "طرد نهائي؟"
+                nav_members: "الأعضاء", nav_admin: "لوحة القائد", theme_btn: "تبديل المود", 
+                logout_btn: "خروج", team_power: "قوة الفريق", table_user: "العضو", table_action: "التحكم", 
+                kick_btn: "طرد", kick_confirm: "طرد نهائي؟", kicked_msg: "تم طردك من الفريق!"
             },
             en: {
                 auth_title: "Algorithm Login", user_placeholder: "Username", pass_placeholder: "Password",
                 login_btn: "Login", brand_name: "Algorithm", nav_home: "Home", nav_chat: "Chat", 
-                nav_lib: "Library", nav_members: "Members", nav_admin: "Admin", theme_btn: "Theme", 
-                logout_btn: "Logout", team_power: "Team Power", chat_placeholder: "Type message...",
-                table_user: "Member", table_action: "Action", kick_btn: "Kick", kick_confirm: "Kick forever?"
+                nav_members: "Members", nav_admin: "Leader Panel", theme_btn: "Toggle Theme", 
+                logout_btn: "Logout", team_power: "Team Power", table_user: "Member", table_action: "Action", 
+                kick_btn: "Kick", kick_confirm: "Kick forever?", kicked_msg: "You have been kicked!"
             }
         };
 
@@ -120,6 +110,16 @@
             if(saved) { currentUser = JSON.parse(saved); loginSuccess(); }
             if(localStorage.getItem('algo_theme') === 'light') document.body.classList.add('light-mode');
         };
+
+        // --- نظام الطرد الفعال (التأكد من وجود الحساب) ---
+        async function checkStatus() {
+            if(!currentUser) return;
+            const { data } = await _supabase.from('profiles').select('id').eq('id', currentUser.id).single();
+            if(!data) {
+                alert(i18n[currentLang].kicked_msg);
+                logout();
+            }
+        }
 
         function toggleLang() {
             currentLang = currentLang === 'ar' ? 'en' : 'ar';
@@ -147,6 +147,8 @@
             document.getElementById('mainApp').classList.remove('hidden');
             if(currentUser.username === 'belal') document.getElementById('adminLink').classList.remove('hidden');
             initApp();
+            // تشغيل فحص الحالة كل 5 ثواني للطرد اللحظي
+            setInterval(checkStatus, 5000);
         }
 
         function initApp() {
@@ -167,23 +169,28 @@
                     return `<tr class="border-b border-white/5">
                         <td class="p-4 font-bold">${u.username}</td>
                         <td class="p-4 text-left">
-                            ${isOwner && u.username !== 'belal' ? `<button onclick="deleteUser(${u.id})" class="bg-red-500 text-white px-3 py-1 rounded-lg text-xs">${i18n[currentLang].kick_btn}</button>` : ''}
+                            ${isOwner && u.username !== 'belal' ? `<button onclick="kickUser(${u.id})" class="bg-red-500 text-white px-3 py-1 rounded-lg text-xs font-bold hover:bg-red-700 transition">${i18n[currentLang].kick_btn}</button>` : '<span class="text-green-500 text-[10px]">Active</span>'}
                         </td>
                     </tr>`;
                 }).join('');
             }
         }
 
-        async function deleteUser(id) {
+        async function kickUser(id) {
             if(confirm(i18n[currentLang].kick_confirm)) {
-                await _supabase.from('profiles').delete().eq('id', id);
-                updateUI(); // تحديث فوري
+                const { error } = await _supabase.from('profiles').delete().eq('id', id);
+                if(!error) {
+                    updateUI();
+                } else {
+                    alert('Error deleting');
+                }
             }
         }
 
         function toggleTheme() { document.body.classList.toggle('light-mode'); localStorage.setItem('algo_theme', document.body.classList.contains('light-mode') ? 'light' : 'dark'); }
         function showPage(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page')); document.getElementById('p-'+id).classList.add('active-page'); document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active')); document.getElementById('btn-'+id).classList.add('active'); }
         function logout() { localStorage.removeItem('algo_user'); location.reload(); }
+        async function sendMsg() { const t = document.getElementById('chatInput').value.trim(); if(t) await _supabase.from('messages').insert([{ username: currentUser.username, content: t }]); document.getElementById('chatInput').value = ''; }
     </script>
 </body>
 </html>
