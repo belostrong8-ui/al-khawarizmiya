@@ -10,99 +10,97 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
         :root { --bg: #020617; --card: #0f172a; --text: #f8fafc; --accent: #3b82f6; }
-        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: var(--text); height: 100dvh; margin: 0; overflow: hidden; transition: 0.3s; }
+        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: var(--text); height: 100dvh; margin: 0; overflow: hidden; }
         .glass { background: var(--card); border: 1px solid rgba(255,255,255,0.05); }
         .page { display: none; height: calc(100% - 130px); flex-direction: column; padding: 1rem; overflow-y: auto; }
         .active-page { display: flex; }
-        
-        @media (max-width: 768px) {
-            .sidebar-desktop { display: none; }
-            .bottom-nav { display: flex; }
-        }
-        @media (min-width: 769px) {
-            .bottom-nav { display: none; }
-            .sidebar-desktop { display: flex; width: 260px; }
-            .page { height: calc(100% - 70px); }
-        }
-
+        @media (min-width: 769px) { .page { height: calc(100% - 70px); } .sidebar-desktop { display: flex; width: 260px; } .bottom-nav { display: none; } }
         .btn-nav { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; gap: 4px; color: gray; cursor: pointer; }
         .btn-nav.active { color: var(--accent); }
-        .chat-bubble { max-width: 85%; padding: 10px 14px; border-radius: 18px; font-size: 14px; line-height: 1.5; }
+        .chat-bubble { max-width: 80%; padding: 10px 14px; border-radius: 18px; font-size: 14px; margin-bottom: 4px; }
         .my-msg { background: var(--accent); color: white; align-self: flex-start; border-bottom-right-radius: 4px; }
         .other-msg { background: rgba(255,255,255,0.1); color: var(--text); align-self: flex-end; border-bottom-left-radius: 4px; }
     </style>
 </head>
 <body class="flex flex-col md:flex-row">
 
-    <div id="authPage" class="fixed inset-0 z-[2000] bg-slate-950 flex items-center justify-center p-6">
-        <div class="glass p-8 rounded-[2.5rem] w-full max-w-sm text-center border-blue-500/20 border shadow-2xl">
-            <h2 id="authTitle" class="text-xl font-bold mb-6">دخول الخوارزمية</h2>
+    <div id="authPage" class="fixed inset-0 z-[2000] bg-slate-950 flex items-center justify-center p-6 text-center">
+        <div class="glass p-8 rounded-[2.5rem] w-full max-w-sm border border-blue-500/20">
+            <h2 id="authTitle" class="text-2xl font-bold mb-6 text-blue-500">دخول الخوارزمية</h2>
             <div class="space-y-3">
                 <input type="text" id="uName" placeholder="اسم المستخدم" class="w-full p-4 rounded-2xl bg-slate-900 border border-white/5 outline-none text-center">
                 <input type="password" id="uPass" placeholder="كلمة السر" class="w-full p-4 rounded-2xl bg-slate-900 border border-white/5 outline-none text-center">
-                <button onclick="handleAuth()" class="w-full bg-blue-600 p-4 rounded-2xl font-bold">دخول</button>
-                <button onclick="toggleAuthMode()" id="authModeBtn" class="text-xs text-gray-400 underline">ليس لديك حساب؟ سجل الآن</button>
+                <button onclick="handleAuth()" id="authBtn" class="w-full bg-blue-600 p-4 rounded-2xl font-bold hover:bg-blue-500 transition">دخول</button>
+                <button onclick="toggleAuth()" id="toggleBtn" class="text-xs text-gray-400 underline mt-4">ليس لديك حساب؟ سجل الآن</button>
             </div>
         </div>
     </div>
 
     <aside class="sidebar-desktop glass border-l border-white/5 flex-col p-6">
-        <h1 class="text-xl font-bold text-blue-500 mb-10"><i class="fas fa-terminal"></i> الخوارزمية</h1>
+        <h1 class="text-xl font-bold text-blue-500 mb-10"><i class="fas fa-terminal ml-2"></i>الخوارزمية</h1>
         <nav class="flex flex-col gap-2 flex-1">
-            <button onclick="showPage('dashboard')" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-right w-full"><i class="fas fa-home"></i> الرئيسية</button>
-            <button onclick="showPage('chat')" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-right w-full"><i class="fas fa-comments"></i> المحادثة</button>
-            <button onclick="showPage('library')" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-right w-full"><i class="fas fa-book"></i> المكتبة</button>
-            <button onclick="showPage('members')" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-right w-full"><i class="fas fa-users"></i> الأعضاء</button>
+            <button onclick="showPage('dashboard')" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 w-full text-right"><i class="fas fa-home"></i> الرئيسية</button>
+            <button onclick="showPage('chat-select')" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 w-full text-right"><i class="fas fa-comment-dots"></i> المحادثات</button>
+            <button onclick="showPage('members')" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 w-full text-right"><i class="fas fa-users"></i> الأعضاء</button>
+            <button onclick="showPage('library')" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 w-full text-right"><i class="fas fa-book"></i> المكتبة</button>
         </nav>
-        <button onclick="logout()" class="text-red-500 text-sm font-bold p-3 mt-auto text-right w-full"><i class="fas fa-sign-out-alt ml-2"></i> خروج نهائي</button>
+        <button onclick="logout()" class="flex items-center gap-3 p-3 rounded-xl text-red-500 hover:bg-red-500/10 w-full text-right font-bold mt-auto pt-4 border-t border-white/5">
+            <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+        </button>
     </aside>
 
-    <main class="flex-1 relative h-full overflow-hidden flex flex-col">
-        <header class="flex justify-between items-center p-4 glass border-b border-white/5 z-40">
-            <h1 class="text-lg font-bold text-blue-500 md:hidden">الخوارزمية</h1>
-            <div class="hidden md:block"></div> <button onclick="logout()" class="bg-red-500/10 text-red-500 px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition hover:bg-red-500 hover:text-white">
-                <span>تسجيل خروج</span>
-                <i class="fas fa-power-off"></i>
-            </button>
+    <main class="flex-1 relative h-full flex flex-col">
+        <header class="p-4 glass border-b border-white/5 flex justify-between items-center md:hidden">
+            <span class="font-bold text-blue-500">الخوارزمية</span>
+            <button onclick="logout()" class="text-red-500 text-xs font-bold">خروج</button>
         </header>
-        
+
         <div id="p-dashboard" class="page active-page">
             <h2 id="helloUser" class="text-2xl font-bold mb-4 pt-4"></h2>
             <div class="glass p-6 rounded-3xl border-r-4 border-blue-500">
-                <p class="text-xs opacity-50 mb-1">إجمالي الأعضاء</p>
+                <p class="text-xs opacity-50">إجمالي الأعضاء</p>
                 <p id="userCount" class="text-4xl font-black">0</p>
             </div>
         </div>
 
-        <div id="p-chat" class="page !p-0">
-            <div id="chatBox" class="flex-1 overflow-y-auto p-4 flex flex-col gap-4"></div>
-            <div class="p-3 glass border-t border-white/5 flex gap-2 items-center">
-                <input type="text" id="chatInput" placeholder="رسالتك..." class="flex-1 bg-white/5 p-3 rounded-2xl outline-none text-sm border border-white/5">
-                <button onclick="sendMsg()" class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center"><i class="fas fa-paper-plane"></i></button>
+        <div id="p-chat-select" class="page">
+            <h2 class="text-xl font-bold mb-4 text-blue-400">ابدأ محادثة</h2>
+            <div id="chatUserList" class="space-y-2"></div>
+        </div>
+
+        <div id="p-members" class="page">
+            <h2 class="text-xl font-bold mb-4">عرض الأعضاء</h2>
+            <div id="memberList" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+        </div>
+
+        <div id="p-chat-room" class="page !p-0">
+            <div class="p-3 bg-slate-900 border-b border-white/5 flex items-center gap-3">
+                <button onclick="showPage('chat-select')" class="text-blue-500 px-2"><i class="fas fa-arrow-right"></i></button>
+                <span id="chattingWith" class="font-bold">...</span>
+            </div>
+            <div id="chatBox" class="flex-1 overflow-y-auto p-4 flex flex-col"></div>
+            <div class="p-3 glass border-t border-white/10 flex gap-2">
+                <input type="text" id="chatInput" placeholder="اكتب رسالة..." class="flex-1 bg-white/5 p-3 rounded-xl outline-none">
+                <button onclick="sendMsg()" class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
 
         <div id="p-library" class="page">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-xl font-bold">المكتبة 📚</h2>
-                <div id="adminLibTools" class="hidden">
-                    <input type="file" id="libFileInput" class="hidden" onchange="uploadToLibrary()" accept=".pdf">
-                    <button onclick="document.getElementById('libFileInput').click()" class="bg-blue-600 px-4 py-2 rounded-xl text-xs font-bold"><i class="fas fa-plus ml-1"></i> رفع PDF</button>
+                <div id="adminTools" class="hidden">
+                    <input type="file" id="libFile" class="hidden" onchange="uploadFile()" accept=".pdf">
+                    <button onclick="document.getElementById('libFile').click()" class="bg-blue-600 px-4 py-2 rounded-xl text-xs font-bold">رفع PDF</button>
                 </div>
             </div>
-            <div id="libraryList" class="grid grid-cols-1 gap-3"></div>
+            <div id="libraryList" class="grid gap-2"></div>
         </div>
 
-        <div id="p-members" class="page">
-            <h2 class="text-xl font-bold mb-4">الأعضاء</h2>
-            <div id="memberList" class="space-y-2"></div>
-        </div>
-
-        <nav class="bottom-nav fixed bottom-0 left-0 right-0 h-16 glass border-t border-white/10 flex items-center justify-around px-2 z-50">
-            <button onclick="showPage('dashboard')" class="btn-nav active"><i class="fas fa-home text-lg"></i><span>الرئيسية</span></button>
-            <button onclick="showPage('chat')" class="btn-nav"><i class="fas fa-comments text-lg"></i><span>الدردشة</span></button>
-            <button onclick="showPage('library')" class="btn-nav"><i class="fas fa-book text-lg"></i><span>المكتبة</span></button>
-            <button onclick="showPage('members')" class="btn-nav"><i class="fas fa-users text-lg"></i><span>الأعضاء</span></button>
+        <nav class="bottom-nav fixed bottom-0 left-0 right-0 h-16 glass border-t border-white/10 flex items-center justify-around z-50">
+            <button onclick="showPage('dashboard')" class="btn-nav active"><i class="fas fa-home"></i><span>الرئيسية</span></button>
+            <button onclick="showPage('chat-select')" class="btn-nav"><i class="fas fa-comment-dots"></i><span>المحادثات</span></button>
+            <button onclick="showPage('members')" class="btn-nav"><i class="fas fa-users"></i><span>الأعضاء</span></button>
+            <button onclick="showPage('library')" class="btn-nav"><i class="fas fa-book"></i><span>المكتبة</span></button>
         </nav>
     </main>
 
@@ -112,38 +110,41 @@
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
         let currentUser = null;
-        let isLoginMode = true;
+        let targetUser = null;
+        let isLogin = true;
 
         window.onload = () => {
             const saved = localStorage.getItem('algo_user');
             if(saved) { currentUser = JSON.parse(saved); loginSuccess(); }
         };
 
-        function toggleAuthMode() {
-            isLoginMode = !isLoginMode;
-            document.getElementById('authTitle').innerText = isLoginMode ? 'دخول الخوارزمية' : 'إنشاء حساب';
-            document.getElementById('authModeBtn').innerText = isLoginMode ? 'ليس لديك حساب؟ سجل الآن' : 'لديك حساب؟ دخول';
+        function toggleAuth() {
+            isLogin = !isLogin;
+            document.getElementById('authTitle').innerText = isLogin ? 'دخول الخوارزمية' : 'إنشاء حساب جديد';
+            document.getElementById('authBtn').innerText = isLogin ? 'دخول' : 'تسجيل';
+            document.getElementById('toggleBtn').innerText = isLogin ? 'ليس لديك حساب؟ سجل الآن' : 'لديك حساب؟ سجل دخولك';
         }
 
         async function handleAuth() {
             const user = document.getElementById('uName').value.trim();
             const pass = document.getElementById('uPass').value;
-            if(!user || !pass) return alert('أدخل البيانات');
+            if(!user || !pass) return alert('برجاء ملء البيانات');
 
-            if(isLoginMode) {
+            if(isLogin) {
                 const { data } = await _supabase.from('profiles').select('*').eq('username', user).eq('password', pass).single();
                 if(data) { currentUser = data; localStorage.setItem('algo_user', JSON.stringify(data)); loginSuccess(); }
-                else alert('خطأ في البيانات');
+                else alert('بيانات غير صحيحة');
             } else {
                 const { error } = await _supabase.from('profiles').insert([{ username: user, password: pass, role: 'USER' }]);
-                if(!error) { alert('تم التسجيل!'); toggleAuthMode(); } else alert('الاسم موجود فعلاً');
+                if(!error) { alert('تم إنشاء الحساب بنجاح!'); toggleAuth(); }
+                else alert('هذا الاسم مستخدم بالفعل');
             }
         }
 
         function loginSuccess() {
             document.getElementById('authPage').classList.add('hidden');
             document.getElementById('helloUser').innerText = `أهلاً، ${currentUser.username}`;
-            if(currentUser.role === 'ADMIN') document.getElementById('adminLibTools').classList.remove('hidden');
+            if(currentUser.role === 'ADMIN') document.getElementById('adminTools').classList.remove('hidden');
             initApp();
         }
 
@@ -151,12 +152,15 @@
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
             document.getElementById('p-' + id).classList.add('active-page');
             document.querySelectorAll('.btn-nav').forEach(b => b.classList.remove('active'));
-            // تحديد الزر النشط
-            const btns = document.querySelectorAll('.btn-nav');
-            if(id === 'dashboard') btns[0].classList.add('active');
-            if(id === 'chat') btns[1].classList.add('active');
-            if(id === 'library') btns[2].classList.add('active');
-            if(id === 'members') btns[3].classList.add('active');
+            const map = { 'dashboard':0, 'chat-select':1, 'chat-room':1, 'members':2, 'library':3 };
+            document.querySelectorAll('.btn-nav')[map[id]].classList.add('active');
+        }
+
+        function startChat(username) {
+            targetUser = username;
+            document.getElementById('chattingWith').innerText = username;
+            showPage('chat-room');
+            updateUI();
         }
 
         function initApp() {
@@ -168,67 +172,56 @@
             const { data: users } = await _supabase.from('profiles').select('*');
             if(users) {
                 document.getElementById('userCount').innerText = users.length;
-                document.getElementById('memberList').innerHTML = users.map(u => `<div class="glass p-3 rounded-2xl flex justify-between items-center"><span class="text-sm font-bold">${u.username}</span><span class="text-[10px] text-green-500">نشط</span></div>`).join('');
+                document.getElementById('chatUserList').innerHTML = users.filter(u => u.username !== currentUser.username).map(u => `
+                    <div onclick="startChat('${u.username}')" class="glass p-4 rounded-xl flex items-center gap-3 cursor-pointer hover:bg-white/5 border border-white/5">
+                        <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center font-bold text-xs">${u.username[0]}</div>
+                        <span class="text-sm font-bold">${u.username}</span>
+                    </div>`).join('');
+                document.getElementById('memberList').innerHTML = users.map(u => `
+                    <div class="glass p-3 rounded-xl border-r-2 ${u.username === currentUser.username ? 'border-green-500' : 'border-blue-500/30'}">
+                        <p class="font-bold text-xs">${u.username}</p>
+                        <p class="text-[8px] opacity-50 uppercase">${u.role}</p>
+                    </div>`).join('');
             }
 
             const { data: msgs } = await _supabase.from('messages').select('*').order('created_at', { ascending: true });
             if(msgs) {
-                document.getElementById('chatBox').innerHTML = msgs.filter(m => !m.content.startsWith('LIB_FILE:')).map(m => `
-                    <div class="chat-bubble ${m.username === currentUser.username ? 'my-msg' : 'other-msg'}">
-                        <div class="text-[10px] opacity-70 mb-1">${m.username}</div>
-                        <div>${m.content}</div>
-                    </div>`).join('');
-                document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
-
-                document.getElementById('libraryList').innerHTML = msgs.filter(m => m.content.startsWith('LIB_FILE:')).map(m => {
-                    const [mime, url, name] = m.content.replace('LIB_FILE:', '').split('|');
-                    return `
-                        <div class="glass p-4 rounded-2xl border border-white/5 flex justify-between items-center">
-                            <div class="flex items-center gap-3">
-                                <i class="fas fa-file-pdf text-red-500"></i>
-                                <span class="text-xs font-bold truncate w-32">${name}</span>
-                            </div>
-                            <div class="flex gap-2">
-                                <button onclick="window.open('${url}')" class="bg-blue-600/20 text-blue-500 px-3 py-2 rounded-xl text-[10px] font-bold">فتح</button>
-                                ${currentUser.role === 'ADMIN' ? `<button onclick="deleteFile(${m.id})" class="bg-red-600/20 text-red-500 px-3 py-2 rounded-xl text-[10px] font-bold">حذف</button>` : ''}
-                            </div>
-                        </div>`;
+                if(targetUser) {
+                    const filtered = msgs.filter(m => (m.username === currentUser.username && m.receiver === targetUser) || (m.username === targetUser && m.receiver === currentUser.username));
+                    document.getElementById('chatBox').innerHTML = filtered.map(m => `
+                        <div class="chat-bubble ${m.username === currentUser.username ? 'my-msg' : 'other-msg'}">
+                            <p class="text-[8px] opacity-40 mb-1">${m.username}</p>
+                            <p>${m.content}</p>
+                        </div>`).join('');
+                    document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
+                }
+                document.getElementById('libraryList').innerHTML = msgs.filter(m => m.content.startsWith('FILE_PDF:')).map(m => {
+                    const [mime, url, name] = m.content.replace('FILE_PDF:', '').split('|');
+                    return `<div class="glass p-4 rounded-xl flex justify-between items-center"><span class="text-xs font-bold truncate w-40">${name}</span><button onclick="window.open('${url}')" class="text-blue-500 text-xs">تحميل</button></div>`;
                 }).join('');
             }
         }
 
-        async function sendMsg() {
-            const input = document.getElementById('chatInput');
-            if(!input.value.trim()) return;
-            await _supabase.from('messages').insert([{ username: currentUser.username, content: input.value }]);
-            input.value = '';
-        }
-
-        async function uploadToLibrary() {
-            const file = document.getElementById('libFileInput').files[0];
+        async function uploadFile() {
+            const file = document.getElementById('libFile').files[0];
             if(!file) return;
             const reader = new FileReader();
             reader.onload = async (e) => {
-                const content = `LIB_FILE:${file.type}|${e.target.result}|${file.name}`;
+                const content = `FILE_PDF:${file.type}|${e.target.result}|${file.name}`;
                 await _supabase.from('messages').insert([{ username: 'SYSTEM', content: content }]);
-                alert('تم الرفع!');
+                alert('تم الرفع بنجاح!');
             };
             reader.readAsDataURL(file);
         }
 
-        async function deleteFile(id) {
-            if(confirm('هل تريد حذف هذا الملف نهائياً؟')) {
-                await _supabase.from('messages').delete().eq('id', id);
-                updateUI();
-            }
+        async function sendMsg() {
+            const input = document.getElementById('chatInput');
+            if(!input.value.trim() || !targetUser) return;
+            await _supabase.from('messages').insert([{ username: currentUser.username, content: input.value, receiver: targetUser }]);
+            input.value = '';
         }
 
-        function logout() { 
-            if(confirm('هل أنت متأكد من تسجيل الخروج؟')) {
-                localStorage.clear(); 
-                location.reload(); 
-            }
-        }
+        function logout() { localStorage.clear(); location.reload(); }
     </script>
 </body>
 </html>
