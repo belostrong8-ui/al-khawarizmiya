@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الخوارزمية</title>
+    <title>منصة الخوارزمية </title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -159,42 +159,33 @@
         async function checkIfStillExists() {
             if (!currentUser) return;
             const { data, error } = await _supabase.from('profiles').select('id').eq('id', currentUser.id);
-            if (error || !data || data.length === 0) {
-                logout(); 
-            }
+            if (error || !data || data.length === 0) { logout(); }
         }
 
         function loginSuccess() {
             document.getElementById('authPage').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
-            if(currentUser.username === 'belal') { 
+            
+            // التعديل: السماح لأي ADMIN (بلال أو أنس) برؤية اللوحة والمكتبة
+            if(currentUser.role === 'ADMIN') { 
                 document.getElementById('adminLink').classList.remove('hidden'); 
                 document.getElementById('adminLib').classList.remove('hidden'); 
             }
+            
             checkIfStillExists();
             initApp();
         }
 
         function initApp() {
             updateUI();
-            
-            // مراقبة الرسائل والأخبار
             _supabase.channel('room').on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, () => updateUI()).subscribe();
-
-            // نظام الطرد الحقيقي (مراقبة حذف الأعضاء لحظياً)
-            _supabase.channel('kick_system')
-                .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'profiles' }, (payload) => {
-                    // التعديل: استخدام payload.old.id لضمان لقط إشارة الحذف
-                    if (currentUser && payload.old && payload.old.id === currentUser.id) {
-                        alert('تم طردك من المنصة من قبل القائد بلال!');
-                        logout();
-                    }
-                    updateUI();
-                })
-                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'profiles' }, () => updateUI())
-                .subscribe();
-
-            // رادار فحص أمان (كل 3 ثواني بدلاً من دقيقة لضمان الطرد)
+            _supabase.channel('kick_system').on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'profiles' }, (payload) => {
+                if (currentUser && payload.old && payload.old.id === currentUser.id) {
+                    alert('تم طردك من المنصة!');
+                    logout();
+                }
+                updateUI();
+            }).on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'profiles' }, () => updateUI()).subscribe();
             setInterval(checkIfStillExists, 3000);
         }
 
@@ -218,7 +209,7 @@
                     <div class="text-[9px] opacity-40">ID: ${f.id}</div>
                     <div class="flex gap-2">
                         <button onclick="openFile('${url}')" class="flex-1 bg-blue-600 py-2 rounded-lg text-[10px] text-white hover:bg-blue-700">فتح الملف</button>
-                        ${currentUser.username === 'belal' ? `<button onclick="deleteMsg(${f.id})" class="bg-red-500/20 text-red-500 px-3 rounded-lg hover:bg-red-500 hover:text-white"><i class="fas fa-trash"></i></button>` : ''}
+                        ${currentUser.role === 'ADMIN' ? `<button onclick="deleteMsg(${f.id})" class="bg-red-500/20 text-red-500 px-3 rounded-lg hover:bg-red-500 hover:text-white"><i class="fas fa-trash"></i></button>` : ''}
                     </div>
                 </div>`;
             }).join('');
@@ -226,24 +217,25 @@
 
         async function updateUI() {
             if(!currentUser) return;
-            document.getElementById('helloUser').innerText = `أهلاً ${currentUser.username === 'belal' ? 'بالقائد بلال 👑' : currentUser.username}`;
+            let roleIcon = currentUser.role === 'ADMIN' ? ' 👑' : '';
+            document.getElementById('helloUser').innerText = `أهلاً ${currentUser.username}${roleIcon}`;
             
             const { data: users } = await _supabase.from('profiles').select('*');
             if(users) {
                 document.getElementById('userCount').innerText = users.length;
                 document.getElementById('userCountBadge').innerText = users.length;
                 document.getElementById('memberTableBody').innerHTML = users.map(u => {
-                    const isAdmin = currentUser.username === 'belal';
+                    const isCurrentUserAdmin = currentUser.role === 'ADMIN';
+                    // الأدمن يطرد الأعضاء العاديين فقط ولا يطرد نفسه
+                    const canKick = isCurrentUserAdmin && u.role !== 'ADMIN' && u.id !== currentUser.id;
                     return `<tr class="border-b border-white/5">
                         <td class="p-4">
-                            <div class="font-bold">${u.username}</div>
-                            ${isAdmin ? `<div class="text-[10px] text-yellow-500 hidden" id="pass-${u.id}">كلمة السر: ${u.password}</div>` : ''}
+                            <div class="font-bold">${u.username} ${u.role === 'ADMIN' ? '<span class="text-yellow-500 text-[10px]">(ADMIN)</span>' : ''}</div>
+                            ${isCurrentUserAdmin ? `<div class="text-[10px] text-yellow-500 hidden" id="pass-${u.id}">كلمة السر: ${u.password}</div>` : ''}
                         </td>
                         <td class="p-4 text-left flex gap-2 justify-end">
-                            ${isAdmin && u.username !== 'belal' ? `
-                                <button onclick="togglePass(${u.id})" class="bg-blue-500/10 text-blue-400 px-3 py-1 rounded text-xs">كشف</button>
-                                <button onclick="deleteUser(${u.id})" class="bg-red-500 text-white px-3 py-1 rounded text-xs">طرد</button>
-                            ` : '<span class="text-green-500 text-[10px]">نشط</span>'}
+                            ${isCurrentUserAdmin ? `<button onclick="togglePass(${u.id})" class="bg-blue-500/10 text-blue-400 px-3 py-1 rounded text-xs">كشف</button>` : ''}
+                            ${canKick ? `<button onclick="deleteUser(${u.id})" class="bg-red-500 text-white px-3 py-1 rounded text-xs">طرد</button>` : '<span class="text-green-500 text-[10px]">نشط</span>'}
                         </td>
                     </tr>`;
                 }).join('');
@@ -262,7 +254,7 @@
                         const isMy = m.username === currentUser.username;
                         return `<div class="p-3 glass rounded-xl ${isMy ? 'mr-auto bg-blue-500/20' : 'ml-auto'} max-w-[80%] relative group">
                             <span class="text-[9px] text-blue-400 font-bold">${m.username}</span>${c}
-                            ${(isMy || currentUser.username === 'belal') ? `<button onclick="deleteMsg(${m.id})" class="absolute -top-2 -right-2 bg-red-600 text-white w-5 h-5 rounded-full text-[10px] hidden group-hover:block shadow-lg"><i class="fas fa-times"></i></button>` : ''}
+                            ${(isMy || currentUser.role === 'ADMIN') ? `<button onclick="deleteMsg(${m.id})" class="absolute -top-2 -right-2 bg-red-600 text-white w-5 h-5 rounded-full text-[10px] hidden group-hover:block shadow-lg"><i class="fas fa-times"></i></button>` : ''}
                         </div>`;
                     }).join('');
                 document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
@@ -274,28 +266,16 @@
         }
 
         function togglePass(id) { document.getElementById(`pass-${id}`).classList.toggle('hidden'); }
-        async function forceDelete() {
-            const id = document.getElementById('forceDeleteId').value;
-            if(!id) return alert('اكتب الـ ID الأول');
-            await deleteMsg(id);
-            document.getElementById('forceDeleteId').value = '';
-        }
-
-        function openFile(b64) { const w = window.open(); w.document.write(`<iframe src="${b64}" frameborder="0" style="width:100%; height:100%;"></iframe>`); }
-        async function uploadToLibrary() {
-            const f = document.getElementById('libFileInput').files[0]; if(!f) return;
-            const r = new FileReader(); r.onload = async (e) => { await _supabase.from('messages').insert([{ username: 'SYSTEM', content: `LIB_FILE:${f.type}|${e.target.result}|${f.name}` }]); }; r.readAsDataURL(f);
-        }
-        async function sendChatFile() {
-            const f = document.getElementById('chatFileInput').files[0]; if(!f) return;
-            const r = new FileReader(); r.onload = async (e) => { await _supabase.from('messages').insert([{ username: currentUser.username, content: `CHAT_FILE:${f.type}|${e.target.result}|${f.name}` }]); }; r.readAsDataURL(f);
-        }
+        async function forceDelete() { const id = document.getElementById('forceDeleteId').value; if(!id) return alert('اكتب الـ ID الأول'); await deleteMsg(id); document.getElementById('forceDeleteId').value = ''; }
+        function openFile(b64) { const w = window.open(); if(w) w.document.write(`<iframe src="${b64}" frameborder="0" style="width:100%; height:100%;"></iframe>`); }
+        async function uploadToLibrary() { const f = document.getElementById('libFileInput').files[0]; if(!f) return; const r = new FileReader(); r.onload = async (e) => { await _supabase.from('messages').insert([{ username: 'SYSTEM', content: `LIB_FILE:${f.type}|${e.target.result}|${f.name}` }]); }; r.readAsDataURL(f); }
+        async function sendChatFile() { const f = document.getElementById('chatFileInput').files[0]; if(!f) return; const r = new FileReader(); r.onload = async (e) => { await _supabase.from('messages').insert([{ username: currentUser.username, content: `CHAT_FILE:${f.type}|${e.target.result}|${f.name}` }]); }; r.readAsDataURL(f); }
         async function setGlobalNews() { const v = document.getElementById('newsInput').value; if(v) await _supabase.from('messages').insert([{ username: 'SYSTEM', content: `SYS_NEWS:${v}` }]); document.getElementById('newsInput').value = ''; }
         async function deleteMsg(id) { if(confirm('حذف نهائي؟')) { await _supabase.from('messages').delete().eq('id', id); updateUI(); } }
         async function deleteUser(id) { if(confirm('طرد العضو نهائياً؟')) { await _supabase.from('profiles').delete().eq('id', id); } }
         async function sendMsg() { const t = document.getElementById('chatInput').value.trim(); if(t) await _supabase.from('messages').insert([{ username: currentUser.username, content: t }]); document.getElementById('chatInput').value = ''; }
         function mention(n) { document.getElementById('chatInput').value += `@${n} `; document.getElementById('chatInput').focus(); }
-        function showPage(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page')); document.getElementById('p-'+id).classList.add('active-page'); document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active')); document.getElementById('btn-'+id).classList.add('active'); }
+        function showPage(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page')); document.getElementById('p-'+id).classList.add('active-page'); document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active')); if(document.getElementById('btn-'+id)) document.getElementById('btn-'+id).classList.add('active'); }
         function logout() { localStorage.removeItem('algo_user'); location.reload(); }
         function toggleTheme() { document.body.classList.toggle('light-mode'); localStorage.setItem('algo_theme', document.body.classList.contains('light-mode') ? 'light' : 'dark'); }
         function requestNotify() { Notification.requestPermission().then(p => { if(p === 'granted') document.getElementById('notifBtn').innerText = "مفعلة ✅"; }); }
