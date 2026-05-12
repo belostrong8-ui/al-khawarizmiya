@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الخوارزمية </title>
+    <title>منصة الخوارزمية - الإصدار الشامل</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -17,11 +17,32 @@
         .active-page { display: flex; }
         .sidebar-btn { width: 100%; text-align: right; padding: 0.8rem; border-radius: 0.8rem; display: flex; align-items: center; gap: 0.8rem; font-weight: bold; cursor: pointer; transition: 0.2s; position: relative; }
         .sidebar-btn:hover, .sidebar-btn.active { background: var(--accent); color: white; }
+        
+        /* شريط التنقل السفلي للموبايل */
+        .mobile-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background: var(--card); border-top: 1px solid rgba(255,255,255,0.1); z-index: 100; justify-content: space-around; align-items: center; padding: 0 5px; }
+        .mobile-nav .sidebar-btn { flex-direction: column; gap: 4px; padding: 5px; font-size: 10px; width: auto; justify-content: center; }
+        .mobile-nav .sidebar-btn i { font-size: 18px; }
+        .mobile-nav .badge { position: absolute; top: 2px; right: 2px; margin: 0; }
+
+        @media (max-width: 768px) {
+            aside { display: none; } /* إخفاء القائمة الجانبية */
+            .mobile-nav { display: flex; } /* إظهار الشريط السفلي */
+            .page { padding: 1rem; padding-bottom: 90px; }
+            #helloUser { font-size: 1.5rem; margin-bottom: 1.5rem; }
+            .user-chip { font-size: 9px; }
+            /* جعل جدول الأعضاء متجاوب */
+            table, thead, tbody, th, td, tr { display: block; }
+            thead { display: none; }
+            tr { margin-bottom: 10px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 15px; }
+            td { text-align: right; padding: 5px 0; border: none !important; }
+        }
+
         .news-banner { background: linear-gradient(90deg, #1e3a8a, #3b82f6); padding: 10px; border-radius: 15px; margin-bottom: 20px; overflow: hidden; height: 45px; }
         .news-scroll { display: inline-block; white-space: nowrap; animation: scrollText 15s linear infinite; }
         @keyframes scrollText { 0% { transform: translateX(100%); } 100% { transform: translateX(-150%); } }
         .user-chip { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer; background: rgba(128,128,128,0.1); border: 1px solid rgba(128,128,128,0.2); white-space: nowrap; }
         .badge { background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-right: auto; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="flex">
@@ -41,19 +62,8 @@
     <div id="mainApp" class="hidden flex w-full h-full">
         <aside class="w-64 glass flex flex-col p-4 border-l border-white/10">
             <div class="mb-8 px-2 flex items-center gap-3"><i class="fas fa-terminal text-blue-500 text-2xl"></i><h1 class="font-bold text-xl">الخوارزمية</h1></div>
-            <nav class="flex-1 space-y-1">
-                <button onclick="showPage('dashboard')" id="btn-dashboard" class="sidebar-btn active"><i class="fas fa-home"></i> الرئيسية</button>
-                <button onclick="showPage('chat')" id="btn-chat" class="sidebar-btn"><i class="fas fa-comments"></i> المحادثة</button>
-                <button onclick="showPage('library')" id="btn-library" class="sidebar-btn">
-                    <i class="fas fa-book"></i> المكتبة
-                    <span id="libCountBadge" class="badge">0</span>
-                </button>
-                <button onclick="showPage('members')" id="btn-members" class="sidebar-btn">
-                    <i class="fas fa-users"></i> الأعضاء
-                    <span id="userCountBadge" class="badge bg-blue-500">0</span>
-                </button>
-                <button id="adminLink" onclick="showPage('admin')" class="hidden sidebar-btn text-yellow-500"><i class="fas fa-crown"></i> لوحة القائد</button>
-            </nav>
+            <nav class="flex-1 space-y-1" id="nav-pc">
+                </nav>
             <div class="mt-auto pt-4 border-t border-white/10 space-y-2">
                 <button onclick="toggleTheme()" class="sidebar-btn text-xs"><i class="fas fa-adjust"></i> تبديل المود</button>
                 <button onclick="requestNotify()" id="notifBtn" class="sidebar-btn text-xs text-green-400"><i class="fas fa-bell"></i> الإشعارات</button>
@@ -85,11 +95,11 @@
                     <div class="flex w-full md:w-auto gap-2">
                         <div class="relative flex-1">
                             <i class="fas fa-search absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
-                            <input type="text" id="libSearch" oninput="filterLibrary()" placeholder="ابحث عن ملف..." class="w-full md:w-64 pr-10 pl-4 py-2 bg-slate-900 rounded-xl outline-none border border-white/10 focus:border-blue-500">
+                            <input type="text" id="libSearch" oninput="filterLibrary()" placeholder="ابحث..." class="w-full md:w-64 pr-10 pl-4 py-2 bg-slate-900 rounded-xl outline-none border border-white/10">
                         </div>
                         <div id="adminLib" class="hidden">
                             <input type="file" id="libFileInput" class="hidden" onchange="uploadToLibrary()">
-                            <button onclick="document.getElementById('libFileInput').click()" class="bg-blue-600 px-4 py-2 rounded-lg font-bold whitespace-nowrap"><i class="fas fa-plus"></i> رفع</button>
+                            <button onclick="document.getElementById('libFileInput').click()" class="bg-blue-600 px-4 py-2 rounded-lg font-bold"><i class="fas fa-plus"></i></button>
                         </div>
                     </div>
                 </div>
@@ -100,12 +110,7 @@
                 <h2 class="text-2xl font-bold mb-4">إدارة الأعضاء</h2>
                 <div class="glass rounded-2xl overflow-hidden shadow-2xl">
                     <table class="w-full text-right">
-                        <thead>
-                            <tr class="bg-slate-800/50 text-xs opacity-60">
-                                <th class="p-4">العضو</th>
-                                <th class="p-4">التحكم</th>
-                            </tr>
-                        </thead>
+                        <thead><tr class="bg-slate-800/50 text-xs opacity-60"><th class="p-4">العضو</th><th class="p-4">التحكم</th></tr></thead>
                         <tbody id="memberTableBody"></tbody>
                     </table>
                 </div>
@@ -114,27 +119,32 @@
             <div id="p-admin" class="page">
                 <h2 class="text-2xl font-bold text-yellow-500 mb-6 text-center font-black">لوحة القائد 👑</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="glass p-6 rounded-2xl border-yellow-500/20 border">
+                    <div class="glass p-6 rounded-2xl border-yellow-500/20 border text-center">
                         <h3 class="font-bold mb-4">تحديث الأخبار</h3>
                         <input type="text" id="newsInput" class="w-full p-4 bg-slate-800 rounded-xl mb-4 outline-none text-white text-center" placeholder="خبر جديد...">
-                        <button onclick="setGlobalNews()" class="w-full bg-yellow-600 p-4 rounded-xl font-bold text-white">تحديث</button>
-                    </div>
-                    <div class="glass p-6 rounded-2xl border-red-500/20 border">
-                        <h3 class="font-bold mb-4 text-red-500">حذف إجباري (ID)</h3>
-                        <input type="number" id="forceDeleteId" class="w-full p-4 bg-slate-800 rounded-xl mb-4 outline-none text-white text-center" placeholder="ادخل ID الملف/الرسالة">
-                        <button onclick="forceDelete()" class="w-full bg-red-600 p-4 rounded-xl font-bold text-white">حذف نهائي</button>
+                        <button onclick="setGlobalNews()" class="w-full bg-yellow-600 p-4 rounded-xl font-bold">تحديث</button>
                     </div>
                 </div>
             </div>
         </main>
+
+        <nav class="mobile-nav" id="nav-mobile"></nav>
     </div>
 
     <script>
         const supabaseUrl = 'https://xhyfprrvpzasbywehzid.supabase.co';
         const supabaseKey = 'sb_publishable_lJ85dVr8A5dOvXWRZ6SWvw_rSwSfp1J';
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
-        let currentUser = null; let isLoginMode = true;
-        let allLibFiles = [];
+        let currentUser = null; let isLoginMode = true; let allLibFiles = [];
+
+        // تعريف الأزرار عشان نكررها في الموبايل والكمبيوتر
+        const menuItems = [
+            { id: 'dashboard', icon: 'fa-home', label: 'الرئيسية', badge: null },
+            { id: 'chat', icon: 'fa-comments', label: 'المحادثة', badge: null },
+            { id: 'library', icon: 'fa-book', label: 'المكتبة', badge: 'libCountBadge' },
+            { id: 'members', icon: 'fa-users', label: 'الأعضاء', badge: 'userCountBadge' },
+            { id: 'admin', icon: 'fa-crown', label: 'القائد', adminOnly: true }
+        ];
 
         window.onload = () => {
             const saved = localStorage.getItem('algo_user');
@@ -142,103 +152,67 @@
             if(localStorage.getItem('algo_theme') === 'light') document.body.classList.add('light-mode');
         };
 
-        function toggleAuthMode() { isLoginMode = !isLoginMode; document.getElementById('authTitle').innerText = isLoginMode ? 'دخول الخوارزمية' : 'حساب جديد'; }
+        function buildMenus() {
+            const pc = document.getElementById('nav-pc');
+            const mobile = document.getElementById('nav-mobile');
+            let html = '';
+            menuItems.forEach(item => {
+                if(item.adminOnly && currentUser.role !== 'ADMIN') return;
+                html += `
+                <button onclick="showPage('${item.id}')" id="btn-${item.id}" class="sidebar-btn">
+                    <i class="fas ${item.icon}"></i> <span>${item.label}</span>
+                    ${item.badge ? `<span id="${item.badge}" class="badge">0</span>` : ''}
+                </button>`;
+            });
+            pc.innerHTML = html;
+            mobile.innerHTML = html;
+        }
 
         async function handleAuth() {
             const n = document.getElementById('uName').value.trim().toLowerCase();
             const p = document.getElementById('uPass').value;
             if(isLoginMode) {
                 const { data } = await _supabase.from('profiles').select('*').eq('username', n).eq('password', p).single();
-                if(data) { currentUser = data; localStorage.setItem('algo_user', JSON.stringify(data)); loginSuccess(); } else alert('خطأ في البيانات!');
+                if(data) { currentUser = data; localStorage.setItem('algo_user', JSON.stringify(data)); loginSuccess(); } else alert('خطأ!');
             } else {
                 await _supabase.from('profiles').insert([{ username: n, password: p, role: 'USER' }]);
-                alert('تم إنشاء الحساب!'); isLoginMode = true; toggleAuthMode();
+                alert('تم!'); isLoginMode = true; toggleAuthMode();
             }
-        }
-
-        async function checkIfStillExists() {
-            if (!currentUser) return;
-            const { data, error } = await _supabase.from('profiles').select('id').eq('id', currentUser.id);
-            if (error || !data || data.length === 0) { logout(); }
         }
 
         function loginSuccess() {
             document.getElementById('authPage').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
-            
-            // التعديل: السماح لأي ADMIN (بلال أو أنس) برؤية اللوحة والمكتبة
-            if(currentUser.role === 'ADMIN') { 
-                document.getElementById('adminLink').classList.remove('hidden'); 
-                document.getElementById('adminLib').classList.remove('hidden'); 
-            }
-            
-            checkIfStillExists();
+            buildMenus();
+            if(currentUser.role === 'ADMIN') document.getElementById('adminLib').classList.remove('hidden');
             initApp();
         }
 
         function initApp() {
             updateUI();
             _supabase.channel('room').on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, () => updateUI()).subscribe();
-            _supabase.channel('kick_system').on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'profiles' }, (payload) => {
-                if (currentUser && payload.old && payload.old.id === currentUser.id) {
-                    alert('تم طردك من المنصة!');
-                    logout();
-                }
-                updateUI();
-            }).on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'profiles' }, () => updateUI()).subscribe();
-            setInterval(checkIfStillExists, 3000);
-        }
-
-        function filterLibrary() {
-            const term = document.getElementById('libSearch').value.toLowerCase();
-            const filtered = allLibFiles.filter(f => {
-                const name = f.content.split('|')[2].toLowerCase();
-                return name.includes(term);
-            });
-            renderLibrary(filtered);
-        }
-
-        function renderLibrary(files) {
-            document.getElementById('libraryList').innerHTML = files.map(f => {
-                const [mime, url, name] = f.content.replace('LIB_FILE:', '').split('|');
-                return `<div class="glass p-4 rounded-xl border border-white/5 flex flex-col gap-3 transition hover:border-blue-500/50">
-                    <div class="flex items-center gap-2">
-                        <i class="fas ${mime.includes('image') ? 'fa-image text-green-500' : 'fa-file-pdf text-red-500'}"></i>
-                        <span class="text-[11px] font-bold truncate w-full" title="${name}">${name}</span>
-                    </div>
-                    <div class="text-[9px] opacity-40">ID: ${f.id}</div>
-                    <div class="flex gap-2">
-                        <button onclick="openFile('${url}')" class="flex-1 bg-blue-600 py-2 rounded-lg text-[10px] text-white hover:bg-blue-700">فتح الملف</button>
-                        ${currentUser.role === 'ADMIN' ? `<button onclick="deleteMsg(${f.id})" class="bg-red-500/20 text-red-500 px-3 rounded-lg hover:bg-red-500 hover:text-white"><i class="fas fa-trash"></i></button>` : ''}
-                    </div>
-                </div>`;
-            }).join('');
+            _supabase.channel('profiles').on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => updateUI()).subscribe();
+            setInterval(async () => {
+                const { data } = await _supabase.from('profiles').select('id').eq('id', currentUser.id);
+                if(!data || data.length === 0) logout();
+            }, 5000);
         }
 
         async function updateUI() {
             if(!currentUser) return;
-            let roleIcon = currentUser.role === 'ADMIN' ? ' 👑' : '';
-            document.getElementById('helloUser').innerText = `أهلاً ${currentUser.username}${roleIcon}`;
+            document.getElementById('helloUser').innerText = `أهلاً ${currentUser.username} ${currentUser.role==='ADMIN'?'👑':''}`;
             
             const { data: users } = await _supabase.from('profiles').select('*');
             if(users) {
                 document.getElementById('userCount').innerText = users.length;
-                document.getElementById('userCountBadge').innerText = users.length;
-                document.getElementById('memberTableBody').innerHTML = users.map(u => {
-                    const isCurrentUserAdmin = currentUser.role === 'ADMIN';
-                    // الأدمن يطرد الأعضاء العاديين فقط ولا يطرد نفسه
-                    const canKick = isCurrentUserAdmin && u.role !== 'ADMIN' && u.id !== currentUser.id;
-                    return `<tr class="border-b border-white/5">
-                        <td class="p-4">
-                            <div class="font-bold">${u.username} ${u.role === 'ADMIN' ? '<span class="text-yellow-500 text-[10px]">(ADMIN)</span>' : ''}</div>
-                            ${isCurrentUserAdmin ? `<div class="text-[10px] text-yellow-500 hidden" id="pass-${u.id}">كلمة السر: ${u.password}</div>` : ''}
+                document.querySelectorAll('#userCountBadge').forEach(b => b.innerText = users.length);
+                document.getElementById('memberTableBody').innerHTML = users.map(u => `
+                    <tr class="border-b border-white/5">
+                        <td class="p-4 font-bold">${u.username} ${u.role === 'ADMIN' ? '👑' : ''}</td>
+                        <td class="p-4 text-left">
+                            ${currentUser.role==='ADMIN' && u.role!=='ADMIN' ? `<button onclick="deleteUser(${u.id})" class="bg-red-500 text-white px-3 py-1 rounded text-xs">طرد</button>` : '<span class="text-green-500 text-[10px]">نشط</span>'}
                         </td>
-                        <td class="p-4 text-left flex gap-2 justify-end">
-                            ${isCurrentUserAdmin ? `<button onclick="togglePass(${u.id})" class="bg-blue-500/10 text-blue-400 px-3 py-1 rounded text-xs">كشف</button>` : ''}
-                            ${canKick ? `<button onclick="deleteUser(${u.id})" class="bg-red-500 text-white px-3 py-1 rounded text-xs">طرد</button>` : '<span class="text-green-500 text-[10px]">نشط</span>'}
-                        </td>
-                    </tr>`;
-                }).join('');
+                    </tr>`).join('');
                 document.getElementById('chatUserList').innerHTML = users.map(u => `<div onclick="mention('${u.username}')" class="user-chip">@${u.username}</div>`).join('');
             }
 
@@ -248,37 +222,52 @@
                 if(news) document.getElementById('newsScroll').innerText = news.content.replace('SYS_NEWS:', '');
 
                 document.getElementById('chatBox').innerHTML = msgs
-                    .filter(m => !m.content.startsWith('LIB_FILE:') && !m.content.startsWith('SYS_NEWS:') && m.content.length < 1000) 
+                    .filter(m => !m.content.startsWith('LIB_FILE:') && !m.content.startsWith('SYS_NEWS:'))
                     .reverse().map(m => {
-                        let c = m.content.startsWith('CHAT_FILE:') ? `<div class="p-2 bg-blue-500/10 rounded-lg flex items-center gap-2 cursor-pointer" onclick="openFile('${m.content.split('|')[1]}')"><i class="fas fa-file-download text-blue-400"></i><span class="text-[10px] truncate">${m.content.split('|')[2]}</span></div>` : `<p class="text-sm">${m.content}</p>`;
                         const isMy = m.username === currentUser.username;
-                        return `<div class="p-3 glass rounded-xl ${isMy ? 'mr-auto bg-blue-500/20' : 'ml-auto'} max-w-[80%] relative group">
-                            <span class="text-[9px] text-blue-400 font-bold">${m.username}</span>${c}
-                            ${(isMy || currentUser.role === 'ADMIN') ? `<button onclick="deleteMsg(${m.id})" class="absolute -top-2 -right-2 bg-red-600 text-white w-5 h-5 rounded-full text-[10px] hidden group-hover:block shadow-lg"><i class="fas fa-times"></i></button>` : ''}
+                        return `<div class="p-3 glass rounded-xl ${isMy ? 'mr-auto bg-blue-500/20' : 'ml-auto'} max-w-[85%] relative group">
+                            <span class="text-[9px] text-blue-400 font-bold">${m.username}</span>
+                            <p class="text-sm">${m.content}</p>
+                            ${(isMy || currentUser.role === 'ADMIN') ? `<button onclick="deleteMsg(${m.id})" class="absolute -top-2 -right-2 bg-red-600 text-white w-5 h-5 rounded-full text-[10px] hidden group-hover:block"><i class="fas fa-times"></i></button>` : ''}
                         </div>`;
                     }).join('');
                 document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
 
                 allLibFiles = msgs.filter(m => m.content.startsWith('LIB_FILE:'));
-                document.getElementById('libCountBadge').innerText = allLibFiles.length;
+                document.querySelectorAll('#libCountBadge').forEach(b => b.innerText = allLibFiles.length);
                 filterLibrary();
             }
         }
 
-        function togglePass(id) { document.getElementById(`pass-${id}`).classList.toggle('hidden'); }
-        async function forceDelete() { const id = document.getElementById('forceDeleteId').value; if(!id) return alert('اكتب الـ ID الأول'); await deleteMsg(id); document.getElementById('forceDeleteId').value = ''; }
-        function openFile(b64) { const w = window.open(); if(w) w.document.write(`<iframe src="${b64}" frameborder="0" style="width:100%; height:100%;"></iframe>`); }
-        async function uploadToLibrary() { const f = document.getElementById('libFileInput').files[0]; if(!f) return; const r = new FileReader(); r.onload = async (e) => { await _supabase.from('messages').insert([{ username: 'SYSTEM', content: `LIB_FILE:${f.type}|${e.target.result}|${f.name}` }]); }; r.readAsDataURL(f); }
-        async function sendChatFile() { const f = document.getElementById('chatFileInput').files[0]; if(!f) return; const r = new FileReader(); r.onload = async (e) => { await _supabase.from('messages').insert([{ username: currentUser.username, content: `CHAT_FILE:${f.type}|${e.target.result}|${f.name}` }]); }; r.readAsDataURL(f); }
+        function filterLibrary() {
+            const term = document.getElementById('libSearch').value.toLowerCase();
+            const filtered = allLibFiles.filter(f => f.content.split('|')[2].toLowerCase().includes(term));
+            document.getElementById('libraryList').innerHTML = filtered.map(f => {
+                const [mime, url, name] = f.content.replace('LIB_FILE:', '').split('|');
+                return `<div class="glass p-4 rounded-xl border border-white/5 flex flex-col gap-2">
+                    <span class="text-xs font-bold truncate">${name}</span>
+                    <div class="flex gap-2">
+                        <button onclick="window.open('${url}')" class="flex-1 bg-blue-600 py-2 rounded-lg text-[10px]">فتح</button>
+                        ${currentUser.role === 'ADMIN' ? `<button onclick="deleteMsg(${f.id})" class="text-red-500 px-2"><i class="fas fa-trash"></i></button>` : ''}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        async function sendMsg() { const t = document.getElementById('chatInput').value.trim(); if(t) { await _supabase.from('messages').insert([{ username: currentUser.username, content: t }]); document.getElementById('chatInput').value = ''; } }
         async function setGlobalNews() { const v = document.getElementById('newsInput').value; if(v) await _supabase.from('messages').insert([{ username: 'SYSTEM', content: `SYS_NEWS:${v}` }]); document.getElementById('newsInput').value = ''; }
-        async function deleteMsg(id) { if(confirm('حذف نهائي؟')) { await _supabase.from('messages').delete().eq('id', id); updateUI(); } }
-        async function deleteUser(id) { if(confirm('طرد العضو نهائياً؟')) { await _supabase.from('profiles').delete().eq('id', id); } }
-        async function sendMsg() { const t = document.getElementById('chatInput').value.trim(); if(t) await _supabase.from('messages').insert([{ username: currentUser.username, content: t }]); document.getElementById('chatInput').value = ''; }
-        function mention(n) { document.getElementById('chatInput').value += `@${n} `; document.getElementById('chatInput').focus(); }
-        function showPage(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page')); document.getElementById('p-'+id).classList.add('active-page'); document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active')); if(document.getElementById('btn-'+id)) document.getElementById('btn-'+id).classList.add('active'); }
-        function logout() { localStorage.removeItem('algo_user'); location.reload(); }
+        async function deleteMsg(id) { if(confirm('حذف؟')) await _supabase.from('messages').delete().eq('id', id); }
+        async function deleteUser(id) { if(confirm('طرد؟')) await _supabase.from('profiles').delete().eq('id', id); }
+        function showPage(id) { 
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page')); 
+            document.getElementById('p-'+id).classList.add('active-page'); 
+            document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll(`#btn-${id}`).forEach(b => b.classList.add('active'));
+        }
         function toggleTheme() { document.body.classList.toggle('light-mode'); localStorage.setItem('algo_theme', document.body.classList.contains('light-mode') ? 'light' : 'dark'); }
-        function requestNotify() { Notification.requestPermission().then(p => { if(p === 'granted') document.getElementById('notifBtn').innerText = "مفعلة ✅"; }); }
+        function logout() { localStorage.removeItem('algo_user'); location.reload(); }
+        function toggleAuthMode() { isLoginMode = !isLoginMode; document.getElementById('authTitle').innerText = isLoginMode ? 'دخول الخوارزمية' : 'حساب جديد'; }
+        function mention(n) { document.getElementById('chatInput').value += `@${n} `; document.getElementById('chatInput').focus(); }
     </script>
 </body>
 </html>
