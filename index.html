@@ -3,261 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الخوارزمية</title>
+    <title>منصة الخوارزمية | الاحترافية</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
-        :root { --bg: #020617; --card: #0f172a; --text: #f8fafc; --accent: #3b82f6; }
-        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: var(--text); height: 100dvh; margin: 0; overflow: hidden; }
+        :root { --bg: #060b13; --card: #0c182a; --accent: #2c6bed; }
+        body { font-family: 'Tajawal', sans-serif; background: var(--bg); color: #c0c9d6; margin: 0; overflow: hidden; display: flex; flex-direction: column; }
         .glass { background: var(--card); border: 1px solid rgba(255,255,255,0.05); }
-        .page { display: none; height: calc(100% - 130px); flex-direction: column; padding: 1rem; overflow-y: auto; }
-        .active-page { display: flex; }
-        @media (min-width: 769px) { .page { height: calc(100% - 70px); } .sidebar-desktop { display: flex; width: 260px; } .bottom-nav { display: none; } }
-        .btn-nav { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; gap: 4px; color: gray; cursor: pointer; }
-        .btn-nav.active { color: var(--accent); }
-        .chat-bubble { max-width: 80%; padding: 10px 14px; border-radius: 18px; font-size: 14px; margin-bottom: 4px; }
-        .my-msg { background: var(--accent); color: white; align-self: flex-start; border-bottom-right-radius: 4px; }
-        .other-msg { background: rgba(255,255,255,0.1); color: var(--text); align-self: flex-end; border-bottom-left-radius: 4px; }
+        .page { display: none; flex: 1; padding: 1.5rem; overflow-y: auto; height: calc(100vh - 75px); }
+        .active-page { display: flex; flex-direction: column; }
+        
+        /* ضبط الشاشات (موبايل + كمبيوتر) */
+        @media (min-width: 1024px) {
+            body { flex-direction: row-reverse; }
+            .sidebar { width: 280px; height: 100vh; display: flex !important; flex-direction: column; border-left: 1px solid #1a2c4e; }
+            .bottom-nav { display: none !important; }
+            .page { height: 100vh; padding: 2.5rem; margin-right: 280px; }
+        }
+        @media (max-width: 1023px) {
+            .sidebar { display: none; }
+            .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 75px; display: flex; justify-content: space-around; align-items: center; background: var(--card); z-index: 1000; border-top: 1px solid #1a2c4e; }
+        }
+        .active { color: var(--accent) !important; }
     </style>
 </head>
-<body class="flex flex-col md:flex-row">
+<body>
 
-    <div id="authPage" class="fixed inset-0 z-[2000] bg-slate-950 flex items-center justify-center p-6 text-center">
-        <div class="glass p-8 rounded-[2.5rem] w-full max-w-sm border border-blue-500/20 shadow-2xl">
-            <h2 id="authTitle" class="text-2xl font-bold mb-6 text-blue-500">الخوارزمية</h2>
-            <div class="space-y-3">
-                <input type="text" id="uName" placeholder="اسم المستخدم" class="w-full p-4 rounded-2xl bg-slate-900 border border-white/5 outline-none text-center focus:border-blue-500">
-                <input type="password" id="uPass" placeholder="كلمة السر" class="w-full p-4 rounded-2xl bg-slate-900 border border-white/5 outline-none text-center focus:border-blue-500">
-                <button onclick="handleAuth()" id="authBtn" class="w-full bg-blue-600 p-4 rounded-2xl font-bold hover:bg-blue-500 active:scale-95 transition-all">دخول</button>
-                <button onclick="toggleAuth()" id="toggleBtn" class="text-xs text-gray-400 underline mt-4 block mx-auto">ليس لديك حساب؟ سجل الآن</button>
+    <div id="authPage" class="fixed inset-0 z-[2000] bg-[#060b13] flex items-center justify-center p-6 text-right">
+        <div class="glass p-8 rounded-[2.5rem] w-full max-w-sm border-blue-500/20 border shadow-2xl">
+            <h2 class="text-2xl font-bold mb-6 text-center text-white">منصة الخوارزمية</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block mb-2 text-sm">اسم المستخدم</label>
+                    <input type="text" id="username" placeholder="اكتب اسمك هنا" class="w-full p-4 rounded-2xl bg-slate-900 border border-slate-700 outline-none text-white text-right">
+                </div>
+                <div>
+                    <label class="block mb-2 text-sm">كلمة السر</label>
+                    <input type="password" id="password" placeholder="كلمة السر" class="w-full p-4 rounded-2xl bg-slate-900 border border-slate-700 outline-none text-white text-right">
+                </div>
+                <button onclick="login()" class="w-full bg-blue-600 p-4 rounded-2xl font-bold text-white shadow-lg shadow-blue-900/20">دخول</button>
+                <button onclick="register()" class="w-full bg-slate-800 p-3 rounded-2xl font-bold text-white text-sm">إنشاء حساب جديد</button>
             </div>
         </div>
     </div>
 
-    <aside class="sidebar-desktop glass border-l border-white/5 flex-col p-6 hidden md:flex">
-        <h1 class="text-xl font-bold text-blue-500 mb-10"><i class="fas fa-terminal ml-2"></i>الخوارزمية</h1>
-        <nav class="flex flex-col gap-2 flex-1">
-            <button onclick="showPage('dashboard')" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 w-full text-right"><i class="fas fa-home"></i> الرئيسية</button>
-            <button onclick="showPage('chat-select')" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 w-full text-right"><i class="fas fa-comment-dots"></i> الدردشة</button>
-            <button onclick="showPage('members')" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 w-full text-right"><i class="fas fa-users"></i> الأعضاء</button>
-            <button onclick="showPage('library')" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 w-full text-right"><i class="fas fa-book"></i> المكتبة</button>
+    <aside class="sidebar glass fixed right-0 top-0">
+        <div class="p-8 text-blue-500 font-bold text-xl"><i class="fas fa-terminal ml-2"></i> الخوارزمية</div>
+        <nav class="flex-1">
+            <div onclick="showPage('dashboard')" id="nav-dashboard" class="p-4 m-2 rounded-xl cursor-pointer active"><i class="fas fa-home ml-3"></i>الرئيسية</div>
+            <div onclick="showPage('library')" id="nav-library" class="p-4 m-2 rounded-xl cursor-pointer"><i class="fas fa-book ml-3"></i>المكتبة</div>
         </nav>
-        <button onclick="logout()" class="flex items-center gap-3 p-3 rounded-xl text-red-500 hover:bg-red-500/10 w-full text-right font-bold mt-auto pt-4 border-t border-white/5">
-            <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
-        </button>
+        <button onclick="logout()" class="p-8 text-red-500 text-right"><i class="fas fa-sign-out-alt"></i> خروج</button>
     </aside>
 
-    <main class="flex-1 relative h-full flex flex-col">
-        <header class="p-4 glass border-b border-white/5 flex justify-between items-center md:hidden">
-            <span class="font-bold text-blue-500">الخوارزمية</span>
-            <button onclick="logout()" class="text-red-500 text-xs font-bold">خروج</button>
-        </header>
-
+    <main class="flex-1">
         <div id="p-dashboard" class="page active-page">
-            <h2 id="helloUser" class="text-2xl font-bold mb-4 pt-4"></h2>
-            <div class="glass p-6 rounded-3xl border-r-4 border-blue-500 shadow-lg">
-                <p id="userCount" class="text-4xl font-black">0</p>
-                <p class="text-xs opacity-50 uppercase tracking-widest mt-1">عضو مسجل</p>
-            </div>
-        </div>
-
-        <div id="p-chat-select" class="page">
-            <h2 class="text-xl font-bold mb-4">ابدأ دردشة</h2>
-            <div id="chatUserList" class="space-y-2"></div>
-        </div>
-
-        <div id="p-members" class="page">
-            <h2 class="text-xl font-bold mb-4 text-blue-400">أعضاء الفريق</h2>
-            <div id="memberList" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
-        </div>
-
-        <div id="p-chat-room" class="page !p-0">
-            <div class="p-3 bg-slate-900 border-b border-white/5 flex items-center gap-3">
-                <button onclick="showPage('chat-select')" class="text-blue-500 px-2"><i class="fas fa-arrow-right"></i></button>
-                <span id="chattingWith" class="font-bold text-sm">...</span>
-            </div>
-            <div id="chatBox" class="flex-1 overflow-y-auto p-4 flex flex-col"></div>
-            <div class="p-3 glass border-t border-white/10 flex gap-2">
-                <input type="text" id="chatInput" placeholder="اكتب رسالة..." class="flex-1 bg-white/5 p-3 rounded-xl outline-none text-sm focus:bg-white/10 transition-all">
-                <button onclick="sendMsg()" class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center hover:bg-blue-500 transition-all active:scale-90"><i class="fas fa-paper-plane"></i></button>
+            <h2 class="text-2xl font-bold mb-6" id="welcomeMsg">أهلاً بك</h2>
+            <div class="glass p-8 rounded-3xl border-r-4 border-blue-600">
+                <p class="text-slate-500">مشروعك الآن يعمل بنظام **Supabase** السحابي.</p>
+                <p class="text-xs mt-4 opacity-50 italic">لا تقلق، مشكلة الذاكرة (Out of Memory) انتهت للأبد.</p>
             </div>
         </div>
 
         <div id="p-library" class="page">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold">المكتبة 📚</h2>
-                <div id="adminTools" class="hidden">
-                    <input type="file" id="libFile" class="hidden" onchange="uploadFile()">
-                    <button onclick="document.getElementById('libFile').click()" class="bg-blue-600 px-4 py-2 rounded-xl text-[10px] font-bold shadow-lg shadow-blue-600/30 active:scale-95 transition-all">
-                         رفع ملف
-                    </button>
-                </div>
+            <div class="flex justify-between items-center mb-6 text-right">
+                <h2 class="text-xl font-bold">المكتبة السحابية</h2>
+                <button onclick="document.getElementById('fileInp').click()" class="bg-blue-600 px-6 py-2 rounded-xl text-sm font-bold">رفع ملف +</button>
+                <input type="file" id="fileInp" class="hidden" onchange="uploadFile(this)">
             </div>
-            <div id="libraryList" class="grid gap-3 pb-20"></div>
+            <div id="libraryList" class="space-y-3"></div>
         </div>
-
-        <nav class="bottom-nav fixed bottom-0 left-0 right-0 h-16 glass border-t border-white/10 flex items-center justify-around z-50">
-            <button onclick="showPage('dashboard')" class="btn-nav active"><i class="fas fa-home"></i><span>الرئيسية</span></button>
-            <button onclick="showPage('chat-select')" class="btn-nav"><i class="fas fa-comment-dots"></i><span>الدردشة</span></button>
-            <button onclick="showPage('members')" class="btn-nav"><i class="fas fa-users"></i><span>الأعضاء</span></button>
-            <button onclick="showPage('library')" class="btn-nav"><i class="fas fa-book"></i><span>المكتبة</span></button>
-        </nav>
     </main>
 
+    <nav class="bottom-nav">
+        <div onclick="showPage('dashboard')" class="active" id="b-dashboard"><i class="fas fa-home text-xl"></i></div>
+        <div onclick="showPage('library')" id="b-library"><i class="fas fa-book text-xl"></i></div>
+    </nav>
+
     <script>
-        // بيانات سوبابيز الخاصة بمشروعك
-        const supabaseUrl = 'https://xhyfprrvpzasbywehzid.supabase.co';
-        const supabaseKey = 'sb_publishable_lJ85dVr8A5dOvXWRZ6SWvw_rSwSfp1J';
-        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        // 1. ضع هنا بياناتك من صورة الـ API
+        const URL = 'رابط_المشروع_هنا'; 
+        const KEY = 'مفتاح_ANON_هنا';
 
-        let currentUser = null, targetUser = null, isLogin = true;
+        const _supabase = supabase.createClient(URL, KEY);
 
-        window.onload = () => {
-            const saved = localStorage.getItem('algo_user');
-            if(saved) { currentUser = JSON.parse(saved); loginSuccess(); }
-        };
+        // وظائف الدخول (بتحويل الاسم لبريد وهمي داخلياً)
+        async function login() {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            if(!user || !pass) return alert("اكتب الاسم والباسورد");
 
-        function toggleAuth() {
-            isLogin = !isLogin;
-            document.getElementById('authTitle').innerText = isLogin ? 'دخول الخوارزمية' : 'إنشاء حساب جديد';
-            document.getElementById('authBtn').innerText = isLogin ? 'دخول' : 'تسجيل';
-            document.getElementById('toggleBtn').innerText = isLogin ? 'ليس لديك حساب؟ سجل الآن' : 'لديك حساب؟ سجل دخولك';
+            const fakeEmail = `${user}@algo.com`;
+            const { error } = await _supabase.auth.signInWithPassword({ email: fakeEmail, password: pass });
+            if(error) alert("خطأ: تأكد من الاسم والباسورد");
         }
 
-        async function handleAuth() {
-            const user = document.getElementById('uName').value.trim(), pass = document.getElementById('uPass').value;
-            if(!user || !pass) return alert('البيانات ناقصة!');
+        async function register() {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            if(!user || pass.length < 6) return alert("الاسم مطلوب والباسورد لا يقل عن 6 أرقام");
+
+            const fakeEmail = `${user}@algo.com`;
+            const { error } = await _supabase.auth.signUp({ email: fakeEmail, password: pass });
+            if(error) alert("فشل الإنشاء: " + error.message);
+            else alert("تم إنشاء حسابك باسم: " + user);
+        }
+
+        function logout() { _supabase.auth.signOut(); }
+
+        // نظام المكتبة السحابي
+        async function uploadFile(input) {
+            const file = input.files[0];
+            if(!file) return;
             
-            if(isLogin) {
-                const { data, error } = await _supabase.from('profiles').select('*').eq('username', user).eq('password', pass).single();
-                if(data) { currentUser = data; localStorage.setItem('algo_user', JSON.stringify(data)); loginSuccess(); }
-                else alert('الاسم أو كلمة السر غلط!');
-            } else {
-                const { error } = await _supabase.from('profiles').insert([{ username: user, password: pass, role: 'USER' }]);
-                if(!error) { alert('تم إنشاء حسابك! سجل دخولك دلوقتي'); toggleAuth(); }
-                else alert('الاسم ده محجوز لواحد تاني');
-            }
+            const fileName = `${Date.now()}_${file.name}`;
+            alert("جاري الرفع للسحاب...");
+
+            // الرفع للمخزن الذي أنشأته (files)
+            const { data, error } = await _supabase.storage.from('files').upload(fileName, file);
+            if(error) return alert("خطأ رفع: " + error.message);
+
+            const { data: urlData } = _supabase.storage.from('files').getPublicUrl(fileName);
+            await _supabase.from('library_files').insert([{ name: file.name, url: urlData.publicUrl }]);
+            
+            alert("تم الرفع بنجاح!");
+            renderLibrary();
         }
 
-        function loginSuccess() {
-            document.getElementById('authPage').classList.add('hidden');
-            document.getElementById('helloUser').innerText = `أهلاً بك يا ${currentUser.username}`;
-            if(currentUser.role === 'ADMIN') document.getElementById('adminTools').classList.remove('hidden');
-            initApp();
+        async function renderLibrary() {
+            const list = document.getElementById('libraryList');
+            const { data, error } = await _supabase.from('library_files').select('*').order('created_at', {ascending: false});
+            
+            if(data) {
+                list.innerHTML = data.map(f => `
+                    <div class="glass p-4 rounded-2xl flex justify-between items-center">
+                        <span class="truncate ml-4 text-sm font-bold text-white">${f.name}</span>
+                        <a href="${f.url}" target="_blank" class="text-blue-400 bg-blue-400/10 p-2 px-4 rounded-lg text-xs">تحميل</a>
+                    </div>
+                `).join('');
+            }
         }
 
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
             document.getElementById('p-' + id).classList.add('active-page');
-            document.querySelectorAll('.btn-nav').forEach(b => b.classList.remove('active'));
-            const map = { 'dashboard':0, 'chat-select':1, 'chat-room':1, 'members':2, 'library':3 };
-            document.querySelectorAll('.btn-nav')[map[id]]?.classList.add('active');
+            document.querySelectorAll('.sidebar div, .bottom-nav div').forEach(el => el.classList.remove('active'));
+            document.getElementById('nav-'+id)?.classList.add('active');
+            document.getElementById('b-'+id)?.classList.add('active');
+            if (id === 'library') renderLibrary();
         }
 
-        function initApp() {
-            updateUI();
-            _supabase.channel('room').on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, () => updateUI()).subscribe();
-        }
-
-        async function updateUI() {
-            // تحديث قائمة الأعضاء
-            const { data: users } = await _supabase.from('profiles').select('*');
-            if(users) {
-                document.getElementById('userCount').innerText = users.length;
-                document.getElementById('chatUserList').innerHTML = users.filter(u => u.username !== currentUser.username).map(u => `
-                    <div onclick="targetUser='${u.username}'; document.getElementById('chattingWith').innerText='${u.username}'; showPage('chat-room'); updateUI();" class="glass p-4 rounded-xl flex items-center gap-3 cursor-pointer hover:bg-white/5 transition-all active:scale-[0.98] border border-white/5">
-                        <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center font-bold text-sm shadow-inner">${u.username[0]}</div>
-                        <span class="text-sm font-bold">${u.username}</span>
-                    </div>`).join('');
-                document.getElementById('memberList').innerHTML = users.map(u => `<div class="glass p-3 rounded-xl border-r-2 ${u.username === currentUser.username ? 'border-green-500' : 'border-blue-500/30'} shadow-sm"><p class="font-bold text-xs">${u.username}</p><p class="text-[8px] opacity-50 uppercase tracking-tighter">${u.role}</p></div>`).join('');
+        // مراقبة الدخول
+        _supabase.auth.onAuthStateChange((event, session) => {
+            if (session) {
+                document.getElementById('authPage').style.display = 'none';
+                document.getElementById('welcomeMsg').innerText = "أهلاً يا بطل: " + session.user.email.split('@')[0];
+            } else {
+                document.getElementById('authPage').style.display = 'flex';
             }
-
-            // تحديث الرسائل والمكتبة
-            const { data: msgs } = await _supabase.from('messages').select('*').order('created_at', { ascending: true });
-            if(msgs) {
-                if(targetUser) {
-                    const filtered = msgs.filter(m => (m.username === currentUser.username && m.receiver === targetUser) || (m.username === targetUser && m.receiver === currentUser.username));
-                    document.getElementById('chatBox').innerHTML = filtered.map(m => `<div class="chat-bubble ${m.username === currentUser.username ? 'my-msg' : 'other-msg'} shadow-md"><p class="text-[8px] opacity-40 mb-1">${m.username}</p><p>${m.content}</p></div>`).join('');
-                    document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
-                }
-                
-                // عرض ملفات المكتبة
-                document.getElementById('libraryList').innerHTML = msgs.filter(m => m.content && m.content.startsWith('ALGO_FILE:')).map(m => {
-                    const parts = m.content.replace('ALGO_FILE:', '').split('|');
-                    const url = parts[0], name = parts[1], storageName = parts[2];
-                    return `
-                        <div class="glass p-4 rounded-2xl flex justify-between items-center border border-white/5 hover:border-blue-500/20 transition-all shadow-lg">
-                            <div class="flex items-center gap-3 truncate max-w-[60%]">
-                                <i class="fas fa-file-pdf text-red-500 text-xl"></i>
-                                <span class="text-xs font-bold truncate">${name}</span>
-                            </div>
-                            <div class="flex gap-2">
-                                <a href="${url}" target="_blank" class="bg-blue-600/20 text-blue-400 px-3 py-1 rounded-lg text-[10px] font-bold">فتح</a>
-                                ${currentUser.role === 'ADMIN' ? `<button onclick="deleteFile(${m.id}, '${storageName}')" class="bg-red-600/20 text-red-500 px-3 py-1 rounded-lg text-[10px] font-bold">حذف</button>` : ''}
-                            </div>
-                        </div>`;
-                }).join('');
-            }
-        }
-
-        async function uploadFile() {
-            const fileInput = document.getElementById('libFile');
-            const file = fileInput.files[0];
-            if (!file) return;
-
-            try {
-                // اسم ملف عشوائي لتجنب مشاكل الأسماء العربي في الروابط
-                const fileExt = file.name.split('.').pop();
-                const storageName = `algo_${Date.now()}.${fileExt}`;
-                
-                // الرفع لـ سوبابيز
-                const { data, error: storageError } = await _supabase.storage
-                    .from('files')
-                    .upload(storageName, file);
-
-                if (storageError) throw storageError;
-
-                // الحصول على الرابط
-                const { data: { publicUrl } } = _supabase.storage.from('files').getPublicUrl(storageName);
-                
-                // تسجيله في المكتبة (جدول الرسائل)
-                const { error: dbError } = await _supabase.from('messages').insert([{
-                    username: currentUser.username,
-                    content: `ALGO_FILE:${publicUrl}|${file.name}|${storageName}`,
-                    receiver: 'LIBRARY'
-                }]);
-
-                if (!dbError) {
-                    alert('تم إضافة الملف للمكتبة يا بطل! ✅');
-                    updateUI();
-                }
-            } catch (err) {
-                alert('خطأ في الرفع: ' + err.message);
-            }
-        }
-
-        async function deleteFile(msgId, storageName) {
-            if(!confirm('أكيد عايز تمسح الملف ده؟')) return;
-            try {
-                await _supabase.storage.from('files').remove([storageName]);
-                await _supabase.from('messages').delete().eq('id', msgId);
-                alert('تم الحذف ✅');
-                updateUI();
-            } catch (err) {
-                alert('فشل الحذف');
-            }
-        }
-
-        async function sendMsg() {
-            const input = document.getElementById('chatInput');
-            if(!input.value.trim() || !targetUser) return;
-            await _supabase.from('messages').insert([{ username: currentUser.username, content: input.value, receiver: targetUser }]);
-            input.value = '';
-        }
-
-        function logout() { localStorage.clear(); location.reload(); }
+        });
     </script>
 </body>
 </html>
