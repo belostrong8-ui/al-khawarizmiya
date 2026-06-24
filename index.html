@@ -1,882 +1,118 @@
+```html
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="ar" dir="rtl" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ChatHub - Community Platform</title>
-    
-    <!-- Tailwind CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatHub Ultimate System</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        brand: {
-                            50: '#eef2ff',
-                            100: '#e0e7ff',
-                            500: '#6366f1',
-                            600: '#4f46e5',
-                            900: '#312e81',
-                        },
-                        amoled: '#000000',
-                        discord: {
-                            dark: '#36393f',
-                            darker: '#2f3136',
-                            darkest: '#202225',
-                            light: '#dcddde'
-                        }
-                    },
-                    animation: {
-                        'fade-in': 'fadeIn 0.3s ease-out',
-                        'slide-in': 'slideIn 0.3s ease-out',
-                    },
-                    keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0' },
-                            '100%': { opacity: '1' },
-                        },
-                        slideIn: {
-                            '0%': { transform: 'translateY(10px)', opacity: '0' },
-                            '100%': { transform: 'translateY(0)', opacity: '1' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-
     <style>
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(156, 163, 175, 0.3);
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(156, 163, 175, 0.5);
-        }
-
-        /* Glassmorphism */
-        .glass {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .dark .glass {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        /* RTL Support Adjustments */
-        [dir="rtl"] .ml-auto { margin-left: 0; margin-right: auto; }
-        [dir="rtl"] .mr-2 { margin-right: 0; margin-left: 0.5rem; }
-        [dir="rtl"] .mr-3 { margin-right: 0; margin-left: 0.75rem; }
-        [dir="rtl"] .ml-2 { margin-left: 0; margin-right: 0.5rem; }
-        [dir="rtl"] .border-r { border-right: none; border-left: 1px solid var(--border-color); }
-        [dir="rtl"] .border-l { border-left: none; border-right: 1px solid var(--border-color); }
-
-        body {
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        /* Theme variables */
-        :root { --border-color: #e2e8f0; }
-        .dark { --border-color: #334155; }
-        
-        /* Hide scrollbar for cleanly scrollable areas but keep functionality */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .win11-card { background: rgba(30, 30, 30, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); }
+        .toast { transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 h-screen w-screen overflow-hidden transition-colors duration-300 font-sans" dir="ltr">
+<body class="bg-[#121212] text-white h-screen flex font-sans overflow-hidden">
 
-    <!-- Auth Loading Overlay -->
-    <div id="auth-overlay" class="fixed inset-0 bg-slate-900 z-50 flex flex-col items-center justify-center transition-opacity duration-500">
-        <div class="text-brand-500 text-6xl mb-6 animate-pulse">
-            <i class="fa-solid fa-cube"></i>
-        </div>
-        <h1 class="text-3xl font-bold text-white mb-2 tracking-tight">ChatHub</h1>
-        <p class="text-slate-400 mb-8">Connecting Communities...</p>
-        <div class="w-48 h-1 bg-slate-800 rounded-full overflow-hidden">
-            <div class="w-1/2 h-full bg-brand-500 rounded-full animate-[spin_2s_linear_infinite] origin-left"></div>
+    <!-- نظام الإشعارات -->
+    <div id="toast-container" class="fixed top-5 right-5 z-[100] flex flex-col gap-3"></div>
+
+    <!-- شاشة الدخول والاشتراك -->
+    <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-[#121212]">
+        <div class="win11-card p-8 rounded-2xl w-96 text-center shadow-2xl">
+            <h1 id="auth-title" class="text-2xl font-bold mb-6">تسجيل الدخول</h1>
+            <form id="auth-form" class="space-y-4">
+                <input type="text" id="username-input" placeholder="اسم المستخدم" class="hidden w-full bg-[#2d2d2d] p-3 rounded-lg border border-gray-600 outline-none">
+                <input type="email" placeholder="البريد الإلكتروني" class="w-full bg-[#2d2d2d] p-3 rounded-lg border border-gray-600 outline-none" required dir="ltr">
+                <input type="password" placeholder="كلمة المرور" class="w-full bg-[#2d2d2d] p-3 rounded-lg border border-gray-600 outline-none" required dir="ltr">
+                <button type="submit" id="auth-btn" class="w-full bg-blue-600 p-3 rounded-lg font-bold hover:bg-blue-700">دخول</button>
+            </form>
+            <p class="mt-4 text-sm text-gray-400" id="toggle-text">ليس لديك حساب؟ <button onclick="toggleAuth()" class="text-blue-400 font-bold">أنشئ حساباً</button></p>
         </div>
     </div>
 
-    <!-- Main App Layout -->
-    <div class="flex h-full w-full relative">
-        
-        <!-- Mobile Navigation Toggle -->
-        <button id="mobile-nav-toggle" class="md:hidden absolute top-3 left-3 z-40 p-2 rounded-md bg-slate-800/80 text-white backdrop-blur-sm">
-            <i class="fa-solid fa-bars"></i>
-        </button>
-
-        <!-- 1. Guilds / Communities Sidebar (Leftmost) -->
-        <nav id="guilds-sidebar" class="w-16 md:w-20 bg-slate-200 dark:bg-slate-950 flex flex-col items-center py-4 gap-3 z-30 transition-transform -translate-x-full md:translate-x-0 absolute md:relative h-full shadow-xl md:shadow-none">
-            <!-- Home -->
-            <div class="group relative">
-                <button class="w-12 h-12 rounded-[24px] group-hover:rounded-[16px] bg-brand-500 text-white flex items-center justify-center transition-all duration-300 shadow-lg" onclick="switchContext('home')">
-                    <i class="fa-brands fa-hubspot text-2xl"></i>
-                </button>
-                <div class="absolute left-1/2 -translate-x-1/2 -ml-8 w-1 h-8 bg-white rounded-r-md hidden group-hover:block transition-all duration-300 -left-2"></div>
+    <!-- واجهة التطبيق الرئيسية -->
+    <div id="app-content" class="hidden flex w-full">
+        <nav class="w-64 bg-[#1c1c1c] p-4 flex flex-col gap-4 border-l border-gray-800">
+            <div class="flex items-center gap-3 p-2 bg-[#2d2d2d] rounded-lg">
+                <img id="user-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=123" class="w-10 h-10 rounded-full border-2 border-blue-500">
+                <div>
+                    <div id="display-name" class="font-bold">المستخدم</div>
+                    <div class="text-xs text-green-400">متصل الآن</div>
+                </div>
             </div>
-            
-            <div class="w-8 h-[2px] bg-slate-300 dark:bg-slate-800 rounded-full my-1"></div>
-
-            <!-- Community 1 -->
-            <button class="w-12 h-12 rounded-[24px] hover:rounded-[16px] bg-slate-300 dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center transition-all duration-300 hover:bg-brand-500 hover:text-white" onclick="switchContext('dev')">
-                <i class="fa-solid fa-code"></i>
-            </button>
-            <!-- Community 2 -->
-            <button class="w-12 h-12 rounded-[24px] hover:rounded-[16px] bg-slate-300 dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center transition-all duration-300 hover:bg-rose-500 hover:text-white" onclick="switchContext('gaming')">
-                <i class="fa-solid fa-gamepad"></i>
-            </button>
-
-            <!-- Add Community -->
-            <button class="w-12 h-12 rounded-[24px] hover:rounded-[16px] border border-slate-400 dark:border-slate-700 text-green-500 flex items-center justify-center transition-all duration-300 hover:bg-green-500 hover:text-white hover:border-transparent mt-2" onclick="showModal('action-modal', 'Create Community')">
-                <i class="fa-solid fa-plus"></i>
-            </button>
+            <button onclick="switchView('chat')" class="text-right p-3 hover:bg-[#333] rounded-lg"><i class="fa-solid fa-comments ml-3"></i> المحادثات</button>
+            <button onclick="switchView('library')" class="text-right p-3 hover:bg-[#333] rounded-lg"><i class="fa-solid fa-folder-open ml-3"></i> المكتبة (Files)</button>
+            <button onclick="location.reload()" class="mt-auto text-right p-3 hover:bg-red-900 rounded-lg text-red-400"><i class="fa-solid fa-right-from-bracket ml-3"></i> تسجيل الخروج</button>
         </nav>
 
-        <!-- 2. Channels Sidebar -->
-        <aside id="channels-sidebar" class="w-64 bg-slate-100 dark:bg-slate-900 border-r border-slate-300 dark:border-slate-800 flex flex-col z-20 transition-transform -translate-x-full md:translate-x-0 absolute md:relative h-full">
-            
-            <!-- Header -->
-            <div class="h-14 border-b border-slate-300 dark:border-slate-800 flex items-center px-4 justify-between shadow-sm cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
-                <h2 id="community-title" class="font-bold truncate" data-en="Global Hub" data-ar="المركز العالمي">Global Hub</h2>
-                <i class="fa-solid fa-chevron-down text-xs"></i>
+        <main class="flex-1 p-8 overflow-y-auto">
+            <!-- صفحة المحادثة -->
+            <div id="chat-view">
+                <h2 class="text-2xl font-bold mb-4">غرفة الدردشة العامة</h2>
+                <div class="win11-card h-[60vh] p-4 rounded-xl overflow-y-auto" id="msg-box"></div>
+                <input type="text" id="msg-input" placeholder="اكتب رسالتك..." class="w-full mt-4 bg-[#2d2d2d] p-3 rounded-lg outline-none">
             </div>
 
-            <!-- Channels List -->
-            <div class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-4">
-                
-                <!-- Text Channels -->
-                <div>
-                    <div class="flex items-center text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1 px-1 cursor-pointer hover:text-slate-300">
-                        <i class="fa-solid fa-chevron-down mr-2 text-[10px]"></i> <span data-en="Text Channels" data-ar="القنوات النصية">Text Channels</span>
-                    </div>
-                    <div class="space-y-[2px]">
-                        <button class="w-full text-left px-2 py-1.5 rounded bg-slate-200 dark:bg-slate-800/50 text-slate-800 dark:text-white flex items-center group">
-                            <i class="fa-solid fa-hashtag text-slate-500 mr-2 text-sm"></i>
-                            <span class="truncate font-medium">general</span>
-                            <i class="fa-solid fa-user-plus ml-auto opacity-0 group-hover:opacity-100 text-slate-400 hover:text-white transition-opacity"></i>
-                        </button>
-                        <button class="w-full text-left px-2 py-1.5 rounded text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800/50 hover:text-slate-800 dark:hover:text-slate-200 flex items-center group">
-                            <i class="fa-solid fa-hashtag text-slate-500 mr-2 text-sm"></i>
-                            <span class="truncate">announcements</span>
-                        </button>
-                        <button class="w-full text-left px-2 py-1.5 rounded text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800/50 hover:text-slate-800 dark:hover:text-slate-200 flex items-center group" onclick="showModal('action-modal', 'File Library Simulation')">
-                            <i class="fa-solid fa-folder-open text-brand-500 mr-2 text-sm"></i>
-                            <span class="truncate">file-library</span>
-                        </button>
-                    </div>
+            <!-- صفحة المكتبة -->
+            <div id="library-view" class="hidden">
+                <h2 class="text-2xl font-bold mb-4">المكتبة (Files)</h2>
+                <div class="win11-card rounded-xl p-6">
+                    <input type="file" id="file-picker" class="hidden" onchange="uploadFile(event)">
+                    <button onclick="document.getElementById('file-picker').click()" class="bg-blue-600 px-4 py-2 rounded-lg mb-4 hover:bg-blue-700">رفع ملف جديد</button>
+                    <div id="file-list" class="space-y-2"></div>
                 </div>
-
-                <!-- Voice Channels -->
-                <div>
-                    <div class="flex items-center text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1 px-1 cursor-pointer hover:text-slate-300">
-                        <i class="fa-solid fa-chevron-down mr-2 text-[10px]"></i> <span data-en="Voice Channels" data-ar="القنوات الصوتية">Voice Channels</span>
-                    </div>
-                    <div class="space-y-[2px]">
-                        <button class="w-full text-left px-2 py-1.5 rounded text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800/50 hover:text-slate-800 dark:hover:text-slate-200 flex items-center group" onclick="toggleVoice('Lounge')">
-                            <i class="fa-solid fa-volume-high text-slate-500 mr-2 text-sm"></i>
-                            <span class="truncate">Lounge</span>
-                        </button>
-                        <button class="w-full text-left px-2 py-1.5 rounded text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800/50 hover:text-slate-800 dark:hover:text-slate-200 flex items-center group" onclick="toggleVoice('Streaming')">
-                            <i class="fa-solid fa-video text-slate-500 mr-2 text-sm"></i>
-                            <span class="truncate">Streaming</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- User Panel (Bottom) -->
-            <div class="h-[60px] bg-slate-200 dark:bg-[#292b2f] flex items-center px-2 justify-between shrink-0">
-                <button class="flex items-center hover:bg-slate-300 dark:hover:bg-slate-700/50 p-1.5 rounded-md transition-colors w-full text-left" onclick="showProfile()">
-                    <div class="relative">
-                        <img id="current-user-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Guest" class="w-8 h-8 rounded-full bg-slate-300 dark:bg-slate-800">
-                        <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-slate-200 dark:border-[#292b2f] rounded-full"></div>
-                    </div>
-                    <div class="ml-2 overflow-hidden">
-                        <div id="current-user-name" class="text-sm font-bold truncate">Guest</div>
-                        <div class="text-[11px] text-slate-500 dark:text-slate-400 truncate">Lvl 1 • Online</div>
-                    </div>
-                </button>
-                <div class="flex items-center gap-1 ml-1">
-                    <button class="w-8 h-8 rounded hover:bg-slate-300 dark:hover:bg-slate-700/50 flex items-center justify-center text-slate-500 dark:text-slate-400" title="Settings" onclick="showSettings()">
-                        <i class="fa-solid fa-gear"></i>
-                    </button>
-                </div>
-            </div>
-        </aside>
-
-        <!-- 3. Main Chat Area -->
-        <main class="flex-1 flex flex-col bg-white dark:bg-discord-dark relative min-w-0">
-            
-            <!-- Chat Header -->
-            <header class="h-14 border-b border-slate-200 dark:border-slate-800 flex items-center px-4 justify-between shrink-0 glass z-10 pl-14 md:pl-4">
-                <div class="flex items-center gap-3 min-w-0">
-                    <i class="fa-solid fa-hashtag text-slate-400 text-xl"></i>
-                    <h3 class="font-bold text-lg truncate">general</h3>
-                    <div class="hidden md:block w-[1px] h-6 bg-slate-300 dark:bg-slate-700 mx-2"></div>
-                    <p class="hidden md:block text-sm text-slate-500 dark:text-slate-400 truncate max-w-md" data-en="Welcome to the global public chatroom!" data-ar="مرحباً بك في غرفة الدردشة العامة!">Welcome to the global public chatroom!</p>
-                </div>
-
-                <div class="flex items-center gap-4 shrink-0">
-                    <!-- Search -->
-                    <div class="hidden lg:flex relative">
-                        <input type="text" placeholder="Search" class="bg-slate-100 dark:bg-discord-darker text-sm px-3 py-1 rounded-md w-48 focus:outline-none focus:w-64 transition-all focus:ring-2 focus:ring-brand-500 border border-transparent dark:border-slate-800">
-                        <i class="fa-solid fa-search absolute right-2 top-1.5 text-slate-400 text-xs"></i>
-                    </div>
-                    
-                    <!-- Language Toggle -->
-                    <button id="lang-toggle" class="text-slate-400 hover:text-brand-500 transition-colors" title="Toggle RTL/LTR">
-                        <i class="fa-solid fa-language text-xl"></i>
-                    </button>
-
-                    <!-- Theme Toggle -->
-                    <button id="theme-toggle" class="text-slate-400 hover:text-yellow-400 transition-colors" title="Toggle Theme">
-                        <i class="fa-solid fa-moon text-xl" id="theme-icon"></i>
-                    </button>
-
-                    <!-- Members Toggle -->
-                    <button id="members-toggle" class="text-slate-400 hover:text-white transition-colors lg:hidden">
-                        <i class="fa-solid fa-users text-xl"></i>
-                    </button>
-                </div>
-            </header>
-
-            <!-- Messages Container -->
-            <div id="messages-container" class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar relative">
-                <!-- Welcome Banner -->
-                <div class="mt-8 mb-12 pb-4 border-b border-slate-200 dark:border-slate-800">
-                    <div class="w-16 h-16 bg-brand-500 rounded-full flex items-center justify-center text-white text-3xl mb-4">
-                        <i class="fa-solid fa-hashtag"></i>
-                    </div>
-                    <h1 class="text-3xl font-bold mb-2" data-en="Welcome to #general!" data-ar="مرحباً بك في #general!">Welcome to #general!</h1>
-                    <p class="text-slate-500 dark:text-slate-400" data-en="This is the start of the #general channel." data-ar="هذه بداية قناة #general.">This is the start of the #general channel.</p>
-                </div>
-
-                <!-- Messages will be injected here via JS -->
-                <div id="messages-list" class="space-y-1 pb-4">
-                    <!-- Loader -->
-                    <div class="flex items-center justify-center py-4">
-                        <i class="fa-solid fa-circle-notch fa-spin text-brand-500 text-2xl"></i>
-                    </div>
-                </div>
-                
-                <!-- Dummy element to scroll to bottom -->
-                <div id="scroll-anchor"></div>
-            </div>
-
-            <!-- Input Area -->
-            <div class="p-4 pt-0 shrink-0 mt-2">
-                <form id="chat-form" class="relative bg-slate-100 dark:bg-discord-darker rounded-lg flex items-end border border-slate-300 dark:border-transparent focus-within:border-brand-500 transition-colors px-4 py-2">
-                    
-                    <button type="button" class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-full shrink-0 mb-1" onclick="showModal('action-modal', 'Upload File / Media')">
-                        <i class="fa-solid fa-circle-plus text-xl"></i>
-                    </button>
-
-                    <textarea id="message-input" rows="1" class="flex-1 bg-transparent border-none focus:ring-0 resize-none py-3 px-2 text-[15px] max-h-32 custom-scrollbar outline-none dark:text-slate-200" placeholder="Message #general..." data-en="Message #general..." data-ar="رسالة إلى #general..."></textarea>
-                    
-                    <div class="flex items-center mb-1 shrink-0 gap-1">
-                        <button type="button" class="p-2 text-slate-400 hover:text-yellow-400 rounded-full transition-colors hidden sm:block" title="Gift / Economy">
-                            <i class="fa-solid fa-gift text-xl"></i>
-                        </button>
-                        <button type="button" class="p-2 text-slate-400 hover:text-green-400 rounded-full transition-colors sm:hidden">
-                            <i class="fa-solid fa-face-smile text-xl"></i>
-                        </button>
-                        <button type="submit" class="p-2 text-brand-500 hover:text-brand-400 rounded-full transition-colors ml-1" id="send-btn" disabled>
-                            <i class="fa-solid fa-paper-plane text-xl"></i>
-                        </button>
-                    </div>
-                </form>
             </div>
         </main>
-
-        <!-- 4. Members Sidebar (Rightmost) -->
-        <aside id="members-sidebar" class="w-60 bg-slate-50 dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 flex flex-col z-20 transition-transform translate-x-full lg:translate-x-0 absolute right-0 lg:relative h-full hidden lg:flex">
-            <div class="p-4 flex-1 overflow-y-auto custom-scrollbar">
-                
-                <!-- Role Category: Admin -->
-                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 mt-4 flex items-center">
-                    <span data-en="Admin — 1" data-ar="المدير — 1">Admin — 1</span>
-                    <i class="fa-solid fa-shield-halved ml-2 text-brand-500"></i>
-                </h3>
-                <div class="flex items-center p-2 rounded hover:bg-slate-200 dark:hover:bg-slate-800 cursor-pointer group mb-4">
-                    <div class="relative">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=System" class="w-8 h-8 rounded-full bg-slate-800">
-                        <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white dark:border-slate-900 rounded-full"></div>
-                    </div>
-                    <span class="ml-3 font-medium text-brand-500 group-hover:underline">ChatHub Bot</span>
-                    <i class="fa-solid fa-robot ml-auto text-slate-500 text-xs opacity-50"></i>
-                </div>
-
-                <!-- Role Category: Online -->
-                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center">
-                    <span data-en="Online — Users" data-ar="متصل — مستخدمين">Online — Users</span>
-                </h3>
-                <div id="online-users-list" class="space-y-1">
-                    <!-- Dynamic Users will be injected here -->
-                </div>
-            </div>
-        </aside>
     </div>
 
-    <!-- UI MODALS & OVERLAYS -->
+    <script>
+        // التبديل بين الدخول والاشتراك
+        let isLogin = true;
+        function toggleAuth() {
+            isLogin = !isLogin;
+            document.getElementById('auth-title').innerText = isLogin ? "تسجيل الدخول" : "إنشاء حساب";
+            document.getElementById('auth-btn').innerText = isLogin ? "دخول" : "تسجيل";
+            document.getElementById('username-input').classList.toggle('hidden');
+            document.getElementById('toggle-text').innerHTML = isLogin ? 'ليس لديك حساب؟ <button onclick="toggleAuth()" class="text-blue-400 font-bold">أنشئ حساباً</button>' : 'لديك حساب؟ <button onclick="toggleAuth()" class="text-blue-400 font-bold">سجل دخولك</button>';
+        }
 
-    <!-- Settings Modal -->
-    <div id="settings-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-900 w-full max-w-2xl rounded-xl shadow-2xl flex flex-col md:flex-row overflow-hidden border border-slate-200 dark:border-slate-800 animate-slide-in h-[80vh]">
-            
-            <!-- Settings Sidebar -->
-            <div class="w-full md:w-1/3 bg-slate-100 dark:bg-slate-800/50 p-4 border-r border-slate-200 dark:border-slate-800 overflow-y-auto">
-                <h2 class="font-bold text-xs uppercase text-slate-500 mb-2 pl-2" data-en="User Settings" data-ar="إعدادات المستخدم">User Settings</h2>
-                <div class="space-y-1">
-                    <button class="w-full text-left px-3 py-2 rounded-md bg-slate-200 dark:bg-slate-700/50 font-medium text-slate-900 dark:text-white">My Account</button>
-                    <button class="w-full text-left px-3 py-2 rounded-md hover:bg-slate-200 dark:hover:bg-slate-700/50 text-slate-600 dark:text-slate-300">Profiles</button>
-                    <button class="w-full text-left px-3 py-2 rounded-md hover:bg-slate-200 dark:hover:bg-slate-700/50 text-slate-600 dark:text-slate-300">Privacy & Safety</button>
-                </div>
-                
-                <div class="my-4 h-[1px] bg-slate-300 dark:bg-slate-700"></div>
-                
-                <h2 class="font-bold text-xs uppercase text-slate-500 mb-2 pl-2" data-en="App Settings" data-ar="إعدادات التطبيق">App Settings</h2>
-                <div class="space-y-1">
-                    <button class="w-full text-left px-3 py-2 rounded-md hover:bg-slate-200 dark:hover:bg-slate-700/50 text-slate-600 dark:text-slate-300 flex justify-between">Appearance <i class="fa-solid fa-palette mt-1"></i></button>
-                    <button class="w-full text-left px-3 py-2 rounded-md hover:bg-slate-200 dark:hover:bg-slate-700/50 text-slate-600 dark:text-slate-300 flex justify-between">Voice & Video <i class="fa-solid fa-microphone mt-1"></i></button>
-                    <button class="w-full text-left px-3 py-2 rounded-md hover:bg-slate-200 dark:hover:bg-slate-700/50 text-slate-600 dark:text-slate-300 flex justify-between" onclick="showAdminMock()">Admin Panel <i class="fa-solid fa-lock mt-1"></i></button>
-                </div>
-
-                <div class="my-4 h-[1px] bg-slate-300 dark:bg-slate-700"></div>
-                
-                <button class="w-full text-left px-3 py-2 rounded-md hover:bg-red-500/10 text-red-500 font-medium flex justify-between items-center" onclick="logout()">
-                    <span data-en="Log Out" data-ar="تسجيل الخروج">Log Out</span> <i class="fa-solid fa-right-from-bracket"></i>
-                </button>
-            </div>
-
-            <!-- Settings Content -->
-            <div class="w-full md:w-2/3 p-6 overflow-y-auto relative bg-white dark:bg-slate-900">
-                <button class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-white" onclick="closeModal('settings-modal')">
-                    <i class="fa-solid fa-times text-xl"></i>
-                </button>
-                
-                <h2 class="text-2xl font-bold mb-6" data-en="My Account" data-ar="حسابي">My Account</h2>
-                
-                <!-- Profile Card -->
-                <div class="bg-slate-100 dark:bg-slate-800 rounded-xl relative overflow-hidden border border-slate-200 dark:border-slate-700">
-                    <div class="h-24 bg-gradient-to-r from-brand-500 to-purple-600 w-full"></div>
-                    <div class="px-4 pb-4">
-                        <div class="flex justify-between items-end -mt-10 mb-4">
-                            <div class="relative rounded-full border-4 border-slate-100 dark:border-slate-800 bg-slate-900 inline-block">
-                                <img id="settings-avatar" src="" class="w-20 h-20 rounded-full">
-                                <div class="absolute bottom-1 right-1 w-5 h-5 bg-green-500 border-4 border-slate-100 dark:border-slate-800 rounded-full"></div>
-                            </div>
-                            <button class="bg-brand-500 hover:bg-brand-600 text-white px-4 py-1.5 rounded-md text-sm font-medium transition-colors" data-en="Edit User Profile" data-ar="تعديل الملف الشخصي">Edit User Profile</button>
-                        </div>
-                        <div class="bg-white dark:bg-slate-900 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
-                            <div class="flex justify-between mb-2">
-                                <div>
-                                    <div class="text-xs font-bold text-slate-500 uppercase" data-en="Display Name" data-ar="اسم العرض">Display Name</div>
-                                    <div class="font-medium" id="settings-name">User</div>
-                                </div>
-                                <button class="bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 px-3 py-1 rounded text-sm transition-colors">Edit</button>
-                            </div>
-                            <div class="flex justify-between">
-                                <div>
-                                    <div class="text-xs font-bold text-slate-500 uppercase" data-en="Email" data-ar="البريد الإلكتروني">Email</div>
-                                    <div class="font-medium text-sm">user@chathub.app (Verified)</div>
-                                </div>
-                                <button class="bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 px-3 py-1 rounded text-sm transition-colors">Edit</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Preferences -->
-                <h3 class="font-bold mt-8 mb-4 uppercase text-xs text-slate-500" data-en="Theme Preferences" data-ar="تفضيلات المظهر">Theme Preferences</h3>
-                <div class="grid grid-cols-3 gap-3">
-                    <button class="border border-slate-300 dark:border-slate-700 rounded-lg p-3 text-center hover:border-brand-500 transition-colors bg-white text-black" onclick="setSpecificTheme('light')">Light</button>
-                    <button class="border border-slate-300 dark:border-slate-700 rounded-lg p-3 text-center hover:border-brand-500 transition-colors bg-[#36393f] text-white" onclick="setSpecificTheme('dark')">Dark</button>
-                    <button class="border border-slate-300 dark:border-slate-700 rounded-lg p-3 text-center hover:border-brand-500 transition-colors bg-black text-white" onclick="setSpecificTheme('amoled')">AMOLED</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Generic Action Modal (For simulated features) -->
-    <div id="action-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-xl shadow-2xl p-6 text-center animate-slide-in border border-slate-200 dark:border-slate-700 relative">
-            <button class="absolute top-3 right-3 text-slate-400 hover:text-slate-600 dark:hover:text-white" onclick="closeModal('action-modal')">
-                <i class="fa-solid fa-times text-xl"></i>
-            </button>
-            <div class="w-16 h-16 bg-brand-100 dark:bg-brand-900/30 rounded-full flex items-center justify-center mx-auto mb-4 text-brand-500 text-3xl">
-                <i class="fa-solid fa-rocket"></i>
-            </div>
-            <h2 id="action-modal-title" class="text-xl font-bold mb-2">Feature</h2>
-            <p class="text-slate-500 dark:text-slate-400 text-sm mb-6">This feature requires backend Node.js modules or external API integrations which are simulated in this single-file deployment environment.</p>
-            <button class="w-full bg-brand-500 hover:bg-brand-600 text-white font-medium py-2 px-4 rounded-md transition-colors" onclick="closeModal('action-modal')">Acknowledge</button>
-        </div>
-    </div>
-
-    <!-- Active Voice Call Overlay -->
-    <div id="voice-overlay" class="fixed bottom-4 left-20 md:left-24 bg-green-500 text-white rounded-lg p-3 shadow-lg z-40 hidden items-center gap-4 animate-slide-in">
-        <div class="flex items-center gap-2">
-            <i class="fa-solid fa-signal text-sm"></i>
-            <span class="font-bold text-sm">Voice Connected</span>
-            <span class="text-xs opacity-80" id="voice-channel-name">Lounge</span>
-        </div>
-        <div class="flex items-center gap-2">
-            <button class="w-8 h-8 rounded-full bg-black/20 hover:bg-black/40 flex items-center justify-center transition-colors"><i class="fa-solid fa-microphone"></i></button>
-            <button class="w-8 h-8 rounded-full bg-black/20 hover:bg-black/40 flex items-center justify-center transition-colors"><i class="fa-solid fa-headphones"></i></button>
-            <button class="w-8 h-8 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center transition-colors shadow-md" onclick="disconnectVoice()"><i class="fa-solid fa-phone-slash"></i></button>
-        </div>
-    </div>
-
-    <!-- Firebase SDK (v11.6.1) -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, onSnapshot, doc, setDoc, addDoc, serverTimestamp, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // Global State
-        let currentUser = null;
-        let unsubscribeMessages = null;
-        let isRTL = false;
-        let isAmoled = false;
-        
-        // Environment bindings (Required for Canvas)
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'chathub-demo';
-        const firebaseConfigStr = typeof __firebase_config !== 'undefined' ? __firebase_config : null;
-        let app, auth, db;
-
-        // UI Elements
-        const authOverlay = document.getElementById('auth-overlay');
-        const messagesList = document.getElementById('messages-list');
-        const chatForm = document.getElementById('chat-form');
-        const messageInput = document.getElementById('message-input');
-        const sendBtn = document.getElementById('send-btn');
-        const scrollAnchor = document.getElementById('scroll-anchor');
-        const onlineUsersList = document.getElementById('online-users-list');
-
-        // Init App & Firebase
-        const init = async () => {
-            setupUI();
-            setupPWA();
-            
-            if (firebaseConfigStr) {
-                const firebaseConfig = JSON.parse(firebaseConfigStr);
-                app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
-                
-                setupAuth();
-            } else {
-                // Fallback for missing config (simulate UI)
-                console.warn("No Firebase config found. Running in UI simulation mode.");
-                setTimeout(() => {
-                    authOverlay.style.opacity = '0';
-                    setTimeout(() => authOverlay.remove(), 500);
-                    currentUser = { uid: 'guest-' + Math.floor(Math.random()*1000), displayName: 'Demo User' };
-                    updateProfileUI(currentUser);
-                    renderMockMessages();
-                }, 1500);
-            }
-        };
-
-        // Strict Auth Flow (Rule 3)
-        const setupAuth = async () => {
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    currentUser = user;
-                    // Hide loader
-                    authOverlay.style.opacity = '0';
-                    setTimeout(() => authOverlay.classList.add('hidden'), 500);
-                    
-                    updateProfileUI(user);
-                    startMessageListener();
-                    generateMockOnlineUsers();
-                } else {
-                    currentUser = null;
-                }
-            });
-
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-            } catch (error) {
-                console.error("Auth error:", error);
-                authOverlay.innerHTML = `<div class="text-red-500 bg-white p-4 rounded-lg">Authentication Failed. Please reload.</div>`;
-            }
-        };
-
-        // Real-time Database Logic (Rules 1 & 2)
-        const startMessageListener = () => {
-            if (!currentUser || !db) return;
-            if (unsubscribeMessages) unsubscribeMessages();
-
-            // Strict Path Rule: collection(db, 'artifacts', appId, 'public', 'data', collectionName)
-            const messagesRef = collection(db, 'artifacts', appId, 'public', 'data', 'messages');
-
-            // No complex queries rule - Fetching all and sorting in JS (Note: We use minimal built-in Firebase limits for safety if possible, but adhering strictly to rule 2: "fetch all with simple collection() queries, filter/sort in JS memory")
-            
-            unsubscribeMessages = onSnapshot(messagesRef, (snapshot) => {
-                let msgs = [];
-                snapshot.forEach(doc => {
-                    msgs.push({ id: doc.id, ...doc.data() });
-                });
-                
-                // Sort in JS Memory
-                msgs.sort((a, b) => {
-                    let timeA = a.timestamp ? a.timestamp.toMillis() : Date.now();
-                    let timeB = b.timestamp ? b.timestamp.toMillis() : Date.now();
-                    return timeA - timeB;
-                });
-
-                // Take last 50 for performance
-                if(msgs.length > 50) msgs = msgs.slice(msgs.length - 50);
-
-                renderMessages(msgs);
-            }, (error) => {
-                console.error("Firestore error:", error);
-            });
-        };
-
-        // Send Message
-        chatForm.addEventListener('submit', async (e) => {
+        // تسجيل الدخول
+        document.getElementById('auth-form').onsubmit = (e) => {
             e.preventDefault();
-            const text = messageInput.value.trim();
-            if (!text || !currentUser || !db) return;
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('app-content').classList.remove('hidden');
+            showNotification("تم تسجيل الدخول بنجاح!", "success");
+        };
 
-            messageInput.value = '';
-            messageInput.style.height = 'auto'; // reset height
-            sendBtn.disabled = true;
+        // نظام الإشعارات
+        function showNotification(msg, type) {
+            const toast = document.createElement('div');
+            toast.className = `toast win11-card p-4 rounded-xl border-r-4 ${type === 'success' ? 'border-green-500' : 'border-blue-500'} flex items-center gap-3`;
+            toast.innerHTML = `<i class="fa-solid fa-bell"></i> <span>${msg}</span>`;
+            document.getElementById('toast-container').appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
 
-            const name = currentUser.isAnonymous ? `User-${currentUser.uid.substring(0,4)}` : (currentUser.displayName || 'User');
-            const avatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentUser.uid}`;
+        // التبديل بين الصفحات
+        function switchView(view) {
+            document.getElementById('chat-view').classList.toggle('hidden', view !== 'chat');
+            document.getElementById('library-view').classList.toggle('hidden', view !== 'library');
+        }
 
-            try {
-                const messagesRef = collection(db, 'artifacts', appId, 'public', 'data', 'messages');
-                await addDoc(messagesRef, {
-                    text: text,
-                    uid: currentUser.uid,
-                    username: name,
-                    avatar: avatar,
-                    timestamp: serverTimestamp(),
-                    type: 'text'
-                });
-            } catch (err) {
-                console.error("Error sending:", err);
-            } finally {
-                sendBtn.disabled = false;
+        // رفع الملفات
+        function uploadFile(e) {
+            const file = e.target.files[0];
+            if(file) {
+                const list = document.getElementById('file-list');
+                list.innerHTML += `<div class="p-3 bg-[#2d2d2d] rounded-lg flex justify-between"><span>${file.name}</span><span>${(file.size/1024).toFixed(1)} KB</span></div>`;
+                showNotification("تم رفع الملف بنجاح: " + file.name, "success");
             }
-        });
-
-        // UI Rendering Logic
-        const renderMessages = (messages) => {
-            if (messages.length === 0) {
-                messagesList.innerHTML = `<div class="text-center text-slate-500 py-10">No messages yet. Be the first to say hello!</div>`;
-                return;
-            }
-
-            messagesList.innerHTML = '';
-            let lastUid = null;
-            let lastTime = null;
-
-            messages.forEach((msg) => {
-                const isMe = currentUser && msg.uid === currentUser.uid;
-                const timeStr = msg.timestamp ? new Date(msg.timestamp.toDate()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Just now';
-                
-                // Grouping messages from same user within 5 minutes
-                let showHeader = true;
-                if (lastUid === msg.uid && lastTime && msg.timestamp) {
-                    const diff = msg.timestamp.toMillis() - lastTime;
-                    if (diff < 5 * 60 * 1000) showHeader = false;
-                }
-
-                const msgDiv = document.createElement('div');
-                msgDiv.className = `group flex px-4 py-0.5 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors ${showHeader ? 'mt-3' : ''}`;
-                
-                if (showHeader) {
-                    msgDiv.innerHTML = `
-                        <img src="${msg.avatar}" class="w-10 h-10 rounded-full mt-1 shrink-0 cursor-pointer hover:opacity-80 transition-opacity bg-slate-200 dark:bg-slate-800">
-                        <div class="ml-4 flex-1 min-w-0">
-                            <div class="flex items-baseline">
-                                <span class="font-medium text-[15px] cursor-pointer hover:underline text-slate-900 dark:text-white" style="${msg.uid === 'System' ? 'color: #6366f1' : ''}">${escapeHtml(msg.username)}</span>
-                                ${msg.uid === 'System' ? '<span class="ml-1 bg-brand-500 text-white text-[10px] px-1 rounded uppercase font-bold tracking-wider">Bot</span>' : ''}
-                                <span class="ml-2 text-xs text-slate-500">${timeStr}</span>
-                            </div>
-                            <div class="text-slate-800 dark:text-slate-200 text-[15px] leading-relaxed break-words whitespace-pre-wrap">${escapeHtml(msg.text)}</div>
-                        </div>
-                    `;
-                } else {
-                    msgDiv.innerHTML = `
-                        <div class="w-10 shrink-0 text-xs text-slate-400 opacity-0 group-hover:opacity-100 text-center select-none pt-1">${timeStr}</div>
-                        <div class="ml-4 flex-1 min-w-0 text-slate-800 dark:text-slate-200 text-[15px] leading-relaxed break-words whitespace-pre-wrap">${escapeHtml(msg.text)}</div>
-                    `;
-                }
-                
-                messagesList.appendChild(msgDiv);
-                lastUid = msg.uid;
-                lastTime = msg.timestamp ? msg.timestamp.toMillis() : Date.now();
-            });
-
-            scrollToBottom();
-        };
-
-        const generateMockOnlineUsers = () => {
-            const users = [
-                { name: 'Alex_Dev', status: 'Working on code', color: 'bg-green-500' },
-                { name: 'SarahConnor', status: '', color: 'bg-green-500' },
-                { name: 'NightOwl', status: 'Idle', color: 'bg-yellow-500' },
-                { name: 'GamerGuy99', status: 'Playing Valorant', color: 'bg-purple-500' },
-                { name: 'JaneDoe', status: 'Do Not Disturb', color: 'bg-red-500' }
-            ];
-
-            onlineUsersList.innerHTML = users.map(u => `
-                <div class="flex items-center p-2 rounded hover:bg-slate-200 dark:hover:bg-slate-800 cursor-pointer group">
-                    <div class="relative shrink-0">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${u.name}" class="w-8 h-8 rounded-full bg-slate-300 dark:bg-slate-700">
-                        <div class="absolute bottom-0 right-0 w-3 h-3 ${u.color} border-2 border-slate-50 dark:border-slate-900 rounded-full"></div>
-                    </div>
-                    <div class="ml-3 min-w-0 flex-1">
-                        <div class="font-medium text-sm truncate text-slate-700 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">${u.name}</div>
-                        ${u.status ? `<div class="text-[11px] text-slate-500 truncate">${u.status}</div>` : ''}
-                    </div>
-                </div>
-            `).join('');
-        };
-
-        // UI Interactions
-        const setupUI = () => {
-            // Auto-resize textarea
-            messageInput.addEventListener('input', function() {
-                this.style.height = 'auto';
-                this.style.height = (this.scrollHeight < 128 ? this.scrollHeight : 128) + 'px';
-                sendBtn.disabled = this.value.trim().length === 0;
-            });
-
-            // Enter to send (Shift+Enter for newline)
-            messageInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    if(!sendBtn.disabled) chatForm.dispatchEvent(new Event('submit'));
-                }
-            });
-
-            // Mobile toggles
-            document.getElementById('mobile-nav-toggle').addEventListener('click', () => {
-                document.getElementById('guilds-sidebar').classList.toggle('-translate-x-full');
-                document.getElementById('channels-sidebar').classList.toggle('-translate-x-full');
-            });
-
-            document.getElementById('members-toggle').addEventListener('click', () => {
-                const ms = document.getElementById('members-sidebar');
-                ms.classList.toggle('hidden');
-                ms.classList.toggle('absolute');
-                ms.classList.toggle('z-50');
-                ms.classList.remove('translate-x-full');
-            });
-
-            // Theme toggle
-            document.getElementById('theme-toggle').addEventListener('click', () => {
-                const html = document.documentElement;
-                if(html.classList.contains('dark')) {
-                    setSpecificTheme('light');
-                } else {
-                    setSpecificTheme('dark');
-                }
-            });
-
-            // Lang toggle
-            document.getElementById('lang-toggle').addEventListener('click', () => {
-                isRTL = !isRTL;
-                document.body.setAttribute('dir', isRTL ? 'rtl' : 'ltr');
-                document.documentElement.setAttribute('lang', isRTL ? 'ar' : 'en');
-                
-                // Switch text based on data-en / data-ar
-                document.querySelectorAll('[data-en][data-ar]').forEach(el => {
-                    el.textContent = isRTL ? el.getAttribute('data-ar') : el.getAttribute('data-en');
-                });
-            });
-            
-            // Expose globally for inline onclicks
-            window.showModal = (id, title) => {
-                const m = document.getElementById(id);
-                m.classList.remove('hidden');
-                m.classList.add('flex');
-                if(title && document.getElementById(id+'-title')) {
-                    document.getElementById(id+'-title').textContent = title;
-                }
-            };
-            window.closeModal = (id) => {
-                const m = document.getElementById(id);
-                m.classList.add('hidden');
-                m.classList.remove('flex');
-            };
-            window.showSettings = () => {
-                window.showModal('settings-modal');
-                if(currentUser) {
-                    const name = currentUser.isAnonymous ? `User-${currentUser.uid.substring(0,4)}` : (currentUser.displayName || 'User');
-                    document.getElementById('settings-name').textContent = name;
-                    document.getElementById('settings-avatar').src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentUser.uid}`;
-                }
-            };
-            window.showProfile = () => window.showSettings();
-            window.toggleVoice = (channel) => {
-                const overlay = document.getElementById('voice-overlay');
-                document.getElementById('voice-channel-name').textContent = channel;
-                overlay.classList.remove('hidden');
-                overlay.classList.add('flex');
-            };
-            window.disconnectVoice = () => {
-                const overlay = document.getElementById('voice-overlay');
-                overlay.classList.add('hidden');
-                overlay.classList.remove('flex');
-            };
-            window.switchContext = (ctx) => {
-                const title = document.getElementById('community-title');
-                if(ctx === 'home') title.textContent = isRTL ? 'الرسائل المباشرة' : 'Direct Messages';
-                if(ctx === 'dev') title.textContent = isRTL ? 'مجتمع المطورين' : 'Developers Guild';
-                if(ctx === 'gaming') title.textContent = isRTL ? 'منطقة الألعاب' : 'Gaming Zone';
-            };
-            window.showAdminMock = () => {
-                window.closeModal('settings-modal');
-                window.showModal('action-modal', 'Owner & Admin Dashboard');
-            };
-            window.logout = async () => {
-                if(auth) await signOut(auth);
-                window.location.reload();
-            };
-            window.setSpecificTheme = (theme) => {
-                const html = document.documentElement;
-                const icon = document.getElementById('theme-icon');
-                
-                html.classList.remove('dark', 'amoled-theme');
-                document.body.style.backgroundColor = '';
-                
-                if(theme === 'dark') {
-                    html.classList.add('dark');
-                    icon.className = 'fa-solid fa-sun';
-                } else if (theme === 'amoled') {
-                    html.classList.add('dark', 'amoled-theme');
-                    document.body.style.backgroundColor = '#000000';
-                    icon.className = 'fa-solid fa-moon';
-                } else {
-                    // light
-                    icon.className = 'fa-solid fa-moon';
-                }
-                
-                // Update CSS variables for amoled manually if needed
-                if(theme === 'amoled') {
-                    document.querySelectorAll('.bg-slate-900').forEach(el => {
-                        if(el.id !== 'auth-overlay') { // keep overlay color
-                           // Handled by overriding specific classes via JS or keeping it simple:
-                           // True amoled means pure black backgrounds.
-                        }
-                    });
-                }
-            };
-        };
-
-        const updateProfileUI = (user) => {
-            const name = user.isAnonymous ? `User-${user.uid.substring(0,4)}` : (user.displayName || 'User');
-            document.getElementById('current-user-name').textContent = name;
-            document.getElementById('current-user-avatar').src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.uid}`;
-        };
-
-        const scrollToBottom = () => {
-            scrollAnchor.scrollIntoView({ behavior: 'smooth' });
-        };
-
-        const escapeHtml = (unsafe) => {
-            return unsafe
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        };
-
-        // PWA Implementation via Blob Injection
-        const setupPWA = () => {
-            // 1. Generate Manifest
-            const manifest = {
-                "name": "ChatHub",
-                "short_name": "ChatHub",
-                "description": "Production-ready real-time community chat platform",
-                "start_url": ".",
-                "display": "standalone",
-                "background_color": "#0f172a",
-                "theme_color": "#6366f1",
-                "icons": [
-                    {
-                        "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%236366f1' width='100' height='100'/><text fill='white' font-size='60' x='50' y='70' text-anchor='middle'>CH</text></svg>",
-                        "sizes": "192x192",
-                        "type": "image/svg+xml"
-                    },
-                    {
-                        "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%236366f1' width='100' height='100'/><text fill='white' font-size='60' x='50' y='70' text-anchor='middle'>CH</text></svg>",
-                        "sizes": "512x512",
-                        "type": "image/svg+xml"
-                    }
-                ]
-            };
-            
-            const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
-            const manifestURL = URL.createObjectURL(manifestBlob);
-            
-            const link = document.createElement('link');
-            link.rel = 'manifest';
-            link.href = manifestURL;
-            document.head.appendChild(link);
-
-            // 2. Service Worker (Mocked for single file)
-            const swCode = `
-                self.addEventListener('install', (e) => { self.skipWaiting(); });
-                self.addEventListener('activate', (e) => { e.waitUntil(clients.claim()); });
-                self.addEventListener('fetch', (e) => { /* Network first, fallback to cache */ });
-            `;
-            const swBlob = new Blob([swCode], { type: 'application/javascript' });
-            const swURL = URL.createObjectURL(swBlob);
-
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register(swURL).then(reg => {
-                    console.log('PWA Service Worker registered via Blob.');
-                }).catch(err => console.log('SW registration failed:', err));
-            }
-        };
-
-        const renderMockMessages = () => {
-            renderMessages([
-                { uid: 'System', username: 'ChatHub', text: 'Welcome to the local simulation! Firebase config is missing, so this is running entirely in your browser memory.', timestamp: { toDate: () => new Date(), toMillis: () => Date.now() }, avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=System' },
-                { uid: 'User2', username: 'Alex', text: 'Wow, this interface looks incredibly clean. Glassmorphism is nice.', timestamp: { toDate: () => new Date(), toMillis: () => Date.now() }, avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alex' }
-            ]);
-        };
-
-        // Start App
-        window.addEventListener('DOMContentLoaded', init);
-
+        }
     </script>
 </body>
 </html>
+
+```
