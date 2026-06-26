@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الخوارزمية </title>
+    <title>منصة الخوارزمية</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -11,23 +11,30 @@
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
         :root { --bg: #020617; --card: #0f172a; --text: #f8fafc; --accent: #3b82f6; }
         .light-mode { --bg: #f1f5f9; --card: #ffffff; --text: #0f172a; --accent: #2563eb; }
-        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: var(--text); height: 100vh; overflow: hidden; margin: 0; transition: 0.3s; }
+        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: var(--text); height: 100vh; margin: 0; transition: 0.3s; }
         .glass { background: var(--card); border: 1px solid rgba(128,128,128,0.2); }
-        .page { display: none; height: 100%; flex-direction: column; padding: 1.5rem; overflow-y: auto; }
+        .page { display: none; height: 100%; flex-direction: column; padding: 1rem; overflow-y: auto; }
+        @media (min-width: 768px) { .page { padding: 1.5rem; } }
         .active-page { display: flex; }
         .sidebar-btn { width: 100%; text-align: right; padding: 0.8rem; border-radius: 0.8rem; display: flex; align-items: center; gap: 0.8rem; font-weight: bold; cursor: pointer; transition: 0.2s; position: relative; }
         .sidebar-btn:hover, .sidebar-btn.active { background: var(--accent); color: white; }
-        .news-banner { background: linear-gradient(90deg, #1e3a8a, #3b82f6); padding: 10px; border-radius: 15px; margin-bottom: 20px; overflow: hidden; height: 45px; }
+        .news-banner { background: linear-gradient(90deg, #1e3a8a, #3b82f6); padding: 10px; border-radius: 15px; margin-bottom: 20px; overflow: hidden; height: 45px; width: 100%; }
         .news-scroll { display: inline-block; white-space: nowrap; animation: scrollText 15s linear infinite; }
         @keyframes scrollText { 0% { transform: translateX(100%); } 100% { transform: translateX(-150%); } }
         .user-chip { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer; background: rgba(128,128,128,0.1); border: 1px solid rgba(128,128,128,0.2); white-space: nowrap; }
         .badge { background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-right: auto; }
+        
+        /* تحسينات الشاشات الصغيرة للسايدبار */
+        @media (max-width: 767px) {
+            aside { position: fixed; top: 0; right: -100%; height: 100%; z-index: 400; transition: 0.3s all ease-in-out; }
+            aside.open { right: 0; }
+        }
     </style>
 </head>
-<body class="flex">
+<body class="flex flex-col md:flex-row overflow-hidden">
 
     <div id="authPage" class="fixed inset-0 z-[500] bg-slate-950 flex items-center justify-center p-4">
-        <div class="glass p-8 rounded-[2rem] w-full max-w-md text-center border-blue-500/50 border shadow-2xl">
+        <div class="glass p-6 md:p-8 rounded-[2rem] w-full max-w-md text-center border-blue-500/50 border shadow-2xl">
             <h2 id="authTitle" class="text-2xl font-bold mb-6 text-blue-500">دخول الخوارزمية</h2>
             <div class="space-y-4">
                 <input type="text" id="uName" placeholder="اسم المستخدم" class="w-full p-4 rounded-xl text-center bg-slate-900 text-white outline-none border border-white/5">
@@ -38,10 +45,25 @@
         </div>
     </div>
 
-    <div id="mainApp" class="hidden flex w-full h-full">
-        <aside class="w-64 glass flex flex-col p-4 border-l border-white/10">
-            <div class="mb-8 px-2 flex items-center gap-3"><i class="fas fa-terminal text-blue-500 text-2xl"></i><h1 class="font-bold text-xl">الخوارزمية</h1></div>
-            <nav class="flex-1 space-y-1">
+    <div id="mainApp" class="hidden flex flex-col md:flex-row w-full h-full overflow-hidden">
+        
+        <header class="md:hidden w-full glass p-4 flex justify-between items-center z-50 border-b border-white/10">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-terminal text-blue-500 text-xl"></i>
+                <h1 class="font-bold text-lg">الخوارزمية</h1>
+            </div>
+            <button onclick="toggleSidebar()" class="text-xl p-2 focus:outline-none">
+                <i class="fas fa-bars"></i>
+            </button>
+        </header>
+
+        <aside id="sidebar" class="w-64 glass flex flex-col p-4 border-l border-white/10 h-full absolute md:relative">
+            <div class="hidden md:flex mb-8 px-2 items-center gap-3">
+                <i class="fas fa-terminal text-blue-500 text-2xl"></i>
+                <h1 class="font-bold text-xl">الخوارزمية</h1>
+            </div>
+            
+            <nav class="flex-1 space-y-1 overflow-y-auto">
                 <button onclick="showPage('dashboard')" id="btn-dashboard" class="sidebar-btn active"><i class="fas fa-home"></i> الرئيسية</button>
                 <button onclick="showPage('chat')" id="btn-chat" class="sidebar-btn"><i class="fas fa-comments"></i> المحادثة</button>
                 <button onclick="showPage('library')" id="btn-library" class="sidebar-btn">
@@ -54,6 +76,7 @@
                 </button>
                 <button id="adminLink" onclick="showPage('admin')" class="hidden sidebar-btn text-yellow-500"><i class="fas fa-crown"></i> لوحة القائد</button>
             </nav>
+            
             <div class="mt-auto pt-4 border-t border-white/10 space-y-2">
                 <button onclick="toggleTheme()" class="sidebar-btn text-xs"><i class="fas fa-adjust"></i> تبديل المود</button>
                 <button onclick="requestNotify()" id="notifBtn" class="sidebar-btn text-xs text-green-400"><i class="fas fa-bell"></i> الإشعارات</button>
@@ -61,49 +84,53 @@
             </div>
         </aside>
 
-        <main class="flex-1 flex flex-col overflow-hidden">
+        <main class="flex-1 flex flex-col overflow-hidden w-full h-full">
+            
             <div id="p-dashboard" class="page active-page">
                 <div class="news-banner"><div id="newsScroll" class="news-scroll text-white font-bold">مرحباً بلال وقادة الخوارزمية..</div></div>
-                <h2 id="helloUser" class="text-3xl font-bold mb-8"></h2>
-                <div class="glass p-8 rounded-3xl border-r-8 border-blue-500 w-fit shadow-xl"><p class="opacity-60 text-xs font-bold uppercase">قوة الفريق</p><p id="userCount" class="text-6xl font-black">0</p></div>
+                <h2 id="helloUser" class="text-2xl md:text-3xl font-bold mb-6"></h2>
+                <div class="glass p-6 md:p-8 rounded-3xl border-r-8 border-blue-500 w-full max-w-xs shadow-xl">
+                    <p class="opacity-60 text-xs font-bold uppercase">قوة الفريق</p>
+                    <p id="userCount" class="text-5xl md:text-6xl font-black">0</p>
+                </div>
             </div>
 
             <div id="p-chat" class="page">
                 <div id="chatUserList" class="flex gap-2 p-2 overflow-x-auto mb-2 border-b border-white/5 scrollbar-hide"></div>
-                <div id="chatBox" class="flex-1 glass rounded-2xl p-4 mb-4 overflow-y-auto flex flex-col gap-3"></div>
+                <div id="chatBox" class="flex-1 glass rounded-2xl p-4 mb-4 overflow-y-auto flex flex-col gap-3 h-[50vh] md:h-auto"></div>
                 <div class="flex gap-2 bg-slate-900/50 p-2 rounded-2xl border border-white/5">
                     <input type="file" id="chatFileInput" class="hidden" onchange="sendChatFile()">
-                    <button onclick="document.getElementById('chatFileInput').click()" class="text-blue-400 px-3"><i class="fas fa-paperclip text-xl"></i></button>
-                    <input type="text" id="chatInput" class="flex-1 bg-transparent p-2 outline-none text-white text-sm" placeholder="اكتب رسالة الفريق...">
-                    <button onclick="sendMsg()" class="bg-blue-600 px-6 py-2 rounded-xl text-white hover:bg-blue-700 transition"><i class="fas fa-paper-plane"></i></button>
+                    <button onclick="document.getElementById('chatFileInput').click()" class="text-blue-400 px-2 md:px-3"><i class="fas fa-paperclip text-lg md:text-xl"></i></button>
+                    <input type="text" id="chatInput" class="flex-1 bg-transparent p-2 outline-none text-white text-xs md:text-sm" placeholder="اكتب رسالة الفريق...">
+                    <button onclick="sendMsg()" class="bg-blue-600 px-4 md:px-6 py-2 rounded-xl text-white hover:bg-blue-700 transition"><i class="fas fa-paper-plane"></i></button>
                 </div>
             </div>
 
             <div id="p-library" class="page">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-                    <h2 class="text-2xl font-bold">المكتبة 📚</h2>
-                    <div class="flex w-full md:w-auto gap-2">
-                        <div class="relative flex-1">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                    <h2 class="text-xl md:text-2xl font-bold">المكتبة 📚</h2>
+                    <div class="flex w-full sm:w-auto gap-2">
+                        <div class="relative flex-1 sm:flex-initial">
                             <i class="fas fa-search absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
-                            <input type="text" id="libSearch" oninput="filterLibrary()" placeholder="ابحث عن ملف..." class="w-full md:w-64 pr-10 pl-4 py-2 bg-slate-900 rounded-xl outline-none border border-white/10 focus:border-blue-500">
+                            <input type="text" id="libSearch" oninput="filterLibrary()" placeholder="ابحث عن ملف..." class="w-full sm:w-48 md:w-64 pr-10 pl-4 py-2 bg-slate-900 rounded-xl outline-none border border-white/10 focus:border-blue-500 text-sm">
                         </div>
                         <div id="adminLib" class="hidden">
                             <input type="file" id="libFileInput" class="hidden" onchange="uploadToLibrary()">
-                            <button onclick="document.getElementById('libFileInput').click()" class="bg-blue-600 px-4 py-2 rounded-lg font-bold whitespace-nowrap"><i class="fas fa-plus"></i> رفع</button>
+                            <button onclick="document.getElementById('libFileInput').click()" class="bg-blue-600 px-4 py-2 rounded-lg font-bold whitespace-nowrap text-sm"><i class="fas fa-plus"></i> رفع</button>
                         </div>
                     </div>
                 </div>
-                <div id="libraryList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                <div id="libraryList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
             </div>
 
             <div id="p-members" class="page">
-                <h2 class="text-2xl font-bold mb-4">إدارة الأعضاء</h2>
-                <div class="glass rounded-2xl overflow-hidden shadow-2xl">
-                    <table class="w-full text-right">
+                <h2 class="text-xl md:text-2xl font-bold mb-4">إدارة الأعضاء</h2>
+                <div class="glass rounded-2xl overflow-x-auto shadow-2xl w-full">
+                    <table class="w-full text-right min-w-[300px]">
                         <thead>
                             <tr class="bg-slate-800/50 text-xs opacity-60">
-                                <th class="p-4">العضو</th>
-                                <th class="p-4">التحكم</th>
+                                <th class="p-3 md:p-4">العضو</th>
+                                <th class="p-3 md:p-4 text-left">التحكم</th>
                             </tr>
                         </thead>
                         <tbody id="memberTableBody"></tbody>
@@ -112,17 +139,17 @@
             </div>
 
             <div id="p-admin" class="page">
-                <h2 class="text-2xl font-bold text-yellow-500 mb-6 text-center font-black">لوحة القائد 👑</h2>
+                <h2 class="text-xl md:text-2xl font-bold text-yellow-500 mb-6 text-center font-black">لوحة القائد 👑</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="glass p-6 rounded-2xl border-yellow-500/20 border">
-                        <h3 class="font-bold mb-4">تحديث الأخبار</h3>
-                        <input type="text" id="newsInput" class="w-full p-4 bg-slate-800 rounded-xl mb-4 outline-none text-white text-center" placeholder="خبر جديد...">
-                        <button onclick="setGlobalNews()" class="w-full bg-yellow-600 p-4 rounded-xl font-bold text-white">تحديث</button>
+                    <div class="glass p-5 md:p-6 rounded-2xl border-yellow-500/20 border">
+                        <h3 class="font-bold mb-4 text-sm md:text-base">تحديث الأخبار</h3>
+                        <input type="text" id="newsInput" class="w-full p-4 bg-slate-800 rounded-xl mb-4 outline-none text-white text-center text-sm" placeholder="خبر جديد...">
+                        <button onclick="setGlobalNews()" class="w-full bg-yellow-600 p-3 md:p-4 rounded-xl font-bold text-white text-sm">تحديث</button>
                     </div>
-                    <div class="glass p-6 rounded-2xl border-red-500/20 border">
-                        <h3 class="font-bold mb-4 text-red-500">حذف إجباري (ID)</h3>
-                        <input type="number" id="forceDeleteId" class="w-full p-4 bg-slate-800 rounded-xl mb-4 outline-none text-white text-center" placeholder="ادخل ID الملف/الرسالة">
-                        <button onclick="forceDelete()" class="w-full bg-red-600 p-4 rounded-xl font-bold text-white">حذف نهائي</button>
+                    <div class="glass p-5 md:p-6 rounded-2xl border-red-500/20 border">
+                        <h3 class="font-bold mb-4 text-red-500 text-sm md:text-base">حذف إجباري (ID)</h3>
+                        <input type="number" id="forceDeleteId" class="w-full p-4 bg-slate-800 rounded-xl mb-4 outline-none text-white text-center text-sm" placeholder="ادخل ID الملف/الرسالة">
+                        <button onclick="forceDelete()" class="w-full bg-red-600 p-3 md:p-4 rounded-xl font-bold text-white text-sm">حذف نهائي</button>
                     </div>
                 </div>
             </div>
@@ -141,6 +168,11 @@
             if(saved) { currentUser = JSON.parse(saved); loginSuccess(); }
             if(localStorage.getItem('algo_theme') === 'light') document.body.classList.add('light-mode');
         };
+
+        // دالة لفتح وإغلاق القائمة الجانبية في التليفون
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
 
         function toggleAuthMode() { isLoginMode = !isLoginMode; document.getElementById('authTitle').innerText = isLoginMode ? 'دخول الخوارزمية' : 'حساب جديد'; }
 
@@ -166,7 +198,6 @@
             document.getElementById('authPage').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
             
-            // التعديل: السماح لأي ADMIN (بلال أو أنس) برؤية اللوحة والمكتبة
             if(currentUser.role === 'ADMIN') { 
                 document.getElementById('adminLink').classList.remove('hidden'); 
                 document.getElementById('adminLib').classList.remove('hidden'); 
@@ -226,16 +257,15 @@
                 document.getElementById('userCountBadge').innerText = users.length;
                 document.getElementById('memberTableBody').innerHTML = users.map(u => {
                     const isCurrentUserAdmin = currentUser.role === 'ADMIN';
-                    // الأدمن يطرد الأعضاء العاديين فقط ولا يطرد نفسه
                     const canKick = isCurrentUserAdmin && u.role !== 'ADMIN' && u.id !== currentUser.id;
                     return `<tr class="border-b border-white/5">
-                        <td class="p-4">
-                            <div class="font-bold">${u.username} ${u.role === 'ADMIN' ? '<span class="text-yellow-500 text-[10px]">(ADMIN)</span>' : ''}</div>
+                        <td class="p-3 md:p-4">
+                            <div class="font-bold text-sm md:text-base">${u.username} ${u.role === 'ADMIN' ? '<span class="text-yellow-500 text-[10px]">(ADMIN)</span>' : ''}</div>
                             ${isCurrentUserAdmin ? `<div class="text-[10px] text-yellow-500 hidden" id="pass-${u.id}">كلمة السر: ${u.password}</div>` : ''}
                         </td>
-                        <td class="p-4 text-left flex gap-2 justify-end">
-                            ${isCurrentUserAdmin ? `<button onclick="togglePass(${u.id})" class="bg-blue-500/10 text-blue-400 px-3 py-1 rounded text-xs">كشف</button>` : ''}
-                            ${canKick ? `<button onclick="deleteUser(${u.id})" class="bg-red-500 text-white px-3 py-1 rounded text-xs">طرد</button>` : '<span class="text-green-500 text-[10px]">نشط</span>'}
+                        <td class="p-3 md:p-4 text-left flex gap-2 justify-end">
+                            ${isCurrentUserAdmin ? `<button onclick="togglePass(${u.id})" class="bg-blue-500/10 text-blue-400 px-2 py-1 rounded text-xs">كشف</button>` : ''}
+                            ${canKick ? `<button onclick="deleteUser(${u.id})" class="bg-red-500 text-white px-2 py-1 rounded text-xs">طرد</button>` : '<span class="text-green-500 text-[10px]">نشط</span>'}
                         </td>
                     </tr>`;
                 }).join('');
@@ -250,9 +280,9 @@
                 document.getElementById('chatBox').innerHTML = msgs
                     .filter(m => !m.content.startsWith('LIB_FILE:') && !m.content.startsWith('SYS_NEWS:') && m.content.length < 1000) 
                     .reverse().map(m => {
-                        let c = m.content.startsWith('CHAT_FILE:') ? `<div class="p-2 bg-blue-500/10 rounded-lg flex items-center gap-2 cursor-pointer" onclick="openFile('${m.content.split('|')[1]}')"><i class="fas fa-file-download text-blue-400"></i><span class="text-[10px] truncate">${m.content.split('|')[2]}</span></div>` : `<p class="text-sm">${m.content}</p>`;
+                        let c = m.content.startsWith('CHAT_FILE:') ? `<div class="p-2 bg-blue-500/10 rounded-lg flex items-center gap-2 cursor-pointer" onclick="openFile('${m.content.split('|')[1]}')"><i class="fas fa-file-download text-blue-400"></i><span class="text-[10px] truncate">${m.content.split('|')[2]}</span></div>` : `<p class="text-xs md:text-sm">${m.content}</p>`;
                         const isMy = m.username === currentUser.username;
-                        return `<div class="p-3 glass rounded-xl ${isMy ? 'mr-auto bg-blue-500/20' : 'ml-auto'} max-w-[80%] relative group">
+                        return `<div class="p-3 glass rounded-xl ${isMy ? 'mr-auto bg-blue-500/20' : 'ml-auto'} max-w-[85%] md:max-w-[80%] relative group">
                             <span class="text-[9px] text-blue-400 font-bold">${m.username}</span>${c}
                             ${(isMy || currentUser.role === 'ADMIN') ? `<button onclick="deleteMsg(${m.id})" class="absolute -top-2 -right-2 bg-red-600 text-white w-5 h-5 rounded-full text-[10px] hidden group-hover:block shadow-lg"><i class="fas fa-times"></i></button>` : ''}
                         </div>`;
@@ -275,7 +305,17 @@
         async function deleteUser(id) { if(confirm('طرد العضو نهائياً؟')) { await _supabase.from('profiles').delete().eq('id', id); } }
         async function sendMsg() { const t = document.getElementById('chatInput').value.trim(); if(t) await _supabase.from('messages').insert([{ username: currentUser.username, content: t }]); document.getElementById('chatInput').value = ''; }
         function mention(n) { document.getElementById('chatInput').value += `@${n} `; document.getElementById('chatInput').focus(); }
-        function showPage(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page')); document.getElementById('p-'+id).classList.add('active-page'); document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active')); if(document.getElementById('btn-'+id)) document.getElementById('btn-'+id).classList.add('active'); }
+        
+        function showPage(id) { 
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page')); 
+            document.getElementById('p-'+id).classList.add('active-page'); 
+            document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active')); 
+            if(document.getElementById('btn-'+id)) document.getElementById('btn-'+id).classList.add('active'); 
+            
+            // قفل السايدبار تلقائياً على التليفون بعد اختيار صفحة
+            document.getElementById('sidebar').classList.remove('open');
+        }
+        
         function logout() { localStorage.removeItem('algo_user'); location.reload(); }
         function toggleTheme() { document.body.classList.toggle('light-mode'); localStorage.setItem('algo_theme', document.body.classList.contains('light-mode') ? 'light' : 'dark'); }
         function requestNotify() { Notification.requestPermission().then(p => { if(p === 'granted') document.getElementById('notifBtn').innerText = "مفعلة ✅"; }); }
